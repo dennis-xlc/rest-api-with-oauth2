@@ -229,7 +229,7 @@ a img {
 
 #header .logo {
   float: left;
-  margin-top: 17px;
+  margin-top: 13px;
   display: inline-block;
   width: 186px;
   height: 27px;
@@ -240,7 +240,7 @@ a img {
 #header .nav {
   float: right;
   font-weight: bold;
-  margin-top: 20px;
+  margin-top: 13px;
   text-shadow: white 1px 1px 0px;
   font-size: 14px;
 }
