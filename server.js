@@ -124,8 +124,12 @@ var options = {
 };
 
 // Use environment defined port or 3000
-var port = process.env.PORT || 3000;
+//var port = process.env.PORT || 3000;
+
+//This setting is so that our certificates will work although they are all self signed
+//TODO Remove this if you are NOT using self signed certs
+https.globalAgent.options.rejectUnauthorized = false;
 
 // Create our HTTPS server listening on port 3000.
-https.createServer(options, server).listen(port);
+https.createServer(options, server).listen(3000);
 console.log("OAuth 2.0 Authorization Server started on port " + port);
