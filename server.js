@@ -10,7 +10,7 @@ var fs = require('fs');
 var path = require('path');
 var https = require('https');
 var passport = require('passport');
-var site = require('./site');
+var oauth2SiteController = require('./controllers/oauth2-site');
 var oauth2Controller = require('./controllers/oauth2');
 var authController = require('./controllers/auth');
 
@@ -90,7 +90,7 @@ var apiRouter = express.Router();
 
 
 // Initial dummy route for testing
-// http://localhost:3000/api
+// https://localhost:3000/api
 apiRouter.get('/', function(req, res) {
   console.log("Cookies: ", req.cookies);
   res.json({ message: 'You are reaching the REST API for fudan bbs!' });
@@ -102,10 +102,12 @@ apiRouter.get('/posts/top', authController.isAuthenticated,
       res.json({ message: 'You are reaching the REST API for fudan bbs!' });
     });
 
-baseRouter.get('/login', site.loginForm);
-baseRouter.post('/login', site.login);
 
-oauth2Router.get('/', site.index);
+// configure the site controller for oauth2 server
+oauth2Router.get('/', oauth2SiteController.index);
+oauth2Router.get('/login', oauth2SiteController.loginForm);
+oauth2Router.post('/login', oauth2SiteController.login);
+
 oauth2Router.get('/authorize', oauth2Controller.authorization);
 oauth2Router.post('/authorize/decision', oauth2Controller.decision);
 oauth2Router.post('/token', oauth2Controller.token);

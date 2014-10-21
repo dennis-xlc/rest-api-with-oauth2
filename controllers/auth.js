@@ -43,7 +43,6 @@ passport.use(new LocalStrategy(
  */
 passport.use(new BasicStrategy(
     function (username, password, done) {
-      console.log("BasicStrategy for user : ", username);
         db.clients.findByClientId(username, function (err, client) {
             if (err) {
                 return done(err);

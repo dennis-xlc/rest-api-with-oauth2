@@ -29,7 +29,6 @@ var server = oauth2orize.createServer();
  */
 server.grant(oauth2orize.grant.code(function (client, redirectURI, user, ares, done) {
     var code = utils.uid(config.token.authorizationCodeLength);
-    console.log("Code : ", code);
     db.authorizationCodes.save(code, client.id, redirectURI, user.id, client.scope, function (err) {
         if (err) {
             return done(err);
@@ -48,7 +47,6 @@ server.grant(oauth2orize.grant.code(function (client, redirectURI, user, ares, d
  */
 server.grant(oauth2orize.grant.token(function (client, user, ares, done) {
     var token = utils.uid(config.token.accessTokenLength);
-    console.log("Token : ", token);
     db.accessTokens.save(token, config.token.calculateExpirationDate(), user.id, client.id, client.scope, function (err) {
         if (err) {
             return done(err);
@@ -220,9 +218,8 @@ server.exchange(oauth2orize.exchange.refreshToken(function(client, refreshToken,
  * first, and rendering the `dialog` view.
  */
 exports.authorization = [
-    login.ensureLoggedIn(),
+    login.ensureLoggedIn('/oauth2/login'),
     server.authorization(function (clientID, redirectURI, scope, done) {
-      console.log("authorization for client : ", clientID);
         db.clients.findByClientId(clientID, function (err, client) {
             if (err) {
                 return done(err);
@@ -249,8 +246,7 @@ exports.authorization = [
                     callback(null, { allow: true });
                 })(req, res, next);
             } else {
-              console.log("transaction id : ", req.oauth2.transactionID);
-                res.render('dialog', { transactionID: req.oauth2.transactionID, user: req.user, client: req.oauth2.client });
+                res.render('oauth2/dialog', { transactionID: req.oauth2.transactionID, user: req.user, client: req.oauth2.client });
             }
         });
     }
@@ -265,7 +261,7 @@ exports.authorization = [
  * a response.
  */
 exports.decision = [
-    //login.ensureLoggedIn(),
+    login.ensureLoggedIn('/oauth2/login'),
     server.decision()
 ];
 

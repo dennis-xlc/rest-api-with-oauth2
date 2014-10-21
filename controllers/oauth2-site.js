@@ -7,9 +7,9 @@ exports.index = function (req, res) {
 };
 
 exports.loginForm = function (req, res) {
-    res.render('login');
+    res.render('oauth2/login');
 };
 
 exports.login = [
-    passport.authenticate('local', {successReturnToOrRedirect: '/', failureRedirect: '/login'})
+    passport.authenticate('local', {successReturnToOrRedirect: '/api', failureRedirect: 'login'})
 ];
