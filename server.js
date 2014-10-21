@@ -47,6 +47,9 @@ if(config.db.type === 'mongodb') {
 
 // Create our Express server
 var server = express();
+
+// Use environment defined port or 3000
+server.set('port', (process.env.PORT || 3000));
 server.set('view engine', 'ejs');
 
 //static resources for stylesheets, images, javascript files
@@ -113,23 +116,28 @@ server.use('/api', apiRouter);
 server.use('/oauth2', oauth2Router);
 
 
-//TODO: Change these for your own certificates.  This was generated
-//through the commands:
-//openssl genrsa -out privatekey.pem 1024
-//openssl req -new -key privatekey.pem -out certrequest.csr
-//openssl x509 -req -in certrequest.csr -signkey privatekey.pem -out certificate.pem
-var options = {
-    key: fs.readFileSync('certs/privatekey.pem'),
-    cert: fs.readFileSync('certs/certificate.pem')
-};
+if (config.env.platform === 'heroku') {
+    /* express */
+    server.listen(server.get("port"), function () {
+      console.log("Express server listening on port " + server.get('port'));
+    });
+} else {
+  //TODO: Change these for your own certificates.  This was generated
+  //through the commands:
+  //openssl genrsa -out privatekey.pem 1024
+  //openssl req -new -key privatekey.pem -out certrequest.csr
+  //openssl x509 -req -in certrequest.csr -signkey privatekey.pem -out certificate.pem
+  var options = {
+      key: fs.readFileSync('certs/privatekey.pem'),
+      cert: fs.readFileSync('certs/certificate.pem')
+  };
 
-// Use environment defined port or 3000
-var port = process.env.PORT || 3000;
+  //This setting is so that our certificates will work although they are all self signed
+  //TODO Remove this if you are NOT using self signed certs
+  https.globalAgent.options.rejectUnauthorized = false;
 
-//This setting is so that our certificates will work although they are all self signed
-//TODO Remove this if you are NOT using self signed certs
-https.globalAgent.options.rejectUnauthorized = false;
+  // Create our HTTPS server listening on port 3000.
+  https.createServer(options, server).listen(server.get("port"));
+}
 
-// Create our HTTPS server listening on port 3000.
-https.createServer(options, server).listen(3000);
-console.log("OAuth 2.0 Authorization Server started on port " + port);
+console.log("OAuth 2.0 Authorization Server started on port " + server.get("port"));

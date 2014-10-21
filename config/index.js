@@ -56,3 +56,7 @@ exports.session = {
     secret: "A Secret That Should Be Changed",
     dbName: "Session"
 };
+
+exports.env = {
+  platform: "heroku"
+}
