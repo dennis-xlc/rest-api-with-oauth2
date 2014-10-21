@@ -119,7 +119,7 @@ server.use('/oauth2', oauth2Router);
 console.log(process.env);
 
 // check if run on heroku
-if (process.env.DEPLOY === 'production') {
+if (process.env.NODE_ENV === 'production') {
     /* express */
     server.listen(server.get("port"), function () {
       console.log("Express server listening on port " + server.get('port'));
