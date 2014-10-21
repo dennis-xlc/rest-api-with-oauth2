@@ -3,7 +3,7 @@
 var passport = require('passport');
 
 exports.index = function (req, res) {
-    res.render('index');
+    res.render('oauth2/index');
 };
 
 exports.loginForm = function (req, res) {

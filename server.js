@@ -1,5 +1,4 @@
 // load the packages as needed
-var config = require('./config');
 var express = require('express');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
@@ -10,6 +9,9 @@ var fs = require('fs');
 var path = require('path');
 var https = require('https');
 var passport = require('passport');
+var config = require('./config');
+
+var devSiteController = require('./controllers/dev-site');
 var oauth2SiteController = require('./controllers/oauth2-site');
 var oauth2Controller = require('./controllers/oauth2');
 var authController = require('./controllers/auth');
@@ -88,6 +90,8 @@ var baseRouter = express.Router();
 var oauth2Router = express.Router();
 var apiRouter = express.Router();
 
+
+baseRouter.get('/', devSiteController.index);
 
 // Initial dummy route for testing
 // https://localhost:3000/api

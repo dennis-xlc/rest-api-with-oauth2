@@ -162,6 +162,7 @@ passport.deserializeUser(function (id, done) {
 });
 
 
+
 exports.isAuthenticated = passport.authenticate(['local', 'bearer', 'basic', 'oauth2-client-password'], { session : false });
 exports.isClientAuthenticated = passport.authenticate(['basic', 'oauth2-client-password'], { session : false });
 exports.isUserAuthenticated = passport.authenticate(['local', 'bearer'], { session : false });
