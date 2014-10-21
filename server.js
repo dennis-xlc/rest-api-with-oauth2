@@ -124,7 +124,7 @@ var options = {
 };
 
 // Use environment defined port or 3000
-//var port = process.env.PORT || 3000;
+var port = process.env.PORT || 3000;
 
 //This setting is so that our certificates will work although they are all self signed
 //TODO Remove this if you are NOT using self signed certs
