@@ -61,6 +61,14 @@ h1 .header-anchor {
   content:'\f05c';
 }
 
+.header-actions {
+  position: relative;
+  float: right;
+  margin-top: -3px;
+  margin-bottom: -3px;
+  padding-top: 15px;
+}
+
 h2 {
   font-size: 22px;
   color: #333;
@@ -238,9 +246,10 @@ a img {
 }
 
 #header .nav {
-  float: right;
+  position: relative;
+  float: left;
   font-weight: bold;
-  margin-top: 13px;
+  margin-top: 20px;
   text-shadow: white 1px 1px 0px;
   font-size: 14px;
 }
@@ -290,6 +299,7 @@ a img {
   display: inline-block;
   margin-top: -4px;
   margin-right: 20px;
+  margin-left: 20px;
   width: 51px;
   border-radius: 3px;
   background: url(/images/search.png) 5px center no-repeat #fff;
@@ -317,7 +327,7 @@ a img {
 .search-placeholder {
   position: absolute;
   cursor: text;
-  left: 22px;
+  left: 42px;
   top: 0px;
   font-weight: normal;
   font-size: 12px;
@@ -820,7 +830,7 @@ a .mega-octicon {
 }
 
 .lower_footer {
-  border-top: 1px solid #ddd;
+  border-top: 0px solid #ddd;
   padding: 30px 0;
 }
 

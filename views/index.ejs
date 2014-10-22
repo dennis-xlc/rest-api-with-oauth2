@@ -21,19 +21,22 @@
   <div id="header">
     <div>
       <a class="logo" href="/">REST API:fudan bbs</a>
-      <ul class="nav">
-        <li><a href="/" class="nav-api">API</a></li>
-        <li id="search-container">
-          <input type="text" id="searchfield" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" /><label class="search-placeholder">Search</label>
-          <div class="cancel-search"></div>
-          <ul id="search-results">
+      <div class="nav">
+        <ul>
 
-          </ul>
-        </li>
-        <li>
-            <a class="button signin" href="/login" data-ga-click="(Logged out) Header, clicked Sign in, text:sign-in">Sign in</a>
-        </li>
-      </ul>
+          <li id="search-container">
+            <input type="text" id="searchfield" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" /><label class="search-placeholder">Search</label>
+            <div class="cancel-search"></div>
+            <ul id="search-results">
+
+            </ul>
+          </li>
+          <li><a href="/" class="nav-api">API</a></li>
+        </ul>
+      </div>
+      <div class="header-actions" role="navigation">
+        <a class="button signin" href="/login" data-ga-click="(Logged out) Header, clicked Sign in, text:sign-in">Sign in</a>
+      </div>
     </div>
   </div><!-- #header -->
 </div><!-- #header-wrapper -->
