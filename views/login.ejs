@@ -1,57 +1,140 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <meta http-equiv="Content-Language" content="en-us" />
-  <meta http-equiv="imagetoolbar" content="false" />
-  <meta name="MSSmartTagsPreventParsing" content="true" />
-  <title>Sign in · REST APIs</title>
-  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-  <link href="/css/reset.css" rel="stylesheet" type="text/css" />
-  <link href="/css/documentation.css" media="screen" rel="stylesheet" type="text/css">
-  <link href="/css/pygments.css" media="screen" rel="stylesheet" type="text/css">
-  <script src="/js/jquery.js" type="text/javascript"></script>
-  <script src="/js/documentation.js" type="text/javascript"></script>
+<html lang="en" class="">
+  <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# object: http://ogp.me/ns/object# article: http://ogp.me/ns/article# profile: http://ogp.me/ns/profile#">
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Language" content="en">
+    <meta content="origin" name="referrer" />
+    
+    <title>Sign in · REST API</title>
+    <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="GitHub">
+    <link rel="fluid-icon" href="https://github.com/fluidicon.png" title="GitHub">
+    <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-114.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/apple-touch-icon-114.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/apple-touch-icon-144.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/apple-touch-icon-144.png">
+    <meta property="fb:app_id" content="1401488693436528">
+
+      <meta property="og:url" content="https://github.com">
+      <meta property="og:site_name" content="GitHub">
+      <meta property="og:title" content="Build software better, together">
+      <meta property="og:description" content="GitHub is the best place to build software together. Over 4 million people use GitHub to share code.">
+      <meta property="og:image" content="https://assets-cdn.github.com/images/modules/open_graph/github-logo.png">
+      <meta property="og:image:type" content="image/png">
+      <meta property="og:image:width" content="1200">
+      <meta property="og:image:height" content="1200">
+      <meta property="og:image" content="https://assets-cdn.github.com/images/modules/open_graph/github-mark.png">
+      <meta property="og:image:type" content="image/png">
+      <meta property="og:image:width" content="1200">
+      <meta property="og:image:height" content="620">
+      <meta property="og:image" content="https://assets-cdn.github.com/images/modules/open_graph/github-octocat.png">
+      <meta property="og:image:type" content="image/png">
+      <meta property="og:image:width" content="1200">
+      <meta property="og:image:height" content="620">
+      <meta property="twitter:site" content="github">
+      <meta property="twitter:site:id" content="13334762">
+      <meta property="twitter:creator" content="github">
+      <meta property="twitter:creator:id" content="13334762">
+      <meta property="twitter:card" content="summary_large_image">
+      <meta property="twitter:title" content="GitHub">
+      <meta property="twitter:description" content="GitHub is the best place to build software together. Over 4 million people use GitHub to share code.">
+      <meta property="twitter:image:src" content="https://assets-cdn.github.com/images/modules/open_graph/github-logo.png">
+      <meta property="twitter:image:width" content="1200">
+      <meta property="twitter:image:height" content="1200">
+      <meta name="browser-stats-url" content="/_stats">
+    <link rel="assets" href="https://assets-cdn.github.com/">
+    <link rel="conduit-xhr" href="https://ghconduit.com:25035">
+    
+    <meta name="pjax-timeout" content="1000">
+
+    <meta name="msapplication-TileImage" content="/windows-tile.png">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="selected-link" value="/login" data-pjax-transient>
+      <meta name="google-analytics" content="UA-3769691-2">
+
+    <meta content="collector.githubapp.com" name="octolytics-host" /><meta content="collector-cdn.github.com" name="octolytics-script-host" /><meta content="github" name="octolytics-app-id" /><meta content="75832385:22DE:21B9CD6:5447BF36" name="octolytics-dimension-request_id" />
+    
+    <meta content="Rails, view, sessions#new" name="analytics-event" />
+
+    
+    
+    <link rel="icon" type="image/x-icon" href="https://assets-cdn.github.com/favicon.ico">
 
 
-</head>
+    <meta content="authenticity_token" name="csrf-param" />
+<meta content="r7U8QQFnecm+yvR2zMUbYQXVPgAhBzX4CzGNLPjd5feJsyds6wT7kZzEYWeh00OqTSjHGhsyX6iZopdvOjaHOQ==" name="csrf-token" />
+
+    <link href="https://assets-cdn.github.com/assets/github-70d8de33efb40fac263afe8d83520a168e2ef07fb9e73c977685818cc0af7593.css" media="all" rel="stylesheet" type="text/css" />
+    <link href="https://assets-cdn.github.com/assets/github2-a75bcc8db3bd6526bd5981add7f9fba373d1b35b73af0c5c9bdeb6cc924dd87c.css" media="all" rel="stylesheet" type="text/css" />
+
+    <link href="/css/documentation.css" media="all" rel="stylesheet" type="text/css">
+    
+    
 
 
-<body class="overview signin">
-  <div id="header-wrapper">
-  <div id="header">
-    <div>
-      <a class="logo" href="/">REST API:fudan bbs</a>
-      <div class="nav">
-        <ul>
+    <meta http-equiv="x-pjax-version" content="26e39d4a48c5de9cbca9d43db99fd8a1">
 
-          <li id="search-container">
-            <input type="text" id="searchfield" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" /><label class="search-placeholder">Search</label>
-            <div class="cancel-search"></div>
-            <ul id="search-results">
+      <meta name="description" content="Build software better, together.">
+  </head>
 
-            </ul>
-          </li>
-          <li><a href="/" class="nav-api">API</a></li>
-        </ul>
-      </div>
-      <div class="header-actions" role="navigation">
+
+  <body class="logged_out  env-production macintosh  signin">
+    <a href="#start-of-content" tabindex="1" class="accessibility-aid js-skip-to-content">Skip to content</a>
+    <div class="wrapper">
+      
+      
+      
+      
+
+
+      
+      <div class="header header-logged-out" role="banner">
+  <div class="container clearfix">
+
+    <a class="logo header-logo-wordmark" href="/" ga-data-click="(Logged out) Header, go to homepage, icon:logo-wordmark">
+      <span class="mega-octicon octicon-logo-github"></span>
+    </a>
+
+    <div class="header-actions" role="navigation">
         <a class="button primary" href="/join" data-ga-click="(Logged out) Header, clicked Sign up, text:sign-up">Sign up</a>
-        <a class="button signin" href="/login" data-ga-click="(Logged out) Header, clicked Sign in, text:sign-in">Sign in</a>
-      </div>
+      <a class="button signin" href="/login?return_to=%2Flogin" data-ga-click="(Logged out) Header, clicked Sign in, text:sign-in">Sign in</a>
     </div>
-  </div><!-- #header -->
-</div><!-- #header-wrapper -->
+
+    <div class="site-search  js-site-search" role="search">
+      <form accept-charset="UTF-8" action="/search" class="js-site-search-form" data-global-search-url="/search" data-repo-search-url="" method="get"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /></div>
+  <input type="text"
+    class=""
+    data-hotkey="s"
+    name="q"
+    placeholder="Search REST API"
+    data-global-scope-placeholder="Search REST API"
+    data-repo-scope-placeholder="Search"
+    tabindex="1"
+    autocapitalize="off">
+  <div class="scope-badge">This repository</div>
+</form>
+    </div>
+
+      <ul class="header-nav left" role="navigation">
+          <li class="header-nav-item">
+            <a class="header-nav-link" href="/" data-ga-click="(Logged out) Header, go to explore, text:explore">API</a>
+          </li>
+      </ul>
+
+  </div>
+</div>
 
 
-<div id="site-container" class="context-loader-container" data-pjax-container>
 
-
+      <div id="start-of-content" class="accessibility-aid"></div>
+        <div class="site clearfix" role="main">
+          <div id="site-container" class="context-loader-container" data-pjax-container>
+            
+            
 
 <div class="auth-form" id="login">
 
-    <form accept-charset="UTF-8" action="/session" method="post">
-      <div class="auth-form-header">
+    <form accept-charset="UTF-8" action="/session" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="0NGwMt2iLQJETIQ5Jq8+L092iG6FfAwo9wTlDkhNFsGqut1Tll91QQCKAz01ueWMNV7fvM3Gj9tnaVTrLhOkRw==" /></div>      <div class="auth-form-header">
         <h1>Sign in</h1>
       </div>
       <div class="auth-form-body">
@@ -71,21 +154,49 @@
 </div>
 
           </div>
+          <div class="modal-backdrop"></div>
+        </div>
+    </div><!-- /.wrapper -->
+
+      <div class="container">
+  <div class="site-footer" role="contentinfo">
+
+    <ul class="site-footer-links">
+      <li>&copy; Copyright <span class="js-year"></span> hidennis. Inspired by <a href="https://github.com/">GitHub</a>. </li>
+    </ul>
+  </div><!-- /.site-footer -->
+</div><!-- /.container -->
+
+
+    <div class="fullscreen-overlay js-fullscreen-overlay" id="fullscreen_overlay">
+  <div class="fullscreen-container js-suggester-container">
+    <div class="textarea-wrap">
+      <textarea name="fullscreen-contents" id="fullscreen-contents" class="fullscreen-contents js-fullscreen-contents js-suggester-field" placeholder=""></textarea>
+    </div>
+  </div>
+  <div class="fullscreen-sidebar">
+    <a href="#" class="exit-fullscreen js-exit-fullscreen tooltipped tooltipped-w" aria-label="Exit Zen Mode">
+      <span class="mega-octicon octicon-screen-normal"></span>
+    </a>
+    <a href="#" class="theme-switcher js-theme-switcher tooltipped tooltipped-w"
+      aria-label="Switch themes">
+      <span class="octicon octicon-color-mode"></span>
+    </a>
+  </div>
+</div>
 
 
 
-    <div id="footer" >
-
-    <div class="lower_footer">
-
+    <div id="ajax-error-message" class="flash flash-error">
+      <span class="octicon octicon-alert"></span>
+      <a href="#" class="octicon octicon-x flash-close js-ajax-error-dismiss" aria-label="Dismiss error"></a>
+      Something went wrong with that request. Please try again.
     </div>
 
-    <div class="wrapper">
-      <p>Copyright <span class="js-year"></span> hidennis. Inspired by <a href="https://github.com/">GitHub</a>. </p>
-    </div>
 
-  </div><!-- /#footer -->
-
-
-</body>
+      <script crossorigin="anonymous" src="https://assets-cdn.github.com/assets/frameworks-0769ae9c0ddca1b3bf4923cc81e5624f5f0472a7e35efb691d1f8ac4a04c4dfb.js" type="text/javascript"></script>
+      <script async="async" crossorigin="anonymous" src="https://assets-cdn.github.com/assets/github-8f3bcbb24e5e303f13482d42284586e125c50d90eaff12bfbf5ac7f17d496882.js" type="text/javascript"></script>
+      
+      
+  </body>
 </html>
