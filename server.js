@@ -92,6 +92,7 @@ var apiRouter = express.Router();
 
 
 baseRouter.get('/', devSiteController.index);
+baseRouter.get('/login', devSiteController.loginForm);
 
 // Initial dummy route for testing
 // https://localhost:3000/api

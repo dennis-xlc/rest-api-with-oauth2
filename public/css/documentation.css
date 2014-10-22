@@ -10,6 +10,7 @@ body {
   color: #393939;
 }
 
+
 p {
   margin: 1em 0;
 }
@@ -216,6 +217,20 @@ a img {
 .rss-subscribe:hover {
   background-color: #f4f4f7;
   text-decoration: none;
+}
+
+input[type="text"],input[type="password"], input[type="email"], input[type="number"], input[type="tel"], input[type="url"] {
+padding: 7px 8px;
+font-size: 13px;
+color: #333;
+vertical-align: middle;
+background-color: #fff;
+background-repeat: no-repeat;
+background-position: right center;
+border: 1px solid #ccc;
+border-radius: 3px;
+outline: none;
+box-shadow: inset 0 1px 2px rgba(0,0,0,0.075);
 }
 
 /*------------------------------------------------------------------------------
@@ -599,6 +614,7 @@ dl.form>dd input[type="text"], dl.form>dd input[type="password"], dl.form>dd inp
 }
 
 
+
 .form-signup-home dl.successed:after, .form-signup-home dl.errored:after {
   position: absolute;
   top: 15px;
@@ -622,7 +638,64 @@ dl.form>dd input[type="text"], dl.form>dd input[type="password"], dl.form>dd inp
   color: #999;
 }
 
+/*
+    end
+*/
 
+/*
+    Sign in
+*/
+
+.auth-form {
+  width: 400px;
+  margin: 60px auto;
+}
+
+.auth-form form {
+  border-radius: 3px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.075);
+}
+
+.auth-form-header {
+  position: relative;
+  padding: 10px 20px;
+  margin: 0;
+  color: #fff;
+  text-shadow: 0 -1px 0 rgba(0,0,0,0.3);
+  background-color: #829aa8;
+  border: 1px solid #768995;
+  border-radius: 3px 3px 0 0;
+}
+
+.auth-form-header h1 {
+  margin: 0;
+  font-size: 16px;
+  padding: 0;
+  font-weight: bold;
+}
+
+.auth-form-body {
+  padding: 20px;
+  font-size: 14px;
+  background-color: #fff;
+  border: 1px solid #d8dee2;
+  border-top: 0;
+  border-radius: 0 0 3px 3px;
+}
+
+.auth-form-body label {
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.auth-form-body .input-block {
+  margin-top: 5px;
+  margin-bottom: 15px;
+}
+
+/*
+    end
+*/
 
 /*------------------------------------------------------------------------------
      Features
