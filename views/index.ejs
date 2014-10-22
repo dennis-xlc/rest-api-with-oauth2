@@ -6,6 +6,7 @@
   <meta http-equiv="imagetoolbar" content="false" />
   <meta name="MSSmartTagsPreventParsing" content="true" />
   <title>REST APIs for Fudan BBS</title>
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
   <link href="/css/reset.css" rel="stylesheet" type="text/css" />
   <link href="/css/documentation.css" media="screen" rel="stylesheet" type="text/css">
   <link href="/css/pygments.css" media="screen" rel="stylesheet" type="text/css">
@@ -16,7 +17,7 @@
 </head>
 
 
-<body class="overview">
+<body class="overview homepage">
   <div id="header-wrapper">
   <div id="header">
     <div>
@@ -41,6 +42,38 @@
   </div><!-- #header -->
 </div><!-- #header-wrapper -->
 
+
+<div class="signup-section">
+  <div class="container">
+    <form accept-charset="UTF-8" action="/join" autocomplete="off" class="form-signup-home js-form-signup-home" method="post">
+      <dl class="form">
+        <dd>
+          <input type="text" name="user[login]" class="textfield" placeholder="Pick a username" data-autocheck-url="/signup_check/username" autofocus>
+        </dd>
+      </dl>
+      <dl class="form">
+        <dd>
+          <input type="text" name="user[email]" class="textfield js-email-notice-trigger" placeholder="Your email" data-autocheck-url="/signup_check/email">
+        </dd>
+      </dl>
+      <dl class="form">
+        <dd>
+          <input type="password" name="user[password]" class="textfield" placeholder="Create a password" data-autocheck-url="/signup_check/password">
+        </dd>
+        <p class="text-muted">Use at least one lowercase letter, one numeral, and seven characters.</p>
+      </dl>
+      <input type="hidden" name="source_label" value="Homepage Form">
+      <button class="button primary button-block" type="submit">Sign up for REST API</button>
+      <p class="text-muted">
+        By clicking "Sign up for REST API", you agree to our
+        <a href="https://help.github.com/terms" target="_blank">terms of service</a> and
+        <a href="https://help.github.com/privacy" target="_blank">privacy policy</a>. <span class="js-email-notice">We will send you account related emails occasionally.</span>
+      </p>
+    </form>
+    <h1 class="heading">So qiuck. So easy.</h1>
+    <p class="subheading">Build your apps quickly and easily by using the REST APIs.</p>
+  </div><!-- /.container -->
+</div>
 
 
     <div id="footer" >
@@ -72,6 +105,7 @@
     </div>
 
   </div><!-- /#footer -->
+  <!--
   <script type="text/javascript">
     var _gauges = _gauges || [];
     (function() {
@@ -94,6 +128,7 @@
     ga('create', 'UA-3769691-37', 'github.com');
     ga('send', 'pageview');
   </script>
+  -->
   <script src="/js/retina.js" type="text/javascript"></script>
 
 </body>
