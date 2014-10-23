@@ -161,7 +161,25 @@ passport.deserializeUser(function (id, done) {
     });
 });
 
+passport.use('dev_local', new LocalStrategy(
+    function (username, password, done) {
+        db.developers.findByUsername(username, function (err, developer) {
+            if (err) {
+                return done(err);
+            }
 
+            console.log("Check developer exist: ", username);
+            if (!developer) {
+                return done(null, false);
+            }
+            console.log("Check password: ", password);
+            if (developer.password != password) {
+                return done(null, false);
+            }
+            return done(null, developer);
+        });
+    }
+));
 
 exports.isAuthenticated = passport.authenticate(['local', 'bearer', 'basic', 'oauth2-client-password'], { session : false });
 exports.isClientAuthenticated = passport.authenticate(['basic', 'oauth2-client-password'], { session : false });
