@@ -2690,6 +2690,22 @@ ul.clones li {
 	float:right;
 	margin-left:5px
 }
+
+.button-secondary {
+  background-color: #297fc7;
+  color: #fff;
+  font-size: 16px;
+  padding: 10px;
+  border-radius: 5px;
+	display: inline-block;
+}
+
+.button-secondary:hover {
+  text-decoration: none;
+  background-color: #3088d0;
+}
+
+
 .minibutton>.octicon-arrow-right {
 	margin-top:4px
 }
@@ -4941,7 +4957,8 @@ deferred-content {
 	font-size:12px;
 	line-height:1.5;
 	color:#777;
-	border-top:1px solid #eee
+	border-top:1px solid #eee;
+	text-align: center;
 }
 .site-footer:before {
 	display:table;
@@ -4971,7 +4988,8 @@ deferred-content {
 }
 .site-footer-links li {
 	display:inline-block;
-	line-height:16px
+	line-height:16px;
+	font-size: 15px;
 }
 .site-footer-links li+li {
 	margin-left:10px
@@ -10004,7 +10022,7 @@ button.discussion-sidebar-toggle {
 }
 .marketing-section-signup {
 	text-shadow:0 1px 3px #222;
-	background:#202021 url(/assets/modules/home/octicons-bg-f51579234572c7286b1ead7a6408f2d43c7a0520dbb09f9d2b8b6b59024a01a0.png) center repeat;
+	background:#202021 url(/images/octicons-bg.png) center repeat;
 	padding-top:80px;
 	padding-bottom:80px;
 	position:relative
@@ -10019,7 +10037,7 @@ button.discussion-sidebar-toggle {
 	letter-spacing:-1px
 }
 .marketing-section-signup .subheading {
-	margin:10px 0 0;
+	margin:10px 0 15px 0;
 	font-size:21px;
 	line-height:1.5;
 	color:#fff

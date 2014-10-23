@@ -11666,7 +11666,7 @@ li.session-device.session-current .mega-octicon {
 .logged_out.signup .site-footer .octicon-mark-github {
 	top:30px
 }
-.logged_out.signup .header-actions .primary,.logged_out.signup .site-footer-links,.logged_out.signup .site-search {
+.logged_out.signup .header-actions .primary,.logged_out.signup .site-search {
 	display:none
 }
 .logged_out.signup.alt-signup .setup-secondary {
