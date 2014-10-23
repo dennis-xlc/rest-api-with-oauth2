@@ -37,6 +37,7 @@ exports.join = function (req, res) {
   console.log("user: ", req.body.user);
 
   var user = req.body.user;
+  var source = req.body.source_label;
 
   var result = new VerifyResult();
 
@@ -57,7 +58,7 @@ exports.join = function (req, res) {
   });
 
   // check the user password
-  checkPassword(user.password, user.password_confirmation, function (err) {
+  checkPassword(user.password, user.password_confirmation, source, function (err) {
     if (err) {
       result.error = true;
       result.passwordErr = err;
@@ -122,7 +123,7 @@ function checkEmail(email, done) {
   return done(null);
 }
 
-function checkPassword(passwd, verifyPasswd, done) {
+function checkPassword(passwd, verifyPasswd, source, done) {
   if (passwd === "") {
     console.log("Password must not be empty!");
     return done("Password must not be empty!");
@@ -151,11 +152,15 @@ function checkPassword(passwd, verifyPasswd, done) {
     }
   }
 
-
-  if (verifyPasswd != passwd) {
-    console.log("Password doesn't match the confirmation!");
-    return done("Password doesn't match the confirmation!");
+  // if the request is from Detail page, then check confirmation password 
+  // otherwise, bypass this check
+  if (source === "Detail") {
+    if (verifyPasswd != passwd) {
+      console.log("Password doesn't match the confirmation!");
+      return done("Password doesn't match the confirmation!");
+    }
   }
+  
 
   return done(null);
 
