@@ -1,49 +1,69 @@
 <!DOCTYPE html>
 <html lang="en" class="">
-  <head>
+
+<head>
     <% include ./head %>
-    <title>Sign in · REST API</title>
-  </head>
+        <title>Sign in · REST API</title>
+        <script type="text/javascript">
+        $(document).on("click", ".js-flash-close", function() {
+            var t;
+            return t = $(this).closest(".flash-messages"), $(this).closest(".flash").fadeOut(300, function() {
+                return $(this).remove(), 0 === t.find(".flash").length ? t.remove() : void 0
+            })
+        })
+        </script>
+</head>
 
 
-  <body class="logged_out  env-production macintosh  signin">
+<body class="logged_out  env-production macintosh  signin">
     <a href="#start-of-content" tabindex="1" class="accessibility-aid js-skip-to-content">Skip to content</a>
     <div class="wrapper">
 
-      <% include ./banner %>
-        <div class="site clearfix" role="main">
-          <div id="site-container" class="context-loader-container" data-pjax-container>
+        <% include ./banner %>
+            <div class="site clearfix" role="main">
+                <div id="site-container" class="context-loader-container" data-pjax-container>
+
+                    <% if (error) { %>
+                    <div class="flash-messages container">
+                        <div class="flash flash-error"><span class="octicon octicon-x flash-close js-flash-close"></span> Incorrect username or password.</div>
+                    </div>
+                    <% } %>
 
 
+                    <div class="auth-form" id="login">
 
-<div class="auth-form" id="login">
+                        <form accept-charset="UTF-8" action="/login" method="post">
+                            <div style="margin:0;padding:0;display:inline">
+                                <input name="utf8" type="hidden" value="&#x2713;" />
+                            </div>
+                            <div class="auth-form-header">
+                                <h1>Sign in</h1>
+                            </div>
+                            <div class="auth-form-body">
+                                <label for="login_field">
+                                    Username or Email
+                                </label>
+                                <input autocapitalize="off" autocorrect="off" autofocus="autofocus" class="input-block" id="login_field" name="user[username]" tabindex="1" type="text" value="<%= username %>"/>
 
-    <form accept-charset="UTF-8" action="/login" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="0NGwMt2iLQJETIQ5Jq8+L092iG6FfAwo9wTlDkhNFsGqut1Tll91QQCKAz01ueWMNV7fvM3Gj9tnaVTrLhOkRw==" /></div>      <div class="auth-form-header">
-        <h1>Sign in</h1>
-      </div>
-      <div class="auth-form-body">
-        <label for="login_field">
-          Username or Email
-        </label>
-        <input autocapitalize="off" autocorrect="off" autofocus="autofocus" class="input-block" id="login_field" name="login" tabindex="1" type="text" />
+                                <label for="password">
+                                    Password <a href="/password_reset">(forgot password)</a>
+                                </label>
+                                <input class="input-block" id="password" name="user[password]" tabindex="2" type="password" />
 
-        <label for="password">
-          Password <a href="/password_reset">(forgot password)</a>
-        </label>
-        <input class="input-block" id="password" name="password" tabindex="2" type="password" />
+                                <input class="button" name="commit" tabindex="3" type="submit" value="Sign in" />
+                            </div>
+                        </form>
+                    </div>
 
-                        <input class="button" name="commit" tabindex="3" type="submit" value="Sign in" />
-      </div>
-</form>
-</div>
-
-          </div>
-          <div class="modal-backdrop"></div>
-        </div>
-    </div><!-- /.wrapper -->
+                </div>
+                <div class="modal-backdrop"></div>
+            </div>
+    </div>
+    <!-- /.wrapper -->
 
     <% include ./footer %>
 
 
-  </body>
+</body>
+
 </html>

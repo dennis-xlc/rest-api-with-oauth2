@@ -19,19 +19,33 @@ exports.index = function (req, res) {
 };
 
 exports.loginForm = function (req, res) {
-    res.render('login');
+    res.render('login', {error : false, username : ""});
 };
 
 exports.joinForm = function (req, res) {
   var result = new VerifyResult();
-    res.render('join', {verifyResult : result, 
+    res.render('join', {verifyResult : result,
       developer : {name : "", email : ""}});
 };
 
-exports.login = [
+exports.login = function (req, res) {
+  console.log("trying login user: ", req.body.user);
 
-    passport.authenticate('dev_local', {successReturnToOrRedirect: '/', failureRedirect: 'login'})
-];
+  var username = req.body.user.username;
+  var password = req.body.user.password;
+
+  db.developers.verifyPassword(username, password, function(err) {
+    if (err) {
+      res.render('login', {error : true, username : username});
+    }
+    else {
+      req.session.username = username;
+      req.session.login = true;
+      res.redirect('/');
+    }
+  });
+};
+
 
 exports.join = function (req, res) {
   console.log("user: ", req.body.user);
@@ -67,7 +81,7 @@ exports.join = function (req, res) {
 
 
   if (result.error) {
-      res.render('join', {verifyResult : result, 
+      res.render('join', {verifyResult : result,
         developer : {name : user.name, email : user.email}});
   } else {
 
@@ -78,7 +92,7 @@ exports.join = function (req, res) {
       res.redirect('login');
     });
 
-      
+
   }
 
 function checkUserName(username, done) {
@@ -152,7 +166,7 @@ function checkPassword(passwd, verifyPasswd, source, done) {
     }
   }
 
-  // if the request is from Detail page, then check confirmation password 
+  // if the request is from Detail page, then check confirmation password
   // otherwise, bypass this check
   if (source === "Detail") {
     if (verifyPasswd != passwd) {
@@ -160,7 +174,7 @@ function checkPassword(passwd, verifyPasswd, source, done) {
       return done("Password doesn't match the confirmation!");
     }
   }
-  
+
 
   return done(null);
 

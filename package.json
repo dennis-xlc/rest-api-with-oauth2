@@ -17,7 +17,11 @@
     "passport-http": "^0.2.2",
     "passport-http-bearer": "^1.0.1",
     "passport-local": "^1.0.0",
-    "passport-oauth2-client-password": "^0.1.2"
+    "passport-oauth2-client-password": "^0.1.2",
+    "canvas": "git://github.com/elspoono/node-canvas-heroku.git"
+  },
+  "devDependencies": {
+    "canvas": "~0.8.1"
   },
   "scripts": {
     "start": "node server.js"
