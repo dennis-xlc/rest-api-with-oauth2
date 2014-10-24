@@ -1,8 +1,18 @@
-
-var avatar = require('github-avatar');
-var fs =  require('fs');
+var date_util = require('../utils/date_util');
 
 var developers = {};
+var profiles = {};
+
+exports.updateProfile = function (username, profile, done) {
+  console.log("update profile for developer: ", username);
+  console.log("profile: ", profile);
+
+  profiles[username] = {name : profile.name, company : profile.company,
+                url : profile.url, location : profile.location};
+
+  return done(null);
+
+}
 
 exports.checkUserNameExist = function (username) {
   return developers[username];
@@ -37,9 +47,9 @@ exports.find = function (username, done) {
 
 exports.save = function (developer, done) {
   console.log("add developer: ", developer);
-  var img = avatar(developer.name);
-  img.pipe(fs.createWriteStream(developer.name + '.jpg'));
-  
-    developers[developer.name] = { userName: developer.name, email: developer.email, password: developer.password };
+  var currentDate = new Date();
+  var joinDate = date_util.getEngDateString(currentDate);
+    developers[developer.name] = { userName: developer.name, email: developer.email, password: developer.password, joinDate : joinDate };
+    console.log("new developer: ", developers[developer.name]);
     return done(null);
 };

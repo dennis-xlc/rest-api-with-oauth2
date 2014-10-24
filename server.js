@@ -96,6 +96,7 @@ baseRouter.get('/login', devSiteController.loginForm);
 baseRouter.post('/login', devSiteController.login);
 baseRouter.get('/join', devSiteController.joinForm);
 baseRouter.post('/join', devSiteController.join);
+baseRouter.get('/home', devSiteController.home);
 
 // Initial dummy route for testing
 // https://localhost:3000/api

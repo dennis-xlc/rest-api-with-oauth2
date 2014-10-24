@@ -15,16 +15,30 @@ function Developer () {
 }
 
 exports.index = function (req, res) {
-    res.render('index');
+
+  if (req.session && req.session.login) {
+    res.redirect('/home');
+  } else {
+    res.render('index', {title : "REST API · Build your own client quickly."});
+  }
+};
+
+exports.home = function (req, res) {
+  if (req.session && req.session.login) {
+    var title = "REST API · " + req.session.username;
+    res.render('home', {title : title});
+  } else {
+    res.redirect('/');
+  }
 };
 
 exports.loginForm = function (req, res) {
-    res.render('login', {error : false, username : ""});
+    res.render('login', {title : "Sign in · REST API", error : false, username : ""});
 };
 
 exports.joinForm = function (req, res) {
   var result = new VerifyResult();
-    res.render('join', {verifyResult : result,
+    res.render('join', {title : "Join us · REST API", verifyResult : result,
       developer : {name : "", email : ""}});
 };
 
@@ -41,7 +55,7 @@ exports.login = function (req, res) {
     else {
       req.session.username = username;
       req.session.login = true;
-      res.redirect('/');
+      res.redirect('/home');
     }
   });
 };
@@ -81,7 +95,7 @@ exports.join = function (req, res) {
 
 
   if (result.error) {
-      res.render('join', {verifyResult : result,
+      res.render('join', {title : "Join us · REST API", verifyResult : result,
         developer : {name : user.name, email : user.email}});
   } else {
 
