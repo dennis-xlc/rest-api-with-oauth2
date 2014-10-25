@@ -42,6 +42,12 @@ exports.joinForm = function (req, res) {
       developer : {name : "", email : ""}});
 };
 
+exports.logout = function (req, res) {
+  console.log("trying logout user: ", req.session.username);
+    req.session.destroy();
+    res.redirect('/');
+};
+
 exports.login = function (req, res) {
   console.log("trying login user: ", req.body.user);
 

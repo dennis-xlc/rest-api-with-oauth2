@@ -94,6 +94,7 @@ var apiRouter = express.Router();
 baseRouter.get('/', devSiteController.index);
 baseRouter.get('/login', devSiteController.loginForm);
 baseRouter.post('/login', devSiteController.login);
+baseRouter.post('/logout', devSiteController.logout);
 baseRouter.get('/join', devSiteController.joinForm);
 baseRouter.post('/join', devSiteController.join);
 baseRouter.get('/home', devSiteController.home);

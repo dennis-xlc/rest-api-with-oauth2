@@ -1,4 +1,6 @@
 var date_util = require('../utils/date_util');
+var fs = require('fs');
+var Legicon = require('legicon');
 
 var developers = {};
 var profiles = {};
@@ -49,7 +51,25 @@ exports.save = function (developer, done) {
   console.log("add developer: ", developer);
   var currentDate = new Date();
   var joinDate = date_util.getEngDateString(currentDate);
+
+  gen_avatar(developer.name);
+
     developers[developer.name] = { userName: developer.name, email: developer.email, password: developer.password, joinDate : joinDate };
     console.log("new developer: ", developers[developer.name]);
     return done(null);
 };
+
+function gen_avatar(username) {
+  var userAvatar = Legicon(username);
+  var stream = userAvatar.pngStream();
+  var out = fs.createWriteStream(__dirname + '/../public/avatars/' + username +'.png');
+
+  stream.on('data', function(chunk){
+  out.write(chunk);
+});
+
+stream.on('end', function(){
+  console.log('saved png');
+});
+
+}
