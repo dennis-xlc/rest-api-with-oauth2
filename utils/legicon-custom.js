@@ -134,7 +134,7 @@ module.exports = function Legicon (key, options) {
                 defaults.size = defaults.square * defaults.grid + defaults.padding * 2;
 
                 // Background color
-                defaults.bgColor = "rgb(254,254,254)";//"#F5F5F5";
+                defaults.bgColor = "rgb(245,245,245)";//"#F5F5F5";
 
                 // Fill color override
                 defaults.fillColor = void 0;
