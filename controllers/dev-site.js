@@ -9,10 +9,6 @@ function VerifyResult () {
   this.passwordErr = null;
 }
 
-function Developer () {
-  this.name = "";
-  this.email = "";
-}
 
 exports.index = function (req, res) {
 
@@ -25,8 +21,17 @@ exports.index = function (req, res) {
 
 exports.home = function (req, res) {
   if (req.session && req.session.login) {
-    var title = "REST API · " + req.session.username;
-    res.render('home', {title : title});
+    var username = req.session.username;
+
+    var title = "REST API · " + username;
+    db.developers.getDeveloperInfo(username, function(err, developer){
+      if (err) {
+        res.redirect('/home');
+      } else {
+        res.render('home', {title : title, developer : developer});
+      }
+    });
+    
   } else {
     res.redirect('/');
   }
@@ -134,7 +139,7 @@ function checkUserName(username, done) {
   }
 
   return done(null);
-}
+};
 
 function checkEmail(email, done) {
 
@@ -155,7 +160,7 @@ function checkEmail(email, done) {
   }
 
   return done(null);
-}
+};
 
 function checkPassword(passwd, verifyPasswd, source, done) {
   if (passwd === "") {
@@ -198,6 +203,6 @@ function checkPassword(passwd, verifyPasswd, source, done) {
 
   return done(null);
 
-}
+};
 
 };

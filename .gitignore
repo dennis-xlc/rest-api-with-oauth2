@@ -1,3 +1,4 @@
 access.log
 *.log
 node_modules
+public/avatars/*
