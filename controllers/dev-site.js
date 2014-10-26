@@ -61,7 +61,7 @@ exports.login = function (req, res) {
 
   db.developers.verifyPassword(username, password, function(err) {
     if (err) {
-      res.render('login', {error : true, username : username});
+      res.render('login', {title : "Sign in · Shinify", error : true, username : username});
     }
     else {
       req.session.username = username;
