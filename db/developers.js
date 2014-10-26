@@ -1,6 +1,6 @@
 var date_util = require('../utils/date_util');
 var fs = require('fs');
-var Legicon = require('legicon');
+var Legicon = require('../utils/legicon-custom');
 
 var developers = {};
 var profiles = {};
