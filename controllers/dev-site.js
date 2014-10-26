@@ -15,7 +15,7 @@ exports.index = function (req, res) {
   if (req.session && req.session.login) {
     res.redirect('/home');
   } else {
-    res.render('index', {title : "REST API · Build your own client quickly."});
+    res.render('index', {title : "Shinify · Build your own client quickly."});
   }
 };
 
@@ -23,7 +23,7 @@ exports.home = function (req, res) {
   if (req.session && req.session.login) {
     var username = req.session.username;
 
-    var title = "REST API · " + username;
+    var title = "Shinify· " + username;
     db.developers.getDeveloperInfo(username, function(err, developer){
       if (err) {
         res.redirect('/home');
@@ -38,12 +38,12 @@ exports.home = function (req, res) {
 };
 
 exports.loginForm = function (req, res) {
-    res.render('login', {title : "Sign in · REST API", error : false, username : ""});
+    res.render('login', {title : "Sign in · Shinify", error : false, username : ""});
 };
 
 exports.joinForm = function (req, res) {
   var result = new VerifyResult();
-    res.render('join', {title : "Join us · REST API", verifyResult : result,
+    res.render('join', {title : "Join us · Shinify", verifyResult : result,
       developer : {name : "", email : ""}});
 };
 
@@ -106,7 +106,7 @@ exports.join = function (req, res) {
 
 
   if (result.error) {
-      res.render('join', {title : "Join us · REST API", verifyResult : result,
+      res.render('join', {title : "Join us · Shinify", verifyResult : result,
         developer : {name : user.name, email : user.email}});
   } else {
 

@@ -1,7 +1,21 @@
 {
-  "name": "rest-api-with-oauth2",
-  "version": "0.0.1",
+  "name": "shinify",
+  "version": "0.0.2",
   "main": "server.js",
+  "author": {
+    "name": "Xu Lvcai"
+  },
+  "description": "Node.js-based RESTful API for Fudan BBS (http://bbs.fudan.edu.cn).",
+  "contributors": [
+    {
+      "name": "Xu Lvcai",
+      "email": "xulvcai2008@gmail.com"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dennis-xlc/rest-api-with-oauth2.git"
+  },
   "dependencies": {
     "body-parser": "^1.9.0",
     "canvas": "^1.1.6",
