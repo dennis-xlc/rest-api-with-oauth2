@@ -98,6 +98,10 @@ baseRouter.post('/logout', devSiteController.logout);
 baseRouter.get('/join', devSiteController.joinForm);
 baseRouter.post('/join', devSiteController.join);
 baseRouter.get('/home', devSiteController.home);
+baseRouter.get('/settings', devSiteController.settings);
+baseRouter.get('/settings/profile', devSiteController.profile);
+baseRouter.get('/settings/admin', devSiteController.admin);
+baseRouter.get('/settings/applications', devSiteController.applications);
 
 // Initial dummy route for testing
 // https://localhost:3000/api

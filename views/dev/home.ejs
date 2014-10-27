@@ -17,7 +17,7 @@
                     <div class="container">
                         <div class="columns profilecols js-username">
                             <div class="column one-fourth vcard">
-                                <a href="/account" aria-label="Change your avatar" class="vcard-avatar tooltipped tooltipped-s"><img alt="" class="avatar" height="230" src="/avatars/<%= developer.avatarImg%>" width="230" /></a>
+                                <a href="/account" aria-label="Change your avatar" class="vcard-avatar tooltipped tooltipped-s"><img class="avatar" height="230" src="/avatars/<%= developer.avatarImg%>" width="230" /></a>
                                 <h1 class="vcard-names">
                                     <% if (developer.fullName) { %>
                                     <span class="vcard-fullname" itemprop="name"><%= developer.fullName%></span>
@@ -41,22 +41,22 @@
                                     <li class="vcard-detail"><span class="octicon octicon-clock"></span><span class="join-label">Joined on </span><time class="join-date" ><%= developer.joinDate%></time></li>
                                     <% } %>
                                 </ul>
-                                
+
                             </div>
-                            
+
                             <div class="column three-fourths">
                                 <div class="context-loader large-format-loader">
                                     <p><img alt="" height="64" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-128.gif" width="64" /></p>
                                     <p>Loading…</p>
                                 </div>
                                 <div class="boxed-group">
-                                    <a href="/settings/applications/new" class="minibutton boxed-group-action" data-pjax="true">Register new application</a>    
+                                    <a href="/settings/applications/new" class="minibutton boxed-group-action" data-pjax="true">Register new application</a>
                                     <h3>Developer applications</h3>
                                     <div class="boxed-group-inner">
                                         <p>Do you want to develop an application that uses the <a href="https://developer.github.com">GitHub API</a>? <strong><a href="/settings/applications/new" data-pjax>Register an application</a></strong> to generate OAuth tokens.</p>
                                     </div>
                                 </div>
-                                
+
                             </div>
 
                         </div>
@@ -64,7 +64,7 @@
                 </div>
                 <div class="modal-backdrop"></div>
             </div>
-            
+
     </div>
     <!-- /.wrapper -->
 

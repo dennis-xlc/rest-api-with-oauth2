@@ -9,13 +9,55 @@ function VerifyResult () {
   this.passwordErr = null;
 }
 
+exports.settings = function (req, res) {
+  if (req.session && req.session.login) {
+    res.redirect('/settings/profile');
+  } else {
+    res.redirect('/');
+  }
+}
+
+exports.profile = function (req, res) {
+  if (req.session && req.session.login) {
+
+    var username = req.session.username;
+    
+    db.developers.getDeveloperInfo(username, function(err, developer){
+      if (err) {
+        res.redirect('/home');
+      } else {
+        res.render('dev/profile', {title : "Your Profile · Shinify", developer : developer});
+      }
+    });
+
+  } else {
+    res.redirect('/');
+  }
+}
+
+exports.admin = function (req, res) {
+  if (req.session && req.session.login) {
+
+  } else {
+    res.redirect('/');
+  }
+}
+
+exports.applications = function (req, res) {
+  if (req.session && req.session.login) {
+
+  } else {
+    res.redirect('/');
+  }
+}
+
 
 exports.index = function (req, res) {
 
   if (req.session && req.session.login) {
     res.redirect('/home');
   } else {
-    res.render('index', {title : "Shinify · Build your own client quickly."});
+    res.render('dev/index', {title : "Shinify · Build your own client quickly."});
   }
 };
 
@@ -28,22 +70,22 @@ exports.home = function (req, res) {
       if (err) {
         res.redirect('/home');
       } else {
-        res.render('home', {title : title, developer : developer});
+        res.render('dev/home', {title : title, developer : developer});
       }
     });
-    
+
   } else {
     res.redirect('/');
   }
 };
 
 exports.loginForm = function (req, res) {
-    res.render('login', {title : "Sign in · Shinify", error : false, username : ""});
+    res.render('dev/login', {title : "Sign in · Shinify", error : false, username : ""});
 };
 
 exports.joinForm = function (req, res) {
   var result = new VerifyResult();
-    res.render('join', {title : "Join us · Shinify", verifyResult : result,
+    res.render('dev/join', {title : "Join us · Shinify", verifyResult : result,
       developer : {name : "", email : ""}});
 };
 
@@ -61,7 +103,7 @@ exports.login = function (req, res) {
 
   db.developers.verifyPassword(username, password, function(err) {
     if (err) {
-      res.render('login', {title : "Sign in · Shinify", error : true, username : username});
+      res.render('dev/login', {title : "Sign in · Shinify", error : true, username : username});
     }
     else {
       req.session.username = username;
@@ -106,7 +148,7 @@ exports.join = function (req, res) {
 
 
   if (result.error) {
-      res.render('join', {title : "Join us · Shinify", verifyResult : result,
+      res.render('dev/join', {title : "Join us · Shinify", verifyResult : result,
         developer : {name : user.name, email : user.email}});
   } else {
 
