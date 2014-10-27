@@ -26,7 +26,8 @@ exports.profile = function (req, res) {
       if (err) {
         res.redirect('/home');
       } else {
-        res.render('dev/profile', {title : "Your Profile · Shinify", successUpdate : false, developer : developer});
+        res.render('dev/profile', {title : "Your Profile · Shinify", 
+              successUpdate : false, error : false, developer : developer});
       }
     });
 
@@ -49,7 +50,8 @@ exports.updateProfile = function (req, res) {
         //res.redirect('/settings/profile');
       }
 
-      res.render('dev/profile', {title : "Your Profile · Shinify", successUpdate : true, developer : developer});
+      res.render('dev/profile', {title : "Your Profile · Shinify", 
+            successUpdate : true, error : false, developer : developer});
 
     });
 
@@ -61,7 +63,17 @@ exports.updateProfile = function (req, res) {
 
 exports.admin = function (req, res) {
   if (req.session && req.session.login) {
+    var username = req.session.username;
 
+    db.developers.getDeveloperInfo(username, function(err, developer){
+      if (err) {
+        res.redirect('/home');
+      } else {
+        res.render('dev/admin', {title : "Account Settings · Shinify", 
+          successUpdate : false, error : false, developer : developer});
+      }
+    });
+    
   } else {
     res.redirect('/');
   }
@@ -69,7 +81,16 @@ exports.admin = function (req, res) {
 
 exports.applications = function (req, res) {
   if (req.session && req.session.login) {
-
+    var username = req.session.username;
+    
+    db.developers.getDeveloperInfo(username, function(err, developer){
+      if (err) {
+        res.redirect('/home');
+      } else {
+        res.render('dev/applications', {title : "Authorized Applications · Shinify", 
+          successUpdate : false, error : false, developer : developer});
+      }
+    });
   } else {
     res.redirect('/');
   }
@@ -89,7 +110,7 @@ exports.home = function (req, res) {
   if (req.session && req.session.login) {
     var username = req.session.username;
 
-    var title = "Shinify· " + username;
+    var title = "Shinify · " + username;
     db.developers.getDeveloperInfo(username, function(err, developer){
       if (err) {
         res.redirect('/home');
