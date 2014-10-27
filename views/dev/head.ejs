@@ -12,3 +12,12 @@
       <link href="/css/documentation.css" media="all" rel="stylesheet" type="text/css">
 
       <script type="text/javascript" src="/js/jquery.js"></script>
+
+      <script type="text/javascript">
+        $(document).on("click", ".js-flash-close", function() {
+            var t;
+            return t = $(this).closest(".flash-messages"), $(this).closest(".flash").fadeOut(300, function() {
+                return $(this).remove(), 0 === t.find(".flash").length ? t.remove() : void 0
+            })
+        });
+      </script>

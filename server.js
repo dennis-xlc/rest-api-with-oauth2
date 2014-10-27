@@ -100,8 +100,10 @@ baseRouter.post('/join', devSiteController.join);
 baseRouter.get('/home', devSiteController.home);
 baseRouter.get('/settings', devSiteController.settings);
 baseRouter.get('/settings/profile', devSiteController.profile);
+baseRouter.post('/settings/profile', devSiteController.updateProfile);
 baseRouter.get('/settings/admin', devSiteController.admin);
 baseRouter.get('/settings/applications', devSiteController.applications);
+
 
 // Initial dummy route for testing
 // https://localhost:3000/api
@@ -132,7 +134,7 @@ server.use('/api', apiRouter);
 server.use('/oauth2', oauth2Router);
 
 
-console.log(process.env);
+//console.log(process.env);
 
 // check if run on heroku
 if (process.env.NODE_ENV === 'production') {

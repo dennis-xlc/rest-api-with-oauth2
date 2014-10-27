@@ -16,8 +16,7 @@ function Developer () {
   this.url = "";
 };
 
-exports.getDeveloperInfo = function (username, done) {
-  console.log("get info for developer: ", username);
+function loadDeveloperInfo (username) {
   var developer = developers[username];
   var profile = profiles[username];
 
@@ -31,6 +30,13 @@ exports.getDeveloperInfo = function (username, done) {
   info.company = profile.company;
   info.url = profile.url;
 
+  return info;
+};
+
+exports.getDeveloperInfo = function (username, done) {
+  console.log("get info for developer: ", username);
+  var info = loadDeveloperInfo(username);
+
   return done(null, info);
 };
 
@@ -38,10 +44,16 @@ exports.updateProfile = function (username, profile, done) {
   console.log("update profile for developer: ", username);
   console.log("profile: ", profile);
 
-  profiles[username] = {name : profile.name, company : profile.company,
-                url : profile.url, location : profile.location};
+  profiles[username].fullName = profile.name;
+  profiles[username].company = profile.company;
+  profiles[username].url = profile.url;
+  profiles[username].location = profile.location;
 
-  return done(null);
+  console.log("after profile: ", profiles[username]);
+
+  var info = loadDeveloperInfo(username);
+
+  return done(null, info);
 
 };
 

@@ -10,6 +10,9 @@
             <% include ./logined-banner %>
             <div class="site clearfix" role="main">
                 <div id="site-container" class="context-loader-container" data-pjax-container>
+                    <% if (successUpdate) {%>
+                    <div class="flash-messages container"><div class="flash flash-notice"><span class="octicon octicon-x flash-close js-flash-close"></span> Profile updated successfully</div></div>
+                    <% } %>
                     <div class="container">
                         <div class="columns">
                             <div class="column one-fourth menu-container" role="navigation">
@@ -40,7 +43,7 @@
                                     <div class="boxed-group-inner clearfix
                                         js-uploadable-container js-upload-avatar-image is-default"
                                         data-upload-policy-url="/upload/policies/avatars">
-                                        <form accept-charset="UTF-8" action="/users/dennis-xlc" class="columns"  method="post">
+                                        <form accept-charset="UTF-8" action="/settings/profile" class="columns"  method="post">
                                             <div class="column two-thirds">
                                                 <dl class="form edit-profile-avatar">
                                                     <dt><label for="upload-profile-picture">Profile picture</label></dt>
@@ -84,19 +87,19 @@
                                                 </dl>
                                                 <dl class="form">
                                                     <dt><label for="user_profile_name">Name</label></dt>
-                                                    <dd><input id="user_profile_name" name="user[profile_name]" size="30" type="text" value="Xu Lvcai" /></dd>
+                                                    <dd><input id="user_profile_name" name="profile[name]" size="30" type="text" value="<%= (developer.fullName || '') %>" /></dd>
                                                 </dl>
                                                 <dl class="form">
                                                     <dt><label for="user_profile_blog">URL</label></dt>
-                                                    <dd><input id="user_profile_blog" name="user[profile_blog]" size="30" type="url" value="" /></dd>
+                                                    <dd><input id="user_profile_blog" name="profile[url]" size="30" type="url" value="<%= (developer.url || '') %>" /></dd>
                                                 </dl>
                                                 <dl class="form">
                                                     <dt><label for="user_profile_company">Company</label></dt>
-                                                    <dd><input id="user_profile_company" name="user[profile_company]" size="30" type="text" value="" /></dd>
+                                                    <dd><input id="user_profile_company" name="profile[company]" size="30" type="text" value="<%= (developer.company || '') %>" /></dd>
                                                 </dl>
                                                 <dl class="form">
                                                     <dt><label for="user_profile_location">Location</label></dt>
-                                                    <dd><input id="user_profile_location" name="user[profile_location]" size="30" type="text" value="" /></dd>
+                                                    <dd><input id="user_profile_location" name="profile[location]" size="30" type="text" value="<%= (developer.location || '') %>" /></dd>
                                                 </dl>
                                                 <p><button type="submit" class="button primary">Update profile</button></p>
                                             </div>
@@ -112,28 +115,6 @@
         </div>
         <!-- /.wrapper -->
         <% include ./footer %>
-
-        <script crossorigin="anonymous" src="https://assets-cdn.github.com/assets/frameworks-dabc650f8a51dffd1d4376a3522cbda5536e4807e01d2a86ff7e60d8d6ee3029.js" type="text/javascript"></script>
-        
-        <script async="async" crossorigin="anonymous" src="https://assets-cdn.github.com/assets/github-d01013daa80c5a341ba3ddb684f2f26679eb369d67459151d5175a634a9e98a5.js" type="text/javascript"></script>
-
-        <div class="facebox" id="facebox" style="top: 75.1px; left: 723px; display: none;">       <div class="facebox-popup">         <div class="facebox-content"><h2 class="facebox-header">Crop your new profile picture</h2>
-<form accept-charset="UTF-8" action="/settings/avatars/576434" class="js-croppable-container" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="✓"><input name="authenticity_token" type="hidden" value="JuD2SKp+mSkwZzvZztqAWEwZ99lt8RZ1h9abErVj7VZSNS58mpgRD07xuw3SSGV4qHNiAXIvcI2dU/Lc/lQ6cQ=="></div>  <div class="profile-picture-cropper">
-    <div class="profile-picture-spinner hidden" style="width:400px; height:403px"></div>
-    <img src="https://media.githubusercontent.com/user/2142730/avatars/576434?orig=1" class="js-croppable-avatar croppable-avatar" data-true-width="577" data-true-height="581" alt="" style="display: none; visibility: hidden; width: 577px; height: 403px;"><div class="jcrop-holder" style="width: 397px; height: 400px; position: relative;"><div style="position: absolute; z-index: 600; width: 397px; height: 397px; top: 1px; left: 0px;"><div style="width: 100%; height: 100%; z-index: 310; position: absolute; overflow: hidden;"><img src="https://media.githubusercontent.com/user/2142730/avatars/576434?orig=1" style="border: none; visibility: visible; margin: 0px; padding: 0px; position: absolute; top: -1px; left: 0px; width: 397px; height: 400px;"><div class="jcrop-hline" style="position: absolute; opacity: 0.4;"></div><div class="jcrop-hline bottom" style="position: absolute; opacity: 0.4;"></div><div class="jcrop-vline right" style="position: absolute; opacity: 0.4;"></div><div class="jcrop-vline" style="position: absolute; opacity: 0.4;"></div><div class="jcrop-tracker" style="cursor: move; position: absolute; z-index: 360;"></div></div><div style="width: 100%; height: 100%; z-index: 320; display: block;"><div class="ord-n jcrop-dragbar" style="cursor: n-resize; position: absolute; z-index: 370;"></div><div class="ord-s jcrop-dragbar" style="cursor: s-resize; position: absolute; z-index: 371;"></div><div class="ord-e jcrop-dragbar" style="cursor: e-resize; position: absolute; z-index: 372;"></div><div class="ord-w jcrop-dragbar" style="cursor: w-resize; position: absolute; z-index: 373;"></div><div class="ord-n jcrop-handle" style="cursor: n-resize; position: absolute; z-index: 374; opacity: 0.5;"></div><div class="ord-s jcrop-handle" style="cursor: s-resize; position: absolute; z-index: 375; opacity: 0.5;"></div><div class="ord-e jcrop-handle" style="cursor: e-resize; position: absolute; z-index: 376; opacity: 0.5;"></div><div class="ord-w jcrop-handle" style="cursor: w-resize; position: absolute; z-index: 377; opacity: 0.5;"></div><div class="ord-nw jcrop-handle" style="cursor: nw-resize; position: absolute; z-index: 378; opacity: 0.5;"></div><div class="ord-ne jcrop-handle" style="cursor: ne-resize; position: absolute; z-index: 379; opacity: 0.5;"></div><div class="ord-se jcrop-handle" style="cursor: se-resize; position: absolute; z-index: 380; opacity: 0.5;"></div><div class="ord-sw jcrop-handle" style="cursor: sw-resize; position: absolute; z-index: 381; opacity: 0.5;"></div></div></div><div class="jcrop-tracker" style="width: 401px; height: 404px; position: absolute; top: -2px; left: -2px; z-index: 290; cursor: crosshair;"></div><input type="radio" class="jcrop-keymgr" style="position: fixed; left: -120px; width: 12px;"><img src="https://media.githubusercontent.com/user/2142730/avatars/576434?orig=1" class="js-croppable-avatar croppable-avatar" data-true-width="577" data-true-height="581" alt="" style="display: block; visibility: visible; width: 397.022332506204px; height: 400px; border: none; margin: 0px; padding: 0px; position: absolute; top: 0px; left: 0px; opacity: 0.6;"></div>
-
-      <input class="js-crop-cropped_x" id="avatar-576434-cropped_x" name="cropped_x" type="hidden" value="0">
-      <input class="js-crop-cropped_y" id="avatar-576434-cropped_y" name="cropped_y" type="hidden" value="1.4525">
-      <input class="js-crop-cropped_width" id="avatar-576434-cropped_width" name="cropped_width" type="hidden" value="577">
-      <input class="js-crop-cropped_height" id="avatar-576434-cropped_height" name="cropped_height" type="hidden" value="576.6424999999999">
-  </div>
-
-  <div class="facebox-footer">
-    <button type="submit" name="op" value="save" class="button primary">
-      Set new profile picture
-    </button>
-  </div>
-</form></div>         <button type="button" class="facebox-close js-facebox-close" aria-label="Close modal">           <span class="octicon octicon-remove-close"></span>         </button>       </div>     </div>
 
     </body>
 </html>

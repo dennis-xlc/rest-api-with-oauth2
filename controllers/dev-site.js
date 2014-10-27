@@ -7,7 +7,7 @@ function VerifyResult () {
   this.nameErr = null;
   this.emailErr = null;
   this.passwordErr = null;
-}
+};
 
 exports.settings = function (req, res) {
   if (req.session && req.session.login) {
@@ -15,7 +15,7 @@ exports.settings = function (req, res) {
   } else {
     res.redirect('/');
   }
-}
+};
 
 exports.profile = function (req, res) {
   if (req.session && req.session.login) {
@@ -26,14 +26,38 @@ exports.profile = function (req, res) {
       if (err) {
         res.redirect('/home');
       } else {
-        res.render('dev/profile', {title : "Your Profile · Shinify", developer : developer});
+        res.render('dev/profile', {title : "Your Profile · Shinify", successUpdate : false, developer : developer});
       }
     });
 
   } else {
     res.redirect('/');
   }
-}
+};
+
+exports.updateProfile = function (req, res) {
+  if (req.session && req.session.login) {
+
+    var username = req.session.username;
+    var profile = req.body.profile;
+
+    console.log("trying update profile for user: ", username);
+    console.log("profile: ", profile);
+
+    db.developers.updateProfile(username, profile, function(err, developer){
+      if (err) {
+        //res.redirect('/settings/profile');
+      }
+
+      res.render('dev/profile', {title : "Your Profile · Shinify", successUpdate : true, developer : developer});
+
+    });
+
+
+  } else {
+    res.redirect('/');
+  }
+};
 
 exports.admin = function (req, res) {
   if (req.session && req.session.login) {
@@ -41,7 +65,7 @@ exports.admin = function (req, res) {
   } else {
     res.redirect('/');
   }
-}
+};
 
 exports.applications = function (req, res) {
   if (req.session && req.session.login) {
@@ -49,7 +73,7 @@ exports.applications = function (req, res) {
   } else {
     res.redirect('/');
   }
-}
+};
 
 
 exports.index = function (req, res) {
