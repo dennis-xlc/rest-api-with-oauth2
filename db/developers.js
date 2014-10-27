@@ -71,6 +71,12 @@ exports.checkEmailExist = function (email) {
   return false;
 };
 
+exports.updatePassword = function (username, password, done) {
+  developers[username].password = password;
+  return done(null);
+};
+
+
 exports.verifyPassword = function (username, password, done) {
   console.log("verify developer: ", username);
   var developer = developers[username];
@@ -78,7 +84,7 @@ exports.verifyPassword = function (username, password, done) {
     return done(null);
   }
 
-  return done("Incorrect username or password.");
+  return done(true);
 };
 
 exports.find = function (username, done) {

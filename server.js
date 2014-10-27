@@ -103,6 +103,8 @@ baseRouter.get('/settings/profile', devSiteController.profile);
 baseRouter.post('/settings/profile', devSiteController.updateProfile);
 baseRouter.get('/settings/admin', devSiteController.admin);
 baseRouter.get('/settings/applications', devSiteController.applications);
+baseRouter.post('/password/reset', devSiteController.resetPassword);
+baseRouter.post('/password/change', devSiteController.changePassword);
 
 
 // Initial dummy route for testing

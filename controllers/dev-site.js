@@ -17,6 +17,56 @@ exports.settings = function (req, res) {
   }
 };
 
+exports.resetPassword = function (req, res) {
+
+};
+
+exports.changePassword = function (req, res) {
+  if (req.session && req.session.login) {
+
+    var username = req.session.username;
+    var user = req.body.user;
+
+    var error = false;
+    var errMsg;
+    
+    db.developers.verifyPassword(username, user.old_password, function(err) {
+      if (err) {
+        error = true;
+        errMsg = "Old password is invalid!";
+      }
+      else {
+        // check the user password
+        checkPassword(user.password, user.password_confirmation, "Detail", function (err) {
+          if (err) {
+            error = true;
+            errMsg = err;
+          } else {
+            db.developers.updatePassword(username, user.password, function (err) {
+              if (err) {
+                error = true;
+                errMsg = "Error when updating passwrod, please try again later!";
+              }
+            });
+          }
+        });
+      }
+    });
+
+    db.developers.getDeveloperInfo(username, function(err, developer){
+      if (err) {
+        res.redirect('/home');
+      } else {
+        res.render('dev/admin', {title : "Account Settings · Shinify", 
+            successUpdate : !error, error : error, errMsg : errMsg, developer : developer});
+      }
+    });
+
+  } else {
+    res.redirect('/');
+  }
+};
+
 exports.profile = function (req, res) {
   if (req.session && req.session.login) {
 
@@ -137,7 +187,7 @@ exports.joinForm = function (req, res) {
 exports.logout = function (req, res) {
   console.log("trying logout user: ", req.session.username);
     req.session.destroy();
-    res.redirect('/');
+    res.redirect('/login');
 };
 
 exports.login = function (req, res) {
@@ -249,6 +299,8 @@ function checkEmail(email, done) {
   return done(null);
 };
 
+};
+
 function checkPassword(passwd, verifyPasswd, source, done) {
   if (passwd === "") {
     console.log("Password must not be empty!");
@@ -289,7 +341,5 @@ function checkPassword(passwd, verifyPasswd, source, done) {
 
 
   return done(null);
-
-};
 
 };

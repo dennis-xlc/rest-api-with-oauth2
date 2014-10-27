@@ -15,7 +15,7 @@
                     <% } %>
                     <% if (error) { %>
                     <div class="flash-messages container">
-                        <div class="flash flash-error"><span class="octicon octicon-x flash-close js-flash-close"></span> Old password isn&#39;t valid</div>
+                        <div class="flash flash-error"><span class="octicon octicon-x flash-close js-flash-close"></span> <%= errMsg %></div>
                     </div>
                     <% } %>
                     <div class="container">
@@ -46,7 +46,7 @@
                                 <div class="boxed-group">
                                     <h3>Change password</h3>
                                     <div class="boxed-group-inner">
-                                        <form accept-charset="UTF-8" action="/account" class="edit_user" id="change_password" method="post">
+                                        <form accept-charset="UTF-8" action="/password/change" class="edit_user" id="change_password" method="post">
                                             <dl class="form password-confirmation-form">
                                                 <dt><label for="user_old_password">Old password</label></dt>
                                                 <dd><input id="user_old_password" name="user[old_password]" required="required" tabindex="2" type="password" /></dd>
@@ -61,7 +61,7 @@
                                             </dl>
                                             <p>
                                                 <button class="button" tabindex="2">Update password</button>
-                                                <span><a href="/password_reset">I forgot my password</a></span>
+                                                <span><a href="/password/reset">I forgot my password</a></span>
                                             </p>
                                         </form>
                                     </div>
