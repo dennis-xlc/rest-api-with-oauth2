@@ -106,6 +106,9 @@ baseRouter.get('/settings/applications', devSiteController.applications);
 baseRouter.post('/password/reset', devSiteController.resetPassword);
 baseRouter.post('/password/change', devSiteController.changePassword);
 
+baseRouter.post('/upload/policies/avatars', devSiteController.avatarPolicy);
+baseRouter.post('/upload/avatar', devSiteController.uploadAvatar);
+
 
 // Initial dummy route for testing
 // https://localhost:3000/api
