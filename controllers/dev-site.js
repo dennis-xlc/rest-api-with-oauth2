@@ -2,11 +2,10 @@ var passport = require('passport');
 var config = require('../config');
 var db = require('../' + config.db.type);
 
-function VerifyResult () {
-  this.error = false;
-  this.nameErr = null;
-  this.emailErr = null;
-  this.passwordErr = null;
+
+
+exports.redirectControl = function (req, res) {
+  res.redirect('/');
 };
 
 exports.settings = function (req, res) {
@@ -17,8 +16,123 @@ exports.settings = function (req, res) {
   }
 };
 
-exports.resetPassword = function (req, res) {
+exports.applicationForm = function (req, res) {
+  if (req.session && req.session.login) {
 
+    var username = req.session.username;
+    var application = {name : "", url : "", callback : "", description : ""};
+
+    var result = new ApplicationVerifyResult();
+    db.developers.getDeveloperInfo(username, function(err, developer){
+      if (err) {
+        res.redirect('/');
+      } else {
+        res.render('dev/application-new', {title : "New OAuth2 Application · Shinify", 
+          developer : developer, application : application, verifyResult : result});
+      }
+    });
+  } else {
+    res.redirect('/');
+  }
+};
+
+exports.createApplication = function (req, res) {
+  if (req.session && req.session.login) {
+    console.log("request body: ", req.body);
+
+    var username = req.session.username;
+    var application = req.body.application;
+
+    var result = new ApplicationVerifyResult();
+
+    // check the app name
+    checkAppName(application.name, function (err) {
+      if (err) {
+        result.error = true;
+        result.nameErr = err;
+      }
+    });
+
+    // check the app url
+    checkAppUrl(application.url, function (err) {
+      if (err) {
+        result.error = true;
+        result.urlErr = err;
+      }
+    });
+
+    // check the app callback
+    checkAppCallback(application.callback, function (err) {
+      if (err) {
+        result.error = true;
+        result.callbackErr = err;
+      }
+    });
+
+    
+    db.developers.getDeveloperInfo(username, function(err, developer){
+      if (err) {
+        res.redirect('/');
+      } else {
+        if (result.error) {
+          res.render('dev/application-new', {title : "New OAuth2 Application · Shinify", 
+                developer : developer, application : application, verifyResult : result});
+        } else {
+          db.developers.saveApplication(username, application, function (err) {
+            res.redirect('/settings/applications');
+          });
+        }
+        
+      }
+    });
+
+  } else {
+    res.redirect('/');
+  }
+};
+
+exports.removeAccount = function (req, res) {
+  if (req.session && req.session.login) {
+    var username = req.session.username;
+    var error = false;
+    var errMsg;
+    if (req.body.username != username) {
+      error = true;
+      errMsg = "Cannot delete account due to invalid user name!";
+    } else {
+      db.developers.remove(username, function(err) {
+        if (err) {
+          error = true;
+          errMsg = "Cannot delete account due to internal error!";
+        }
+      });
+    }
+
+    if (error) {
+      db.developers.getDeveloperInfo(username, function(err, developer){
+        if (err) {
+          res.redirect('/home');
+        } else {
+          res.render('dev/admin', {title : "Account Settings · Shinify",
+              successUpdate : false, error : true, errMsg : errMsg, developer : developer});
+        }
+      });
+    } else {
+      req.session.destroy();
+      res.redirect('/');
+    }
+
+
+  } else {
+    res.redirect('/');
+  }
+};
+
+exports.resetPassword = function (req, res) {
+  if (req.session && req.session.login) {
+  } else {
+    res.redirect('/');
+  }
 };
 
 exports.changePassword = function (req, res) {
@@ -200,7 +314,7 @@ exports.home = function (req, res) {
     var title = "Shinify · " + username;
     db.developers.getDeveloperInfo(username, function(err, developer){
       if (err) {
-        res.redirect('/home');
+        res.redirect('/');
       } else {
         res.render('dev/home', {title : title, developer : developer});
       }
@@ -216,7 +330,7 @@ exports.loginForm = function (req, res) {
 };
 
 exports.joinForm = function (req, res) {
-  var result = new VerifyResult();
+  var result = new JoinVerifyResult();
     res.render('dev/join', {title : "Join us · Shinify", verifyResult : result,
       developer : {name : "", email : ""}});
 };
@@ -252,7 +366,7 @@ exports.join = function (req, res) {
   var user = req.body.user;
   var source = req.body.source_label;
 
-  var result = new VerifyResult();
+  var result = new JoinVerifyResult();
 
   // check the user name
   checkUserName(user.name, function (err) {
@@ -286,13 +400,27 @@ exports.join = function (req, res) {
 
     db.developers.save(user, function (err) {
       if (err) {
-          return done(err);
+          res.render('dev/join', {title : "Join us · Shinify", verifyResult : result,
+        developer : {name : user.name, email : user.email}});
+      } else {
+        req.session.username = user.name;
+        req.session.login = true;
+        res.redirect('/home');
       }
-      res.redirect('login');
     });
 
 
   }
+
+
+};
+
+function JoinVerifyResult () {
+  this.error = false;
+  this.nameErr = null;
+  this.emailErr = null;
+  this.passwordErr = null;
+};
 
 function checkUserName(username, done) {
 
@@ -336,7 +464,6 @@ function checkEmail(email, done) {
   return done(null);
 };
 
-};
 
 function checkPassword(passwd, verifyPasswd, source, done) {
   if (passwd === "") {
@@ -379,4 +506,53 @@ function checkPassword(passwd, verifyPasswd, source, done) {
 
   return done(null);
 
+};
+
+function ApplicationVerifyResult () {
+  this.error = false;
+  this.nameErr = null;
+  this.urlErr = null;
+  this.callbackErr = null;
+};
+
+function checkAppName(name, done) {
+
+  if (name === "") {
+    console.log("Application name must not be blank!");
+    return done("Application name must not be blank!");
+  }
+
+  return done(null);
+};
+
+function checkAppUrl(url, done) {
+
+  if (url === "") {
+    console.log("Homepage URL must not be blank!");
+    return done("Homepage URL must not be blank!");
+  }
+
+  var pattern = /^http:\/\/([a-zA-Z0-9-_.\/])+/;
+  if (!pattern.test(url)) {
+    console.log("Homepage URL is invalid and must start with \"http://\"!");
+    return done("Homepage URL is invalid and must start with \"http://\"!");
+  }
+
+  return done(null);
+};
+
+function checkAppCallback(callback, done) {
+
+  if (callback === "") {
+    console.log("Callback Url must not be blank!");
+    return done("Callback Url must not be blank!");
+  }
+
+  var pattern = /^http:\/\/([a-zA-Z0-9-_.\/])+/;
+  if (!pattern.test(callback)) {
+    console.log("Callback Url is invalid and must start with \"http://\"!");
+    return done("Callback Url is invalid and must start with \"http://\"!");
+  }
+
+  return done(null);
 };

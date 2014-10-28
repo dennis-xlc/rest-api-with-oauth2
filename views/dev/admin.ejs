@@ -78,15 +78,13 @@
                                                 <span class="octicon octicon-alert"></span>
                                                 This is extremely important.
                                             </div>
-                                            <p>We will <strong>immediately delete all of your repositories (0)</strong>, along with all of your forks, wikis, issues, pull requests, and GitHub Pages sites.</p>
-                                            <p>You will no longer be billed, and your username will be available to anyone on GitHub.</p>
-                                            <p>For more help, read our article "<a href="https://help.github.com/articles/deleting-your-user-account">Deleting your user account</a>".</p>
+                                            <p>We will <strong>immediately delete all of your information </strong>, including all of your applications.</p>
+                                            <p>You will no longer be accessable, and your username will be available to anyone on GitHub.</p>
                                             <hr class="facebox-separator">
-                                            <form accept-charset="UTF-8" action="/users/hidennising" method="post">
-                                                <div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="_method" type="hidden" value="delete" /><input name="authenticity_token" type="hidden" value="oMWLPVhVeqcY8pORJwmakgjlo4DaH0UacoFe6myopLYeFkrqN7U61QaKbpXcjUjoMXvfllqIyqPB0/0F+CjGWg==" /></div>
+                                            <form accept-charset="UTF-8" action="/leave" method="post">
                                                 <p>
                                                     <label for="sudo_login">Enter your username:</label>
-                                                    <input type="text" id="sudo_login" name="sudo_login" class="input-block" pattern="hidennising" required>
+                                                    <input type="text" id="sudo_login" name="username" class="input-block" pattern="<%= developer.name%>" required>
                                                 </p>
                                                 <p>
                                                     <label for="confirmation_phrase">
@@ -95,32 +93,12 @@
                                                     </label>
                                                     <input type="text" id="confirmation_phrase" name="confirmation_phrase" class="input-block" pattern="delete\ my\ account" required>
                                                 </p>
-                                                <button type="submit" class="button button-block danger" data-disable-invalid>Cancel plan and delete this account</button>
+                                                <button type="submit" class="button button-block danger" data-disable-invalid>Delete this account</button>
                                             </form>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
-                            <div id="js-sudo-prompt" class="sudo-prompt">
-                        <form accept-charset="UTF-8" action="https://github.com/sessions/sudo" class="js-sudo-form" data-remote="true" method="post">
-                            <div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="KTw8EG3ECHs/WHJHXrqS8FdnLoXZpfI1z7CWJQHJMASI/zhR1aIz7mDjKPAp3FR+k4tLU2O0UfFAc2Aszca7lg==" /></div>
-                            <div class="auth-form-header">
-                                <h1>
-                                    Confirm password to continue
-                                    <i class="mini-icon mini-icon-lock"></i>
-                                </h1>
-                            </div>
-                            <div class='flash flash-error sudo-error js-sudo-error'></div>
-                            <div class="auth-form-body">
-                                <label for="sudo_password">
-                                Password <a href="/password_reset">(Forgot password)</a>
-                                </label>
-                                <input class="input-block js-sudo-password" id="sudo_password" name="sudo_password" tabindex="2" type="password" />
-                                <button type="submit" class="button">Confirm password</button>
-                            </div>
-                        </form>
-                    </div>
                         </div>
                     </div>
                 </div>

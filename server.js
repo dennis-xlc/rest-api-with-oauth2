@@ -103,11 +103,14 @@ baseRouter.get('/settings/profile', devSiteController.profile);
 baseRouter.post('/settings/profile', devSiteController.updateProfile);
 baseRouter.get('/settings/admin', devSiteController.admin);
 baseRouter.get('/settings/applications', devSiteController.applications);
+baseRouter.post('/settings/applications', devSiteController.createApplication);
+baseRouter.get('/settings/applications/new', devSiteController.applicationForm);
 baseRouter.post('/password/reset', devSiteController.resetPassword);
 baseRouter.post('/password/change', devSiteController.changePassword);
-
+baseRouter.post('/leave', devSiteController.removeAccount);
 baseRouter.post('/upload/policies/avatars', devSiteController.avatarPolicy);
 baseRouter.post('/upload/avatar', devSiteController.uploadAvatar);
+baseRouter.get('/*', devSiteController.redirectControl);
 
 
 // Initial dummy route for testing

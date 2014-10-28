@@ -4,6 +4,16 @@ var Legicon = require('../utils/legicon-custom');
 
 var developers = {};
 var profiles = {};
+var applications = {};
+
+exports.saveApplication = function (username, application, done) {
+  console.log("save application: ", application);
+
+  applications[username] = {name : application.name, url : application.url,
+              callback : application.callback, description : application.description};
+
+  return done(null);
+};
 
 function Developer () {
   this.name = "";
@@ -92,6 +102,13 @@ exports.find = function (username, done) {
   console.log("in  developers: ", developers);
     var developer = developers[username];
     return done(null, developer);
+};
+
+exports.remove = function (username, done) {
+  console.log("delete user: ", username);
+  delete profiles[username];
+  delete developers[username];
+  return done(null);
 };
 
 exports.save = function (developer, done) {

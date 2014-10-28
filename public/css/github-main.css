@@ -10187,13 +10187,12 @@ button.discussion-sidebar-toggle {
 .marketing-section-enterprise .marketing-header .lead {
 	color:#cecbda
 }
-.marketing-section-enterprise .marketing-button {
+.marketing-button {
 	display:inline-block;
-	margin-top:20px;
 	margin-bottom:20px;
 	padding:9px 15px;
 	border-radius:4px;
-	font-size:18px;
+	font-size:16px;
 	background-color:#1d6ac8;
 	background-image:-webkit-linear-gradient(#45b3f3,#1d6ac8);
 	background-image:linear-gradient(#45b3f3,#1d6ac8);
@@ -10201,10 +10200,14 @@ button.discussion-sidebar-toggle {
 	box-shadow:0 1px 1px rgba(0,0,0,0.25);
 	text-shadow:0 -1px 0 rgba(0,0,0,0.25);
 	text-decoration:none;
-	color:#fff
+	color:#fff;
+	text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
+	cursor: pointer;
+	font-weight: bold;
 }
-.marketing-section-enterprise .marketing-button:hover {
-	background-position:0 -10px
+.marketing-button:hover {
+	background-position:0 -10px;
+	text-decoration: none;
 }
 .issue-list em {
 	font-weight:bold;
