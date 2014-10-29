@@ -1,39 +1,11 @@
 var fs = require('fs');
 var Legicon = require('../utils/legicon-custom');
-var config = require('../config');
-var utils = require('../utils');
 var date_util = require('../utils/date_util');
-var CryptoJS = require("crypto-js/");
+
 
 var developers = {};
 var profiles = {};
-var applications = {};
-var clients = {};
-var applicationId = 10000;
 
-exports.saveApplication = function (username, application, done) {
-  //console.log("save application: ", application);
-
-  var password = developers[username].password;
-  var appId = applicationId++;
-  var clientId = utils.uid(config.client.clientIdLength);
-  
-  var clientSecretHash = CryptoJS.SHA3(username+password+application.name+application.callback,
-        {outputLength : config.client.clientSecretLength});
-
-  var clientSecret = clientSecretHash.toString(CryptoJS.enc.Base64);
-
-  applications[username] = {id : appId, name : application.name, url : application.url,
-              callback : application.callback, description : application.description};
-
-  console.log("save application: ", applications[username]);
-
-  clients[appId] = {clientId : clientId, clientSecret : clientSecret};
-  console.log("save client: ", clients[appId]);
-
-
-  return done(null);
-};
 
 function Developer () {
   this.name = "";

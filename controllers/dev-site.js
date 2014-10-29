@@ -97,7 +97,7 @@ exports.createApplication = function (req, res) {
           res.render('dev/application-new', {title : "New OAuth2 Application · Shinify",
                 developer : developer, application : application, verifyResult : result});
         } else {
-          db.developers.saveApplication(username, application, function (err) {
+          db.applications.save(username, application, function (err) {
             res.redirect('/settings/applications');
           });
         }
