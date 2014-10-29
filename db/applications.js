@@ -8,7 +8,7 @@ var applicationId = 10000;
 exports.save = function (username, application, done) {
   //console.log("save application: ", application);
 
-  var appId = applicationId++;
+  applicationId++;
 
   var clientId = utils.uid(config.client.clientIdLength);
   
@@ -19,11 +19,11 @@ exports.save = function (username, application, done) {
 
   var client = {clientId : clientId, clientSecret : clientSecret};
 
-  applications[username] = {id : appId, name : application.name, url : application.url,
+  applications[username] = {id : applicationId, name : application.name, url : application.url,
               callback : application.callback, description : application.description, client : client};
 
   console.log("save application: ", applications[username]);
 
 
-  return done(null);
+  return done(null, applicationId);
 };

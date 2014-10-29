@@ -34,6 +34,26 @@ exports.applications = function (req, res) {
   }
 };
 
+exports.showApplication = function (req, res) {
+  if (req.session && req.session.login) {
+    var username = req.session.username;
+    var appId = req.params.app_id;
+    console.log("get app: ", appId);
+
+    db.developers.getDeveloperInfo(username, function(err, developer){
+      if (err) {
+        res.redirect('/home');
+      } else {
+        var application = {};
+        res.render('dev/application-detail', {title : "OAuth2 Application · Shinify",
+          successUpdate : false, error : false, developer : developer, application : application});
+      }
+    });
+  } else {
+    res.redirect('/');
+  }
+};
+
 
 exports.applicationForm = function (req, res) {
   if (req.session && req.session.login) {
@@ -97,8 +117,8 @@ exports.createApplication = function (req, res) {
           res.render('dev/application-new', {title : "New OAuth2 Application · Shinify",
                 developer : developer, application : application, verifyResult : result});
         } else {
-          db.applications.save(username, application, function (err) {
-            res.redirect('/settings/applications');
+          db.applications.save(username, application, function (err, appId) {
+            res.redirect('/settings/application/'+appId);
           });
         }
 

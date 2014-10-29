@@ -104,6 +104,7 @@ baseRouter.post('/settings/profile', devSiteController.updateProfile);
 baseRouter.get('/settings/admin', devSiteController.admin);
 baseRouter.get('/settings/applications', devSiteController.applications);
 baseRouter.post('/settings/applications', devSiteController.createApplication);
+baseRouter.get('/settings/application/:app_id', devSiteController.showApplication);
 baseRouter.get('/settings/applications/new', devSiteController.applicationForm);
 baseRouter.post('/password/reset', devSiteController.resetPassword);
 baseRouter.post('/password/change', devSiteController.changePassword);
