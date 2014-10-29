@@ -16,6 +16,25 @@ exports.settings = function (req, res) {
   }
 };
 
+exports.applications = function (req, res) {
+  if (req.session && req.session.login) {
+    var username = req.session.username;
+
+    db.developers.getDeveloperInfo(username, function(err, developer){
+      if (err) {
+        res.redirect('/home');
+      } else {
+        var applications = [];
+        res.render('dev/applications', {title : "Authorized Applications · Shinify",
+          successUpdate : false, error : false, developer : developer, applications : applications});
+      }
+    });
+  } else {
+    res.redirect('/');
+  }
+};
+
+
 exports.applicationForm = function (req, res) {
   if (req.session && req.session.login) {
 
@@ -27,7 +46,7 @@ exports.applicationForm = function (req, res) {
       if (err) {
         res.redirect('/');
       } else {
-        res.render('dev/application-new', {title : "New OAuth2 Application · Shinify", 
+        res.render('dev/application-new', {title : "New OAuth2 Application · Shinify",
           developer : developer, application : application, verifyResult : result});
       }
     });
@@ -69,20 +88,20 @@ exports.createApplication = function (req, res) {
       }
     });
 
-    
+
     db.developers.getDeveloperInfo(username, function(err, developer){
       if (err) {
         res.redirect('/');
       } else {
         if (result.error) {
-          res.render('dev/application-new', {title : "New OAuth2 Application · Shinify", 
+          res.render('dev/application-new', {title : "New OAuth2 Application · Shinify",
                 developer : developer, application : application, verifyResult : result});
         } else {
           db.developers.saveApplication(username, application, function (err) {
             res.redirect('/settings/applications');
           });
         }
-        
+
       }
     });
 
@@ -288,8 +307,9 @@ exports.applications = function (req, res) {
       if (err) {
         res.redirect('/home');
       } else {
+        var applications = [];
         res.render('dev/applications', {title : "Authorized Applications · Shinify",
-          successUpdate : false, error : false, developer : developer});
+          successUpdate : false, error : false, developer : developer, applications : applications});
       }
     });
   } else {
@@ -532,10 +552,10 @@ function checkAppUrl(url, done) {
     return done("Homepage URL must not be blank!");
   }
 
-  var pattern = /^http:\/\/([a-zA-Z0-9-_.\/])+/;
+  var pattern = /^htt(p|ps):\/\/([a-zA-Z0-9-_.\/])+/;
   if (!pattern.test(url)) {
-    console.log("Homepage URL is invalid and must start with \"http://\"!");
-    return done("Homepage URL is invalid and must start with \"http://\"!");
+    console.log("Homepage URL is invalid and must start with http:// or https:// !");
+    return done("Homepage URL is invalid and must start with http:// or https:// !");
   }
 
   return done(null);
@@ -548,10 +568,10 @@ function checkAppCallback(callback, done) {
     return done("Callback Url must not be blank!");
   }
 
-  var pattern = /^http:\/\/([a-zA-Z0-9-_.\/])+/;
+  var pattern = /^htt(p|ps):\/\/([a-zA-Z0-9-_.\/])+/;
   if (!pattern.test(callback)) {
-    console.log("Callback Url is invalid and must start with \"http://\"!");
-    return done("Callback Url is invalid and must start with \"http://\"!");
+    console.log("Callback Url is invalid and must start with http:// or https:// !");
+    return done("Callback Url is invalid and must start with http:// or https:// !");
   }
 
   return done(null);

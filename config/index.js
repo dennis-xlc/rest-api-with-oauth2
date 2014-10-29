@@ -2,6 +2,11 @@
 // The configuration options of the server
 //
 
+exports.client = {
+  clientIdLength : 20,
+  clientSecretLength : 256
+};
+
 /**
  * Configuration of access tokens.
  *
@@ -17,7 +22,7 @@ exports.token = {
     calculateExpirationDate: function() {
         return new Date(new Date().getTime() + (this.expiresIn * 1000));
     },
-    authorizationCodeLength: 16,
+    authorizationCodeLength: 32,
     accessTokenLength: 256,
     refreshTokenLength: 256
 };

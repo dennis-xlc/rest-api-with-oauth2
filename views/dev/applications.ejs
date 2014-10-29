@@ -38,10 +38,26 @@
                             </div>
                             <div class="column three-fourths">
                                 <div class="boxed-group">
-                                    <a href="/settings/applications/new" class="minibutton boxed-group-action" data-pjax="true">Register new application</a>    
+                                    <a href="/settings/applications/new" class="minibutton boxed-group-action" data-pjax="true">Register new application</a>
                                     <h3>Developer applications</h3>
                                     <div class="boxed-group-inner">
+                                      <% if (applications.length) {%>
+                                        <p>These are clients / applications you have registered to use the REST APIs.</p>
+                                        <ul class="boxed-group-list">
+                                          <% applications.forEach(function(application) {%>
+                                          <li class="">
+                                            <span class="right oauth-application-users">
+                                              <strong>0</strong>
+                                              users
+                                            </span>
+                                            <a class="active" href="/settings/applications/141614" data-pjax>myApp</a>
+                                            <a class="muted-link" href="/settings/applications/141614">http://www.testmyapp.com</a>
+                                          </li>
+                                          <% })%>
+                                        </ul>
+                                      <% } else {%>
                                         <p>Do you want to build your own client / application to access data of <a href="http://bbs.fudan.edu.cn">Fudan BBS</a> by leveraging the REST APIs? <strong><a href="/settings/applications/new" data-pjax>Register an application</a></strong> to generate OAuth2 tokens.</p>
+                                      <% } %>
                                     </div>
                                 </div>
                             </div>
