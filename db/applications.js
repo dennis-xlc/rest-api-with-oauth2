@@ -11,7 +11,7 @@ exports.save = function (username, application, done) {
   applicationId++;
 
   var clientId = utils.uid(config.client.clientIdLength);
-  
+
   var clientSecretHash = CryptoJS.SHA3(username+application.name+application.callback,
         {outputLength : config.client.clientSecretLength});
 
@@ -19,11 +19,17 @@ exports.save = function (username, application, done) {
 
   var client = {clientId : clientId, clientSecret : clientSecret};
 
-  applications[username] = {id : applicationId, name : application.name, url : application.url,
-              callback : application.callback, description : application.description, client : client};
+  applications[applicationId] = {id : applicationId, name : application.name, url : application.url,
+              callback : application.callback, description : application.description,
+              clientId : clientId, clientSecret : clientSecret};
 
-  console.log("save application: ", applications[username]);
+  console.log("save application: ", applications[applicationId]);
 
 
   return done(null, applicationId);
+};
+
+exports.findApplication = function (applicationId, done) {
+  var application = applications[applicationId];
+  done(null, application);
 };

@@ -17,7 +17,7 @@
                                     <li class="section">
                                         <a href="/home" class="section-head">
                                         <img height="20" src="/avatars/<%= developer.avatarImg%>" width="20" />
-                                        <%= developer.name%>
+                                        <%= developer.name %>
                                         </a>
                                         <ul class="expanded section-nav">
                                             <li>
@@ -34,21 +34,16 @@
                                 </ul>
                             </div>
                             <div class="column three-fourths">
-                                <div class="context-loader large-format-loader">
-                                    <p><img alt="" height="64" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-128.gif" width="64" /></p>
-                                    <p>Loading…</p>
-                                </div>
                                 <div class="boxed-group application-show-group">
                                     <h3>
                                         <a href="/settings/applications" class="boxed-group-breadcrumb" data-pjax="true">Applications /</a>
-                                        myApp
+                                        <%= application.name %>
                                     </h3>
                                     <div class="boxed-group-inner">
                                         <div class="profile-picture clearfix app-owner">
-                                            <img alt="Xu Lvcai" data-user="2142730" height="30" src="https://avatars1.githubusercontent.com/u/2142730?v=2&amp;s=60" width="30" />
+                                            <img height="30" src="/avatars/<%= developer.avatarImg%>" width="30" />
                                             <p>
-                                                <strong><a href="/dennis-xlc">dennis-xlc</a></strong> owns this application.
-                                                <a href="#move-application-to-org" rel="facebox">Transfer ownership.</a>
+                                                <strong><a href="/home"><%= developer.name %></a></strong> owns this application.
                                             </p>
                                         </div>
                                         <hr class="bleed-flush">
@@ -59,9 +54,9 @@
                                             </p>
                                             <dl class="keys">
                                                 <dt>Client ID</dt>
-                                                <dd>0bbf37dbee2360643bf3</dd>
+                                                <dd><%= application.clientId %></dd>
                                                 <dt>Client Secret</dt>
-                                                <dd>2fc059870df135faaefd6ebf11f78e58b3bc8665</dd>
+                                                <dd><%= application.clientSecret %></dd>
                                                 <dt><br>
                                                     <a href="#revoke_tokens" class="button danger" rel="facebox nofollow">Revoke all user tokens</a>
                                                     <a href="#reset_info" class="button danger" rel="facebox nofollow">Reset client secret</a>
@@ -69,8 +64,7 @@
                                             </dl>
                                         </div>
                                         <hr class="bleed-flush">
-                                        <form accept-charset="UTF-8" action="/settings/applications/141877" class="edit_oauth_application" id="edit_oauth_application_141877" method="post">
-                                            <div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="_method" type="hidden" value="put" /><input name="authenticity_token" type="hidden" value="ROaQy5EzXJaWmHW87pNnIP4nldMM68wyswIChzlYFifN0ERkvVxOehg1FAWBdYj6cAEiH70yFeLftW1gNlpI4Q==" /></div>
+                                        <form accept-charset="UTF-8" action="/settings/applications/<%= application.id %>" class="edit_oauth_application" id="edit_oauth_application_<%= application.id %>" method="post">
                                             <div class="logo-upload is-default js-uploadable-container js-upload-oauth-logo upload-enabled" data-upload-policy-url="/upload/policies/oauth_applications">
                                                 <a class="delete js-delete-oauth-application-image tooltipped tooltipped-s" aria-label="delete this image" href="#">
                                                 <span class="octicon octicon-x"></span>
@@ -118,21 +112,21 @@
                                             <dl class="form">
                                                 <dt class="input-label"><label autofocus="autofocus" class="wide" for="oauth_application_name" tabindex="2">Application name</label></dt>
                                                 <dd>
-                                                    <input autofocus="autofocus" class="wide" id="oauth_application_name" name="oauth_application[name]" size="30" tabindex="2" type="text" value="myApp" />
+                                                    <input autofocus="autofocus" class="wide" id="oauth_application_name" name="application[name]" size="30" tabindex="2" type="text" value="<%= application.name %>" />
                                                     <p class="note">Something users will recognize and trust</p>
                                                 </dd>
                                             </dl>
                                             <dl class="form">
                                                 <dt class="input-label"><label class="wide" for="oauth_application_url" tabindex="3">Homepage URL</label></dt>
                                                 <dd>
-                                                    <input class="wide" id="oauth_application_url" name="oauth_application[url]" size="30" tabindex="3" type="text" value="http://www.testmyapp.com" />
+                                                    <input class="wide" id="oauth_application_url" name="application[url]" size="30" tabindex="3" type="text" value="<%= application.url %>" />
                                                     <p class="note">The full URL to your application homepage</p>
                                                 </dd>
                                             </dl>
                                             <dl class="form">
                                                 <dt class="input-label"><label class="short" for="oauth_application_description" placeholder="Application description is optional" tabindex="4">Application description</label></dt>
                                                 <dd>
-                                                    <textarea class="short" cols="40" id="oauth_application_description" name="oauth_application[description]" placeholder="Application description is optional" rows="20" tabindex="4"></textarea>
+                                                    <textarea class="short" cols="40" id="oauth_application_description" name="application[description]" placeholder="Application description is optional" rows="20" tabindex="4"><%= application.description %></textarea>
                                                     <p class="note">This is displayed to all potential users of your application</p>
                                                 </dd>
                                             </dl>
@@ -140,7 +134,7 @@
                                             <dl class="form">
                                                 <dt class="input-label"><label class="wide" for="oauth_application_callback_url" tabindex="5">Authorization callback URL</label></dt>
                                                 <dd>
-                                                    <input class="wide" id="oauth_application_callback_url" name="oauth_application[callback_url]" size="30" tabindex="5" type="text" value="http://www.testmyapp.com" />
+                                                    <input class="wide" id="oauth_application_callback_url" name="application[callback]" size="30" tabindex="5" type="text" value="<%= application.callback %>" />
                                                     <p class="note">Your application's callback URL. Read our <a href='https://developer.github.com/v3/oauth/' target='_blank'>OAuth documentation</a> for more information</p>
                                                 </dd>
                                             </dl>
@@ -152,59 +146,13 @@
                                         </form>
                                     </div>
                                 </div>
-                                <div id="move-application-to-org" style="display:none;">
-                                    <h2 class="facebox-header">Where should we transfer myApp?</h2>
-                                    <div class="owner-select-grid">
-                                        <form accept-charset="UTF-8" action="/settings/applications/141877/transfer" method="post">
-                                            <div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="_method" type="hidden" value="put" /><input name="authenticity_token" type="hidden" value="fGquWxm4mpOQRqQfhFlklctDKOvxoHsN5j2AUGkWvBX2Ef5supng7qvdU1qHgyIAc9+PSeKHWcsQEwboQIB9WA==" /></div>
-                                            <input id="transfer_to" name="transfer_to" type="hidden" value="fdubbsMobile" />
-                                            <div class="owner-select-target js-transfer-owner-select-target enabled">
-                                                <img alt="fdubbsMobile" class="avatar owner-select-avatar" data-user="7273578" height="100" src="https://avatars1.githubusercontent.com/u/7273578?v=2&amp;s=200" width="100" />
-                                                <span class="owner css-truncate css-truncate-target" title="@fdubbsMobile">@fdubbsMobile</span>
-                                            </div>
-                                        </form>
-                                        <form accept-charset="UTF-8" action="/settings/applications/141877/transfer" method="post">
-                                            <div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="_method" type="hidden" value="put" /><input name="authenticity_token" type="hidden" value="5gAf9QEiZouz52zxuzRLIM+yJzafiNpJSTQmQvke4bTM85vU/+w93qwPSFcUODhrQ6SVMWjB6+Rh9jjsozGZxA==" /></div>
-                                            <input id="transfer_to" name="transfer_to" type="hidden" value="octopress-theme" />
-                                            <div class="owner-select-target js-transfer-owner-select-target enabled">
-                                                <img alt="octopress-theme" class="avatar owner-select-avatar" data-user="7310234" height="100" src="https://avatars1.githubusercontent.com/u/7310234?v=2&amp;s=200" width="100" />
-                                                <span class="owner css-truncate css-truncate-target" title="@octopress-theme">@octopress-theme</span>
-                                            </div>
-                                        </form>
-                                        <form accept-charset="UTF-8" action="/settings/applications/141877/transfer" method="post">
-                                            <div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="_method" type="hidden" value="put" /><input name="authenticity_token" type="hidden" value="nh5k1oZzzU1B18VGO5qp16B+GsuA1VyofHjdaheO2OXdzUDobFIP8rBDghaPggKvsso9+EZgywVQqsqlFardkQ==" /></div>
-                                            <input id="transfer_to" name="transfer_to" type="hidden" value="ios-material" />
-                                            <div class="owner-select-target js-transfer-owner-select-target enabled">
-                                                <img alt="ios-material" class="avatar owner-select-avatar" data-user="7531112" height="100" src="https://avatars0.githubusercontent.com/u/7531112?v=2&amp;s=200" width="100" />
-                                                <span class="owner css-truncate css-truncate-target" title="@ios-material">@ios-material</span>
-                                            </div>
-                                        </form>
-                                        <form accept-charset="UTF-8" action="/settings/applications/141877/transfer" method="post">
-                                            <div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="_method" type="hidden" value="put" /><input name="authenticity_token" type="hidden" value="jTEtxsNqLNT80qkTi39CzUItisCvhoXMzY16hRxRVlEkzEHRWJy1+Xs8tmMReCpfDI3Zt7y2YQMn4ZlVluYr3Q==" /></div>
-                                            <input id="transfer_to" name="transfer_to" type="hidden" value="jekyll-sample" />
-                                            <div class="owner-select-target js-transfer-owner-select-target enabled">
-                                                <img alt="jekyll-sample" class="avatar owner-select-avatar" data-user="8166073" height="100" src="https://avatars0.githubusercontent.com/u/8166073?v=2&amp;s=200" width="100" />
-                                                <span class="owner css-truncate css-truncate-target" title="@jekyll-sample">@jekyll-sample</span>
-                                            </div>
-                                        </form>
-                                        <form accept-charset="UTF-8" action="/settings/applications/141877/transfer" method="post">
-                                            <div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="_method" type="hidden" value="put" /><input name="authenticity_token" type="hidden" value="zwBnxO4hpxI79UNR+EQMmskGz9TKtbm83gvFDAPDdvcoeq6xsf+1WRgB5kNCwpYKuAliJFQgT2px55f1kxN/pQ==" /></div>
-                                            <input id="transfer_to" name="transfer_to" type="hidden" value="nodejs-learning" />
-                                            <div class="owner-select-target js-transfer-owner-select-target enabled">
-                                                <img alt="nodejs-learning" class="avatar owner-select-avatar" data-user="8787292" height="100" src="https://avatars2.githubusercontent.com/u/8787292?v=2&amp;s=200" width="100" />
-                                                <span class="owner css-truncate css-truncate-target" title="@nodejs-learning">@nodejs-learning</span>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
                                 <div id="cancel_info" style="display:none;">
                                     <h2 class="facebox-header">Delete application?</h2>
                                     <div class="facebox-alert">
                                         Please note that deleting the OAuth Application will invalidate any access tokens authorized by users.
                                     </div>
                                     <p>0 users will not be able to use this application after deletion.</p>
-                                    <form accept-charset="UTF-8" action="/settings/applications/141877" method="post">
-                                        <div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="_method" type="hidden" value="delete" /><input name="authenticity_token" type="hidden" value="Z92nByrTqEIeYn1PRd9iB0ANvhYXOSm6XeG8OjHUonGINNXC/zrv2bFEwdaygllVhg/bis1E9L4gXfj/ViLSkw==" /></div>
+                                    <form accept-charset="UTF-8" action="/settings/applications/<%= application.id %>/delete" method="post">
                                         <button type="submit" class="button button-block danger">
                                         Delete this OAuth Application
                                         </button>
@@ -219,10 +167,9 @@
                                         Please note that resetting your Client Secret will not invalidate any user tokens, however you
                                         will need to update any application configuration using the old secret because it will no longer work.
                                     </p>
-                                    <form accept-charset="UTF-8" action="/settings/applications/141877/reset_secret" method="post">
-                                        <div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="EUdtrSNTA5sUOeCMcpLW2pJSXtFJFeAb6EWzBTZy/Chz6nHhcVEsqNHNbnS+bkhrY6h9ZyEJGo4Kij+7UWozkg==" /></div>
+                                    <form accept-charset="UTF-8" action="/settings/applications/<%= application.id%>/reset_secret" method="post">
                                         <button type="submit" class="button button-block danger">
-                                        Reset OAuth Application Client Secret
+                                        Reset OAuth2 Application Client Secret
                                         </button>
                                     </form>
                                 </div>
@@ -237,8 +184,7 @@
                                         before they can use your application again.
                                     </p>
                                     <p>This action is not reversible.</p>
-                                    <form accept-charset="UTF-8" action="/settings/applications/141877/revoke_all_tokens" method="post">
-                                        <div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="6x3JsnZyFkXfatklVo1/avVabNfhiYPNrjdRHkcVmkgTtSpdCjF6NAMJrGJ/rLjpgGQ7Y/5m++EIib1ourGfJg==" /></div>
+                                    <form accept-charset="UTF-8" action="/settings/applications/<%= application.id%>/revoke_all_tokens" method="post">
                                         <button type="submit" class="button button-block danger">
                                         I understand, revoke all user tokens
                                         </button>

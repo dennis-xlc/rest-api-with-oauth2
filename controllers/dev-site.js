@@ -44,9 +44,14 @@ exports.showApplication = function (req, res) {
       if (err) {
         res.redirect('/home');
       } else {
-        var application = {};
-        res.render('dev/application-detail', {title : "OAuth2 Application · Shinify",
-          successUpdate : false, error : false, developer : developer, application : application});
+        db.applications.findApplication(appId, function(err, application) {
+          if (err) {
+            res.redirect('/home');
+          } else {
+            res.render('dev/application-detail', {title : "OAuth2 Application · Shinify",
+              developer : developer, application : application});
+          }
+        });
       }
     });
   } else {
