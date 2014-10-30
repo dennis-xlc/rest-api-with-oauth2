@@ -3,8 +3,8 @@
 //
 
 exports.client = {
-  clientIdLength : 20,
-  clientSecretLength : 256
+  clientIdLength : 32,
+  clientSecretLength : 64
 };
 
 /**
@@ -23,8 +23,8 @@ exports.token = {
         return new Date(new Date().getTime() + (this.expiresIn * 1000));
     },
     authorizationCodeLength: 32,
-    accessTokenLength: 256,
-    refreshTokenLength: 256
+    accessTokenLength: 128,
+    refreshTokenLength: 128
 };
 
 /**

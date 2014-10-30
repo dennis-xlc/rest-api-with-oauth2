@@ -16,17 +16,117 @@ exports.settings = function (req, res) {
   }
 };
 
-exports.applications = function (req, res) {
+exports.revokeTokens = function (req, res) {
   if (req.session && req.session.login) {
     var username = req.session.username;
+    var appId = req.params.app_id;
 
     db.developers.getDeveloperInfo(username, function(err, developer){
       if (err) {
         res.redirect('/home');
       } else {
-        var applications = [];
-        res.render('dev/applications', {title : "Authorized Applications · Shinify",
-          successUpdate : false, error : false, developer : developer, applications : applications});
+        db.applications.revokeTokens(appId, function(err) {
+          if (err) {
+            res.redirect('/home');
+          } else {
+            res.redirect('/settings/applications/'+appId);
+          }
+        });
+      }
+    });
+  } else {
+    res.redirect('/');
+  }
+};
+
+exports.restSecret = function (req, res) {
+  if (req.session && req.session.login) {
+    var username = req.session.username;
+    var appId = req.params.app_id;
+
+    db.developers.getDeveloperInfo(username, function(err, developer){
+      if (err) {
+        res.redirect('/home');
+      } else {
+        db.applications.restSecret(appId, function(err) {
+          if (err) {
+            res.redirect('/home');
+          } else {
+            res.redirect('/settings/applications/'+appId);
+          }
+        });
+      }
+    });
+  } else {
+    res.redirect('/');
+  }
+};
+
+exports.applications = function (req, res) {
+  if (req.session && req.session.login) {
+    var username = req.session.username;
+
+    console.log("load applications page :", username);
+
+    db.developers.getDeveloperInfo(username, function(err, developer){
+      if (err) {
+        res.redirect('/home');
+      } else {
+
+        db.applications.loadApplications(username, function(err, applications) {
+          if (err) {
+            res.redirect('/home');
+          } else {
+            console.log("loadApplications :", applications);
+            res.render('dev/applications', {title : "Authorized Applications · Shinify", 
+                developer : developer, applications : applications});
+          }
+        });
+        
+      }
+    });
+  } else {
+    res.redirect('/');
+  }
+};
+
+exports.applicationForm = function (req, res) {
+  if (req.session && req.session.login) {
+
+    var username = req.session.username;
+    var application = {name : "", url : "", callback : "", description : ""};
+
+    var result = new ApplicationVerifyResult();
+    db.developers.getDeveloperInfo(username, function(err, developer){
+      if (err) {
+        res.redirect('/');
+      } else {
+        res.render('dev/application-new', {title : "New OAuth2 Application · Shinify",
+          developer : developer, application : application, verifyResult : result});
+      }
+    });
+  } else {
+    res.redirect('/');
+  }
+};
+
+exports.removeApplication = function (req, res) {
+  if (req.session && req.session.login) {
+    var username = req.session.username;
+    var appId = req.params.app_id;
+    console.log("remove app: ", appId);
+
+    db.developers.getDeveloperInfo(username, function(err, developer){
+      if (err) {
+        res.redirect('/home');
+      } else {
+        db.applications.removeApplication(appId, function(err) {
+          if (err) {
+            res.redirect('/home');
+          } else {
+            res.redirect('/settings/applications');
+          }
+        });
       }
     });
   } else {
@@ -49,7 +149,7 @@ exports.showApplication = function (req, res) {
             res.redirect('/home');
           } else {
             res.render('dev/application-detail', {title : "OAuth2 Application · Shinify",
-              developer : developer, application : application});
+              developer : developer, appDetail : application});
           }
         });
       }
@@ -59,26 +159,6 @@ exports.showApplication = function (req, res) {
   }
 };
 
-
-exports.applicationForm = function (req, res) {
-  if (req.session && req.session.login) {
-
-    var username = req.session.username;
-    var application = {name : "", url : "", callback : "", description : ""};
-
-    var result = new ApplicationVerifyResult();
-    db.developers.getDeveloperInfo(username, function(err, developer){
-      if (err) {
-        res.redirect('/');
-      } else {
-        res.render('dev/application-new', {title : "New OAuth2 Application · Shinify",
-          developer : developer, application : application, verifyResult : result});
-      }
-    });
-  } else {
-    res.redirect('/');
-  }
-};
 
 exports.createApplication = function (req, res) {
   if (req.session && req.session.login) {
@@ -113,22 +193,33 @@ exports.createApplication = function (req, res) {
       }
     });
 
-
+    var applicationId;
     db.developers.getDeveloperInfo(username, function(err, developer){
       if (err) {
         res.redirect('/');
       } else {
-        if (result.error) {
-          res.render('dev/application-new', {title : "New OAuth2 Application · Shinify",
-                developer : developer, application : application, verifyResult : result});
-        } else {
+        if (!result.error) {
+          
           db.applications.save(username, application, function (err, appId) {
-            res.redirect('/settings/application/'+appId);
+            if (err) {
+              result.error = true;
+              result.callbackErr = "Cannot save application, please try again later!";
+            } else {
+              applicationId = appId;
+            }
+            
           });
         }
 
       }
     });
+
+    if (result.error) {
+      res.render('dev/application-new', {title : "New OAuth2 Application · Shinify",
+                developer : developer, application : application, verifyResult : result});
+    } else {
+      res.redirect('/settings/applications/'+applicationId);
+    }
 
   } else {
     res.redirect('/');
@@ -324,24 +415,6 @@ exports.admin = function (req, res) {
   }
 };
 
-exports.applications = function (req, res) {
-  if (req.session && req.session.login) {
-    var username = req.session.username;
-
-    db.developers.getDeveloperInfo(username, function(err, developer){
-      if (err) {
-        res.redirect('/home');
-      } else {
-        var applications = [];
-        res.render('dev/applications', {title : "Authorized Applications · Shinify",
-          successUpdate : false, error : false, developer : developer, applications : applications});
-      }
-    });
-  } else {
-    res.redirect('/');
-  }
-};
-
 
 exports.index = function (req, res) {
 
@@ -361,7 +434,14 @@ exports.home = function (req, res) {
       if (err) {
         res.redirect('/');
       } else {
-        res.render('dev/home', {title : title, developer : developer});
+        db.applications.loadApplications(username, function(err, applications) {
+          if (err) {
+            res.redirect('/home');
+          } else {
+            console.log("loadApplications :", applications);
+            res.render('dev/home', {title : "Home · Shinify", developer : developer, applications : applications});
+          }
+        });
       }
     });
 
