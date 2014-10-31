@@ -11,13 +11,13 @@
             <div id="site-container" class="context-loader-container" data-pjax-container>
                <div class="setup-wrapper">
                   <div class="setup-header">
-                     <h1>Join REST API</h1>
+                     <h1>Join Shinify</h1>
                      <p class="lead">The best way to integrate with Fudan BBS.</p>
                   </div>
                   <div class="setup-main ">
                      <div class="setup-form-container">
                         <noscript>
-                           <p class="error">REST API does not support browsers with JavaScript disabled.<br>
+                           <p class="error">Shinify does not support browsers with JavaScript disabled.<br>
                               We promise we'll behave.
                            </p>
                         </noscript>
@@ -34,7 +34,7 @@
                               <dd>
                                  <input autocapitalize="off" autofocus="autofocus" data-autocheck-url="/signup_check/username" id="user_login" name="user[name]" size="30" type="text" value="<%= developer.name %>"/>
                                  <% if (!verifyResult.nameErr) {%>
-                                 <p class="note">This will be your username — you can enter your username next.</p>
+                                 <p class="note">This will be your username — you can enter your username when login.</p>
                                  <% }%>
                               </dd>
                               <% if (verifyResult.nameErr) {%>
@@ -72,8 +72,8 @@
                            </dl>
                            <input type="hidden" name="source_label" value="Detail">
                            <p class="tos-info">By clicking on "Create an account" below, you are agreeing to the
-                              <a href="https://help.github.com/terms" target="_blank">Terms of Service</a> and the
-                              <a href="https://help.github.com/privacy" target="_blank">Privacy Policy</a>.
+                              <a href="#" target="_blank">Terms of Service</a> and the
+                              <a href="#" target="_blank">Privacy Policy</a>.
                            </p>
                            <div class="form-actions">
                               <button type="submit" class="button primary" id="signup_button" data-disable-with="Creating account&hellip;">Create an account</button>
@@ -85,7 +85,7 @@
                   <!-- /.setup-main -->
                   <div class="setup-secondary">
                      <div class="setup-info-module">
-                        <h2>You’ll love REST API</h2>
+                        <h2>You’ll love Shinify</h2>
                         <ul class="features-list">
                            <li><strong>Quick</strong> of integration</li>
                            <li><strong>Easy</strong> of use</li>

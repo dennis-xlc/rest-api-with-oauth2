@@ -5,6 +5,15 @@ var utils = require('../utils');
 var applications = {};
 var applicationId = 10000;
 
+exports.update = function (appId, application, done) {
+  applications[appId].name = application.name;
+  applications[appId].url = application.url;
+  applications[appId].callback = application.callback;
+  applications[appId].description = application.description;
+
+  return done(null, applications[appId]);
+};
+
 exports.save = function (username, application, done) {
   //console.log("save application: ", application);
 
@@ -68,7 +77,7 @@ exports.findApplication = function (applicationId, done) {
   }
 
   return done(true, null);
-  
+
 };
 
 exports.revokeTokens = function (applicationId, done) {

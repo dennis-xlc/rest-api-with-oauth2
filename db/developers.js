@@ -35,6 +35,21 @@ function loadDeveloperInfo (username) {
   return info;
 };
 
+exports.getDeveloperByEmail = function (email, done) {
+  console.log("get info for developer by email: ", email);
+
+  for(var username in developers) {
+    var developer = loadDeveloperInfo(username);
+    if (developer.email === email) {
+      console.log("find developer: ", developer);
+      return done(null, developer);
+    }
+  }
+
+  return done("Can't find that email, sorry!", null);
+
+};
+
 exports.getDeveloperInfo = function (username, done) {
   console.log("get info for developer: ", username);
   var info = loadDeveloperInfo(username);

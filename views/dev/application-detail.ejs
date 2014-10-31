@@ -109,19 +109,29 @@
                                                     </span>
                                                 </p>
                                             </div>
-                                            <dl class="form">
+                                            <dl class="form <%= verifyResult.nameErr ? 'errored' : '' %>">
                                                 <dt class="input-label"><label autofocus="autofocus" class="wide" for="oauth_application_name" tabindex="2">Application name</label></dt>
                                                 <dd>
                                                     <input autofocus="autofocus" class="wide" id="oauth_application_name" name="application[name]" size="30" tabindex="2" type="text" value="<%= appDetail.name %>" />
+                                                    <% if (!verifyResult.nameErr) {%>
                                                     <p class="note">Something users will recognize and trust</p>
+                                                    <% }%>
                                                 </dd>
+                                                <% if (verifyResult.nameErr) {%>
+                                                <dd class="error"><%= verifyResult.nameErr %></dd>
+                                                <% }%>
                                             </dl>
-                                            <dl class="form">
+                                            <dl class="form <%= verifyResult.urlErr ? 'errored' : '' %>">
                                                 <dt class="input-label"><label class="wide" for="oauth_application_url" tabindex="3">Homepage URL</label></dt>
                                                 <dd>
                                                     <input class="wide" id="oauth_application_url" name="application[url]" size="30" tabindex="3" type="text" value="<%= appDetail.url %>" />
+                                                    <% if (!verifyResult.urlErr) {%>
                                                     <p class="note">The full URL to your application homepage</p>
+                                                    <% }%>
                                                 </dd>
+                                                <% if (verifyResult.urlErr) {%>
+                                                <dd class="error"><%= verifyResult.urlErr %></dd>
+                                                <% }%>
                                             </dl>
                                             <dl class="form">
                                                 <dt class="input-label"><label class="short" for="oauth_application_description" placeholder="Application description is optional" tabindex="4">Application description</label></dt>
@@ -131,12 +141,17 @@
                                                 </dd>
                                             </dl>
                                             <hr class="bleed-flush">
-                                            <dl class="form">
+                                            <dl class="form <%= verifyResult.callbackErr ? 'errored' : '' %>">
                                                 <dt class="input-label"><label class="wide" for="oauth_application_callback_url" tabindex="5">Authorization callback URL</label></dt>
                                                 <dd>
                                                     <input class="wide" id="oauth_application_callback_url" name="application[callback]" size="30" tabindex="5" type="text" value="<%= appDetail.callback %>" />
-                                                    <p class="note">Your application's callback URL. Read our <a href='https://developer.github.com/v3/oauth/' target='_blank'>OAuth documentation</a> for more information</p>
+                                                    <% if (!verifyResult.callbackErr) {%>
+                                                    <p class="note">Your application's callback URL.</p>
+                                                    <% }%>
                                                 </dd>
+                                                <% if (verifyResult.callbackErr) {%>
+                                                <dd class="error"><%= verifyResult.callbackErr %></dd>
+                                                <% }%>
                                             </dl>
                                             <hr class="bleed-flush">
                                             <p>
@@ -180,7 +195,7 @@
                                     </div>
                                     <p>
                                         All users of this application will be forced back through the
-                                        <a href="https://developer.github.com/guides/basics-of-authentication/">authorization flow</a>
+                                        <a href="#">authorization flow</a>
                                         before they can use your application again.
                                     </p>
                                     <p>This action is not reversible.</p>

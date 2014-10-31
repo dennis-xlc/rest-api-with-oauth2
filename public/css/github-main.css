@@ -1252,7 +1252,7 @@ pre {
 	content:'\f06a'
 }
 .octicon-logo-github:before {
-	content:'\f092'
+	/*content:'\f092'*/
 }
 .octicon-mail:before {
 	content:'\f03b'
@@ -1264,7 +1264,7 @@ pre {
 	content:'\f051'
 }
 .octicon-mark-github:before {
-	content:'\f00a'
+	/*content:'\f00a'*/
 }
 .octicon-markdown:before {
 	content:'\f0c9'

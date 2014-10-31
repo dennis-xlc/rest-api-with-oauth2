@@ -113,9 +113,9 @@
                                                 <dt class="input-label"><label class="short" for="oauth_application_description" placeholder="Application description is optional" tabindex="4">Application description</label></dt>
                                                 <dd>
                                                     <textarea class="short" cols="40" id="application_description" name="application[description]" placeholder="Application description is optional" rows="20" tabindex="4"><%= application.description %></textarea>
-                                                    
+
                                                     <p class="note">This is displayed to all potential users of your application</p>
-                                                    
+
                                                 </dd>
                                             </dl>
                                             <hr class="bleed-flush">
@@ -124,7 +124,7 @@
                                                 <dd>
                                                     <input class="wide" id="oauth_application_callback_url" name="application[callback]" size="30" tabindex="5" type="text" value="<%= application.callback %>"/>
                                                     <% if (!verifyResult.callbackErr) {%>
-                                                    <p class="note">Your application's callback URL. Read our <a href='https://developer.github.com/v3/oauth/' target='_blank'>OAuth2 documentation</a> for more information</p>
+                                                    <p class="note">Your application's callback URL. Read our <a href='#' target='_blank'>OAuth2 documentation</a> for more information</p>
                                                     <% }%>
                                                 </dd>
                                                 <% if (verifyResult.callbackErr) {%>

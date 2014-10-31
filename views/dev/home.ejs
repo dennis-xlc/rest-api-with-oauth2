@@ -52,14 +52,14 @@
                                       <% if (applications.length) {%>
                                         <p>These are clients / applications you have registered to use the REST APIs.</p>
                                         <ul class="boxed-group-list">
-                                          <% for(var application in applications) {%>
+                                          <% for( var idx in applications) {%>
                                           <li class="">
                                             <span class="right oauth-application-users">
                                               <strong>0</strong>
                                               users
                                             </span>
-                                            <a class="active" href="/settings/applications/<%= application.id %>" data-pjax><%= application.name %></a>
-                                            <a class="muted-link" href="/settings/applications/<%= application.id %>"><%= application.url %></a>
+                                            <a class="active" href="/settings/applications/<%= applications[idx].id %>" data-pjax><%= applications[idx].name %></a>
+                                            <a class="muted-link" href="/settings/applications/<%= applications[idx].id %>"><%= applications[idx].url %></a>
                                           </li>
                                           <% } %>
                                         </ul>
