@@ -1,8 +1,7 @@
 var passport = require('passport');
 var config = require('../config');
 var db = require('../' + config.db.type);
-
-
+var sendMailUtils = require('../utils/send-mail');
 
 exports.redirectControl = function (req, res) {
   res.redirect('/');
@@ -379,6 +378,33 @@ exports.resetPassword = function (req, res) {
       }
 
     } else {
+      db.passwdresettokens.generate(email, function (err, tokenId) {
+        if (err) {
+          res.redirect('/');
+        } else {
+          var recevier;
+          if (developer.fullName) {
+            recevier += developer.fullName + " <" + developer.email + ">";
+          } else {
+            recevier += developer.name + " <" + developer.email + ">";
+          }
+
+          
+          console.log("try to send reset mail to : ", recevier);
+          sendMailUtils.sendResetPasswdMail(recevier, tokenId, function (err) {
+            if (err) {
+              console.log("err : ", err);
+              res.redirect('/');
+            } else {
+              if (loggedIn) {
+                res.render('dev/passwd-reset-confirm', {title : "Password Sent! · Shinify", login : loggedIn, developer : devInfo});
+              } else {
+                res.render('dev/passwd-reset-confirm', {title : "Password Sent! · Shinify", login : loggedIn});
+              }
+            }
+          });
+        }
+      });
     }
   });
 };
@@ -564,7 +590,22 @@ exports.home = function (req, res) {
 };
 
 exports.loginForm = function (req, res) {
+  if (req.session && req.session.login) {
+    var username = req.session.username;
+
+    var title = "Shinify · " + username;
+    db.developers.getDeveloperInfo(username, function(err, developer){
+      if (err) {
+        res.redirect('/');
+      } else {
+        res.redirect('/home');
+      }
+    });
+
+  } else {
     res.render('dev/login', {title : "Sign in · Shinify", error : false, username : ""});
+  }
+
 };
 
 exports.joinForm = function (req, res) {

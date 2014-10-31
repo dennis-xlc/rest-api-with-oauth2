@@ -3,28 +3,33 @@
 //
 
 exports.client = {
-  clientIdLength : 32,
-  clientSecretLength : 64
+  clientIdLength : 20,
+  clientSecretLength : 40
 };
 
 /**
  * Configuration of access tokens.
  *
- * expiresIn - The time in seconds before the access token expires
- * calculateExpirationDate - A simple function to calculate the absolute
+ * accessTokenExpiresIn - The time in seconds before the access token expires
+ * accessTokenExpirationDate - A simple function to calculate the absolute
  * time that th token is going to expire in.
  * authorizationCodeLength - The length of the authorization code
  * accessTokenLength - The length of the access token
  * refreshTokenLength - The length of the refresh token
  */
 exports.token = {
-    expiresIn: 3600,
-    calculateExpirationDate: function() {
+    accessTokenExpiresIn: 3600,
+    accessTokenExpirationDate: function() {
         return new Date(new Date().getTime() + (this.expiresIn * 1000));
     },
     authorizationCodeLength: 32,
     accessTokenLength: 128,
-    refreshTokenLength: 128
+    refreshTokenLength: 128,
+    passwdResetTokenLength: 48,
+    passwdResetTokenExpiresIn: 3600 * 24,
+    passwdResetTokenExpirationDate: function() {
+        return new Date(new Date().getTime() + (this.passwdResetTokenExpiresIn * 1000));
+    }
 };
 
 /**
@@ -64,4 +69,10 @@ exports.session = {
 
 exports.env = {
   platform: "heroku"
-}
+};
+
+exports.host = {
+    address : "https://shinify.herokuapp.com"
+};
+
+

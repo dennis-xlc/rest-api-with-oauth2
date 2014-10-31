@@ -47,11 +47,11 @@ server.grant(oauth2orize.grant.code(function (client, redirectURI, user, ares, d
  */
 server.grant(oauth2orize.grant.token(function (client, user, ares, done) {
     var token = utils.uid(config.token.accessTokenLength);
-    db.accessTokens.save(token, config.token.calculateExpirationDate(), user.id, client.id, client.scope, function (err) {
+    db.accessTokens.save(token, config.token.accessTokenExpirationDate(), user.id, client.id, client.scope, function (err) {
         if (err) {
             return done(err);
         }
-        return done(null, token, {expires_in: config.token.expiresIn});
+        return done(null, token, {expires_in: config.token.accessTokenExpiresIn});
     });
 }));
 
@@ -89,7 +89,7 @@ server.exchange(oauth2orize.exchange.code(function (client, code, redirectURI, d
                 return done(null, false);
             }
             var token = utils.uid(config.token.accessTokenLength);
-            db.accessTokens.save(token, config.token.calculateExpirationDate(), authCode.userID, authCode.clientID, authCode.scope, function (err) {
+            db.accessTokens.save(token, config.token.accessTokenExpirationDate(), authCode.userID, authCode.clientID, authCode.scope, function (err) {
                 if (err) {
                     return done(err);
                 }
@@ -102,10 +102,10 @@ server.exchange(oauth2orize.exchange.code(function (client, code, redirectURI, d
                         if (err) {
                             return done(err);
                         }
-                        return done(null, token, refreshToken, {expires_in: config.token.expiresIn});
+                        return done(null, token, refreshToken, {expires_in: config.token.accessTokenExpiresIn});
                     });
                 } else {
-                    return done(null, token, refreshToken, {expires_in: config.token.expiresIn});
+                    return done(null, token, refreshToken, {expires_in: config.token.accessTokenExpiresIn});
                 }
             });
         });
@@ -132,7 +132,7 @@ server.exchange(oauth2orize.exchange.password(function(client, username, passwor
             return done(null, false);
         }
         var token = utils.uid(config.token.accessTokenLength);
-        db.accessTokens.save(token, config.token.calculateExpirationDate(), user.id, client.id, scope, function (err) {
+        db.accessTokens.save(token, config.token.accessTokenExpirationDate(), user.id, client.id, scope, function (err) {
             if (err) {
                 return done(err);
             }
@@ -145,10 +145,10 @@ server.exchange(oauth2orize.exchange.password(function(client, username, passwor
                     if (err) {
                         return done(err);
                     }
-                    return done(null, token, refreshToken, {expires_in: config.token.expiresIn});
+                    return done(null, token, refreshToken, {expires_in: config.token.accessTokenExpiresIn});
                 });
             } else {
-                return done(null, token, refreshToken, {expires_in: config.token.expiresIn});
+                return done(null, token, refreshToken, {expires_in: config.token.accessTokenExpiresIn});
             }
         });
     });
@@ -164,11 +164,11 @@ server.exchange(oauth2orize.exchange.password(function(client, username, passwor
 server.exchange(oauth2orize.exchange.clientCredentials(function(client, scope, done) {
     var token = utils.uid(config.token.accessTokenLength);
     //Pass in a null for user id since there is no user when using this grant type
-    db.accessTokens.save(token, config.token.calculateExpirationDate(), null, client.id, scope, function (err) {
+    db.accessTokens.save(token, config.token.accessTokenExpirationDate(), null, client.id, scope, function (err) {
         if (err) {
             return done(err);
         }
-        return done(null, token, null, {expires_in: config.token.expiresIn});
+        return done(null, token, null, {expires_in: config.token.accessTokenExpiresIn});
     });
 }));
 
@@ -191,11 +191,11 @@ server.exchange(oauth2orize.exchange.refreshToken(function(client, refreshToken,
             return done(null, false);
         }
         var token = utils.uid(config.token.accessTokenLength);
-        db.accessTokens.save(token, config.token.calculateExpirationDate(), authCode.userID, authCode.clientID, authCode.scope, function (err) {
+        db.accessTokens.save(token, config.token.accessTokenExpirationDate(), authCode.userID, authCode.clientID, authCode.scope, function (err) {
             if (err) {
                 return done(err);
             }
-            return done(null, token, null, {expires_in: config.token.expiresIn});
+            return done(null, token, null, {expires_in: config.token.accessTokenExpiresIn});
         });
     });
 }));

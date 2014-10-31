@@ -1,35 +1,30 @@
-//var path = require('path');
-//var templatesDir = path.resolve(__dirname, '..', 'views/mail-templates');
-//var emailTemplates = require('email-templates');
+
 var nodemailer = require('nodemailer');
+var ejs = require('ejs');
+var fs = require('fs');
+var config = require('../config');
 
+var transporter = nodemailer.createTransport();
 
-exports.sendMail = function (email, token) {
-  /*emailTemplates(templatesDir, function(err, template) {
+exports.sendResetPasswdMail = function (recevier, token, done) {
+
+  var str = fs.readFileSync("./views/mail-templates/reset-passwd.ejs", 'utf8');
+  var html = ejs.render(str, {hostAddress : config.host.address, resetToken : token});
+
+  var mailOptions = {
+    from: 'Shinify <noreply@shinify.com>',
+    to: recevier,
+    subject: '[Shinify] Please reset your password',
+    html: html
+  };
+
+  transporter.sendMail(mailOptions, function(err, info) {
     if (err) {
       console.log(err);
-    } else {*/
-      var transport = nodemailer.createTransport();
-      //template('reset-passwd', token, function(err, html, text) {
-      //  if (err) {
-      //    console.log(err);
-      //  } else {
-          transport.sendMail({
-            from: 'Shinify <noreply@shinify.com>',
-            to: email,
-            subject: '[Shinify] Please reset your password',
-            html: "<p>Hello, world!</p>",
-            // generateTextFromHTML: true,
-            text: "Hello, world!"
-            }, function(err, responseStatus) {
-              if (err) {
-                console.log(err);
-              } else {
-                console.log(responseStatus.message);
-              }
-          });
-      /*  }
-      });
+      return done(err);
+    } else {
+      console.log('Email sent successfully');
+      return done(null);
     }
-  });*/
+  });
 };
