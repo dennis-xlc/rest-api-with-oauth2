@@ -150,6 +150,17 @@ server.use('/api', apiRouter);
 server.use('/oauth2', oauth2Router);
 
 
+
+//From time to time we need to clean up any expired tokens
+//in the database
+setInterval(function () {
+    db.passwdresettokens.removeExpired(function(err) {
+        if(err) {
+            console.error("Error removing expired tokens");
+        }
+    });
+}, config.db.timeToCheckExpiredTokens * 1000);
+
 //console.log(process.env);
 
 // check if run on heroku
