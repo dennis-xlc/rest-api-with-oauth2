@@ -23,7 +23,7 @@ function loadDeveloperInfo (username) {
   var profile = profiles[username];
 
   var info = {};
-  info.name = developer.userName;
+  info.name = developer.name;
   info.email = developer.email;
   info.joinDate = developer.joinDate;
   info.avatarImg = profile.avatarImg;
@@ -38,8 +38,8 @@ function loadDeveloperInfo (username) {
 exports.getDeveloperByEmail = function (email, done) {
   console.log("get info for developer by email: ", email);
 
-  for(var username in developers) {
-    var developer = loadDeveloperInfo(username);
+  for(var name in developers) {
+    var developer = loadDeveloperInfo(name);
     if (developer.email === email) {
       console.log("find developer: ", developer);
       return done(null, developer);
@@ -125,7 +125,7 @@ exports.save = function (developer, done) {
 
   var avatarImg = gen_avatar(developer.name);
 
-    developers[developer.name] = { userName: developer.name, email: developer.email,
+    developers[developer.name] = { name: developer.name, email: developer.email,
       password: developer.password, joinDate : joinDate };
 
     console.log("new developer: ", developers[developer.name]);

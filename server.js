@@ -110,8 +110,10 @@ baseRouter.post('/settings/applications/:app_id', devSiteController.updateApplic
 baseRouter.get('/settings/applications/:app_id/delete', devSiteController.removeApplication);
 baseRouter.post('/settings/applications/:app_id/revoke_all_tokens', devSiteController.revokeTokens);
 baseRouter.post('/settings/applications/:app_id/reset_secret', devSiteController.restSecret);
-baseRouter.get('/password/reset', devSiteController.resetPasswdForm);
-baseRouter.post('/password/reset', devSiteController.resetPassword);
+baseRouter.get('/password/reset', devSiteController.resetPasswdEmailForm);
+baseRouter.post('/password/reset', devSiteController.resetPasswordEmailRequest);
+baseRouter.get('/password/reset/:token_id', devSiteController.resetPasswordForm);
+baseRouter.post('/password/reset/:token_id', devSiteController.resetPassword);
 baseRouter.post('/password/change', devSiteController.changePassword);
 baseRouter.post('/leave', devSiteController.removeAccount);
 baseRouter.post('/upload/policies/avatars', devSiteController.avatarPolicy);

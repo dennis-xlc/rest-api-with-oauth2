@@ -25,7 +25,7 @@ exports.token = {
     authorizationCodeLength: 32,
     accessTokenLength: 128,
     refreshTokenLength: 128,
-    passwdResetTokenLength: 48,
+    passwdResetTokenLength: 64,
     passwdResetTokenExpiresIn: 3600 * 24,
     passwdResetTokenExpirationDate: function() {
         return new Date(new Date().getTime() + (this.passwdResetTokenExpiresIn * 1000));

@@ -3,11 +3,11 @@ var utils = require('../utils');
 
 var tokens = [];
 
-exports.generate = function (email, done) {
+exports.generate = function (username, email, done) {
 	var tokenId = utils.uid(config.token.passwdResetTokenLength);
 	var expiredDate = config.token.passwdResetTokenExpirationDate();
 
-	var token = {email : email, id : tokenId, expiredDate : expiredDate};
+	var token = {username : username, email : email, id : tokenId, expiredDate : expiredDate};
 	console.log("add token : ", token);
 	tokens.push(token);
 
