@@ -2,7 +2,8 @@
 //You will use these to access your end point data through the means outlined
 //in the RFC The OAuth 2.0 Authorization Framework: Bearer Token Usage
 //(http://tools.ietf.org/html/rfc6750)
-mongodb = require('./mongoinit.js')
+
+var mongoose = require('./mongooseinit.js');
 
 /**
  * Returns an access token if it finds one, otherwise returns
