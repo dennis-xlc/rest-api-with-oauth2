@@ -1,11 +1,11 @@
-var config = require('../../config');
-var db = require('../../' + config.db.type);
+var models = require('../../models');
+var accountVerification = require('../../utils/accountVerification');
 
 /**
   Handle 'GET' request for '/join'
 **/
 exports.accountCreationForm = function (req, res) {
-  var result = new JoinVerifyResult();
+  var result = new accountVerification.JoinVerifyResult();
     res.render('dev/join', {title : "Join us · Shinify", verifyResult : result,
       developer : {name : "", email : ""}});
 };
@@ -21,53 +21,58 @@ exports.createAccount = function (req, res) {
   var user = req.body.user;
   var source = req.body.source_label;
 
-  var result = new JoinVerifyResult();
+  var verifyResult = new accountVerification.JoinVerifyResult();
 
   // check the user name
-  checkUserName(user.name, function (err) {
+  accountVerification.checkUserName(user.name, function (err, result) {
     if (err) {
-      result.error = true;
-      result.nameErr = err;
+      verifyResult.error = true;
+      verifyResult.errMsg = err;
+    } else {
+      verifyResult.error = result.error;
+      verifyResult.nameErr = result.msg;
     }
-  });
 
-  // check the email
-  checkEmail(user.email, function (err) {
-    if (err) {
-      result.error = true;
-      result.emailErr = err;
-    }
-  });
-
-  // check the user password
-  checkPassword(user.password, user.password_confirmation, source, function (err) {
-    if (err) {
-      result.error = true;
-      result.passwordErr = err;
-    }
-  });
-
-
-  if (result.error) {
-      res.render('dev/join', {title : "Join us · Shinify", verifyResult : result,
-        developer : {name : user.name, email : user.email}});
-  } else {
-
-    db.developers.save(user, function (err) {
+    // check the email
+    accountVerification.checkEmail(user.email, function (err, result) {
       if (err) {
-          res.render('dev/join', {title : "Join us · Shinify", verifyResult : result,
-        developer : {name : user.name, email : user.email}});
+        verifyResult.error = true;
+        verifyResult.errMsg = err;
       } else {
-        req.session.username = user.name;
-        req.session.login = true;
-        res.redirect('/home');
+        verifyResult.error = result.error;
+        verifyResult.emailErr = result.msg;
       }
+
+      // check the user password
+      accountVerification.checkPassword(user.password, 
+        user.password_confirmation, source, function (err, result) {
+        if (err) {
+          verifyResult.error = true;
+          verifyResult.errMsg = err;
+        } else {
+          verifyResult.error = result.error;
+          verifyResult.passwordErr = result.msg;
+        }
+
+        if (verifyResult.error) {
+            res.render('dev/join', {title : "Join us · Shinify", verifyResult : verifyResult,
+              developer : {name : user.name, email : user.email}});
+        } else {
+
+          models.developers.save(user, function (err) {
+            if (err) {
+                res.render('dev/join', {title : "Join us · Shinify", verifyResult : verifyResult,
+              developer : {name : user.name, email : user.email}});
+            } else {
+              req.session.username = user.name;
+              req.session.login = true;
+              res.redirect('/home');
+            }
+          });
+        }
+      });
     });
-
-
-  }
-
-
+  });
 };
 
 exports.removeAccount = function (req, res) {
@@ -79,7 +84,7 @@ exports.removeAccount = function (req, res) {
       error = true;
       errMsg = "Cannot delete account due to invalid user name!";
     } else {
-      db.developers.remove(username, function(err) {
+      models.developers.remove(username, function(err) {
         if (err) {
           error = true;
           errMsg = "Cannot delete account due to internal error!";
@@ -88,7 +93,7 @@ exports.removeAccount = function (req, res) {
     }
 
     if (error) {
-      db.developers.getDeveloperInfo(username, function(err, developer){
+      models.developers.getDeveloperInfo(username, function(err, developer){
         if (err) {
           res.redirect('/home');
         } else {

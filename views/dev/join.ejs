@@ -26,13 +26,13 @@
                               Create your developer account
                            </h2>
                            <% if (verifyResult.error) {%>
-                             <div class="flash flash-error">There were problems creating your account.</div>
+                             <div class="flash flash-error"><%= verifyResult.errMsg %></div>
                              <% }%>
 
                            <dl class="form <%= verifyResult.nameErr ? 'errored' : '' %>">
-                              <dt class="input-label"><label autocapitalize="off" autofocus="autofocus" data-autocheck-url="/signup_check/username" for="user_login" name="user[login]">Username</label></dt>
+                              <dt class="input-label"><label autocapitalize="off" autofocus="autofocus" for="user_login" name="user[login]">Username</label></dt>
                               <dd>
-                                 <input autocapitalize="off" autofocus="autofocus" data-autocheck-url="/signup_check/username" id="user_login" name="user[name]" size="30" type="text" value="<%= developer.name %>"/>
+                                 <input autocapitalize="off" autofocus="autofocus" id="user_login" name="user[name]" size="30" type="text" value="<%= developer.name %>"/>
                                  <% if (!verifyResult.nameErr) {%>
                                  <p class="note">This will be your username — you can enter your username when login.</p>
                                  <% }%>
@@ -43,7 +43,7 @@
 
                            </dl>
                            <dl class="form <%= verifyResult.emailErr ? 'errored' : '' %>">
-                              <dt class="input-label"><label autocapitalize="off" data-autocheck-url="/signup_check/email" for="user_email" name="user[email]">Email Address</label></dt>
+                              <dt class="input-label"><label autocapitalize="off" for="user_email" name="user[email]">Email Address</label></dt>
                               <dd>
                                  <input autocapitalize="off" data-autocheck-url="/signup_check/email" id="user_email" name="user[email]" size="30" type="text" value="<%= developer.email %>" />
                                  <% if (!verifyResult.emailErr) {%>
@@ -55,7 +55,7 @@
                               <% }%>
                            </dl>
                            <dl class="form <%= verifyResult.passwordErr ? 'errored' : '' %>">
-                              <dt class="input-label"><label data-autocheck-url="/signup_check/password" for="user_password" name="user[password]">Password</label></dt>
+                              <dt class="input-label"><label for="user_password" name="user[password]">Password</label></dt>
                               <dd>
                                  <input data-autocheck-url="/signup_check/password" id="user_password" name="user[password]" size="30" type="password" />
                                  <% if (!verifyResult.passwordErr) {%>

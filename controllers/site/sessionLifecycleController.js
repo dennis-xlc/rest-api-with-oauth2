@@ -1,5 +1,4 @@
-var config = require('../../config');
-var db = require('../../' + config.db.type);
+var models = require('../../models');
 
 
 /**
@@ -10,8 +9,8 @@ exports.loginForm = function (req, res) {
     var username = req.session.username;
 
     var title = "Shinify · " + username;
-    db.developers.getDeveloperInfo(username, function(err, developer){
-      if (err) {
+    models.developers.findOneByName(username, function(err, developer){
+      if (err || !developer) {
         res.redirect('/');
       } else {
         res.redirect('/home');
@@ -34,11 +33,14 @@ exports.login = function (req, res) {
   var username = req.body.user.username;
   var password = req.body.user.password;
 
-  db.developers.verifyPassword(username, password, function(err) {
+  models.developers.findOneByNameAndPassword(username, password, function(err, developer) {
     if (err) {
-      res.render('dev/login', {title : "Sign in · Shinify", error : true, username : username});
-    }
-    else {
+      res.render('dev/login', {title : "Sign in · Shinify", 
+          error : true, errMsg : "There were problems logging on.", username : username});
+    } else if (!developer) {
+      res.render('dev/login', {title : "Sign in · Shinify", 
+          error : true, errMsg : "Incorrect username or password.", username : username});
+    } else {
       req.session.username = username;
       req.session.login = true;
       res.redirect('/home');

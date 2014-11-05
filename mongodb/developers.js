@@ -1,10 +1,10 @@
-var mongodb = require('mongooseinit').mongodb;
+var mongodb = require('./mongooseinit').mongodb;
 var Schema = mongodb.Schema;
 
 var developerSchema = new Schema({
-  id : ObjectId,
   name : String,
   email : String,
+  password : String,
   joinDate : { type: Date, default: Date.now },
   profile : {
     avatarImg : String,
@@ -13,7 +13,8 @@ var developerSchema = new Schema({
     company : String,
     url : String
   }
-}, { _id : false });
+}, { id : false });
 
+mongodb.model('Developer', developerSchema);
 
-exports.Developer = mongodb.model('Developer', developerSchema);
+exports.Developer = mongodb.model('Developer');

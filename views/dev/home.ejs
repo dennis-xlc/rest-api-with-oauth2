@@ -17,7 +17,7 @@
                     <div class="container">
                         <div class="columns profilecols js-username">
                             <div class="column one-fourth vcard">
-                                <a href="/settings/profile" aria-label="Change your avatar" class="vcard-avatar tooltipped tooltipped-s"><img class="avatar" height="230" src="/avatars/<%= developer.avatarImg%>" width="230" /></a>
+                                <a href="/settings/profile" aria-label="Change your avatar" class="vcard-avatar tooltipped tooltipped-s"><img class="avatar" height="230" src="/avatars/<%= developer.profile.avatarImg%>" width="230" /></a>
                                 <h1 class="vcard-names">
                                     <% if (developer.fullName) { %>
                                     <span class="vcard-fullname" itemprop="name"><%= developer.fullName%></span>
@@ -38,7 +38,7 @@
                                     <li class="vcard-detail" itemprop="url"><span class="octicon octicon-link"></span><a href="<%= developer.url%>" class="url" rel="nofollow me"><%= developer.url%></a></li>
                                     <% } %>
                                     <% if (developer.joinDate) { %>
-                                    <li class="vcard-detail"><span class="octicon octicon-clock"></span><span class="join-label">Joined on </span><time class="join-date" ><%= developer.joinDate%></time></li>
+                                    <li class="vcard-detail"><span class="octicon octicon-clock"></span><span class="join-label">Joined on </span><time class="join-date" datetime="<%= developer.joinDate%>" day="numeric" is="local-time" month="short" year="numeric"></time></li>
                                     <% } %>
                                 </ul>
 

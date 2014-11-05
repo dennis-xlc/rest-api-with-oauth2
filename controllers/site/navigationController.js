@@ -1,5 +1,4 @@
-var config = require('../../config');
-var db = require('../../' + config.db.type);
+var models = require('../../models');
 
 
 exports.index = function (req, res) {
@@ -16,11 +15,12 @@ exports.home = function (req, res) {
     var username = req.session.username;
 
     var title = "Shinify · " + username;
-    db.developers.getDeveloperInfo(username, function(err, developer){
-      if (err) {
+    models.developers.findOneByName(username, function(err, developer){
+      if (err || !developer) {
         res.redirect('/');
       } else {
-        db.applications.loadApplications(username, function(err, applications) {
+        /*
+        models.applications.loadApplications(username, function(err, applications) {
           if (err) {
             res.redirect('/home');
           } else {
@@ -28,6 +28,8 @@ exports.home = function (req, res) {
             res.render('dev/home', {title : "Home · Shinify", developer : developer, applications : applications});
           }
         });
+*/
+            res.render('dev/home', {title : "Home · Shinify", developer : developer, applications : []});
       }
     });
 
