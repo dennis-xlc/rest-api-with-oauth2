@@ -34,11 +34,30 @@ if (config.session.type === 'MongoStore') {
     throw new Error("Within config/index.js the session.type is unknown: " + config.session.type )
 }
 
+
+// Create our Express server
+var server = express();
+
+
 //Pull in the mongo store if we're configured to use it
 //else pull in MemoryStore for the database configuration
 var db = require('./' + config.db.type);
 if(config.db.type === 'mongodb') {
     console.log('Using MongoDB for the data store');
+
+    var mongoosedb = require('./mongodb/mongooseinit.js');
+    mongoosedb.connect(function(err) {
+      if (err) {
+        console.log('Fail to connect to mongodb!');
+      } else {
+        console.log('Succsee to connect to mongodb!');
+      }
+    });
+
+    server.on('close', function(err) {
+      mongoosedb.disconnect(function(err) {});
+    });
+
 } else if(config.db.type === 'db') {
     console.log('Using MemoryStore for the data store');
 } else {
@@ -47,8 +66,6 @@ if(config.db.type === 'mongodb') {
 }
 
 
-// Create our Express server
-var server = express();
 
 // Use environment defined port or 3000
 server.set('port', (process.env.PORT || 3000));
@@ -86,39 +103,9 @@ server.use(passport.session());
 
 
 // Create our Express router
-var baseRouter = express.Router();
+var siteRouter = require('./routers/siteRouter').router;
 var oauth2Router = express.Router();
 var apiRouter = express.Router();
-
-
-baseRouter.get('/', devSiteController.index);
-baseRouter.get('/login', devSiteController.loginForm);
-baseRouter.post('/login', devSiteController.login);
-baseRouter.post('/logout', devSiteController.logout);
-baseRouter.get('/join', devSiteController.joinForm);
-baseRouter.post('/join', devSiteController.join);
-baseRouter.get('/home', devSiteController.home);
-baseRouter.get('/settings', devSiteController.settings);
-baseRouter.get('/settings/profile', devSiteController.profile);
-baseRouter.post('/settings/profile', devSiteController.updateProfile);
-baseRouter.get('/settings/admin', devSiteController.admin);
-baseRouter.get('/settings/applications', devSiteController.applications);
-baseRouter.post('/settings/applications', devSiteController.createApplication);
-baseRouter.get('/settings/applications/new', devSiteController.applicationForm);
-baseRouter.get('/settings/applications/:app_id', devSiteController.applicationDetail);
-baseRouter.post('/settings/applications/:app_id', devSiteController.updateApplication);
-baseRouter.get('/settings/applications/:app_id/delete', devSiteController.removeApplication);
-baseRouter.post('/settings/applications/:app_id/revoke_all_tokens', devSiteController.revokeTokens);
-baseRouter.post('/settings/applications/:app_id/reset_secret', devSiteController.restSecret);
-baseRouter.get('/password/reset', devSiteController.resetPasswdEmailForm);
-baseRouter.post('/password/reset', devSiteController.resetPasswordEmailRequest);
-baseRouter.get('/password/reset/:token_id', devSiteController.resetPasswordForm);
-baseRouter.post('/password/reset/:token_id', devSiteController.resetPassword);
-baseRouter.post('/password/change', devSiteController.changePassword);
-baseRouter.post('/leave', devSiteController.removeAccount);
-baseRouter.post('/upload/policies/avatars', devSiteController.avatarPolicy);
-baseRouter.post('/upload/avatar', devSiteController.uploadAvatar);
-baseRouter.get('/*', devSiteController.redirectControl);
 
 
 // Initial dummy route for testing
@@ -145,7 +132,7 @@ oauth2Router.post('/authorize/decision', oauth2Controller.decision);
 oauth2Router.post('/token', oauth2Controller.token);
 
 // Register all our routes
-server.use('/', baseRouter);
+server.use('/', siteRouter);
 server.use('/api', apiRouter);
 server.use('/oauth2', oauth2Router);
 

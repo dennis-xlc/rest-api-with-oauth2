@@ -44,8 +44,8 @@ exports.token = {
  */
 exports.db = {
     timeToCheckExpiredTokens: 3600,
-    type: "db",
-    dbName: "OAuth2Tokens"
+    type: "mongodb",
+    dbName: "Shinify"
 };
 
 /**
@@ -74,5 +74,3 @@ exports.env = {
 exports.host = {
     address : "https://shinify.herokuapp.com"
 };
-
-

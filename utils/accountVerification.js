@@ -1,18 +1,18 @@
-var passport = require('passport');
+
+
 var config = require('../config');
 var db = require('../' + config.db.type);
-var sendMailUtils = require('../utils/send-mail');
 
 
 
-function JoinVerifyResult () {
+exports.JoinVerifyResult = function () {
   this.error = false;
   this.nameErr = null;
   this.emailErr = null;
   this.passwordErr = null;
 };
 
-function checkUserName(username, done) {
+exports.checkUserName = function (username, done) {
 
   if (username === "") {
     console.log("Username must not be blank!");
@@ -33,7 +33,7 @@ function checkUserName(username, done) {
   return done(null);
 };
 
-function checkEmail(email, done) {
+exports.checkEmail = function (email, done) {
 
   if (email === "") {
     console.log("Email must not be empty!");
@@ -55,7 +55,7 @@ function checkEmail(email, done) {
 };
 
 
-function checkPassword(passwd, verifyPasswd, source, done) {
+exports.checkPassword = function (passwd, verifyPasswd, source, done) {
   if (passwd === "") {
     console.log("Password must not be empty!");
     return done("Password must not be empty!");
@@ -96,53 +96,4 @@ function checkPassword(passwd, verifyPasswd, source, done) {
 
   return done(null);
 
-};
-
-function ApplicationVerifyResult () {
-  this.error = false;
-  this.nameErr = null;
-  this.urlErr = null;
-  this.callbackErr = null;
-};
-
-function checkAppName(name, done) {
-
-  if (name === "") {
-    console.log("Application name must not be blank!");
-    return done("Application name must not be blank!");
-  }
-
-  return done(null);
-};
-
-function checkAppUrl(url, done) {
-
-  if (url === "") {
-    console.log("Homepage URL must not be blank!");
-    return done("Homepage URL must not be blank!");
-  }
-
-  var pattern = /^htt(p|ps):\/\/([a-zA-Z0-9-_.\/])+/;
-  if (!pattern.test(url)) {
-    console.log("Homepage URL is invalid and must start with http:// or https:// !");
-    return done("Homepage URL is invalid and must start with http:// or https:// !");
-  }
-
-  return done(null);
-};
-
-function checkAppCallback(callback, done) {
-
-  if (callback === "") {
-    console.log("Callback Url must not be blank!");
-    return done("Callback Url must not be blank!");
-  }
-
-  var pattern = /^htt(p|ps):\/\/([a-zA-Z0-9-_.\/])+/;
-  if (!pattern.test(callback)) {
-    console.log("Callback Url is invalid and must start with http:// or https:// !");
-    return done("Callback Url is invalid and must start with http:// or https:// !");
-  }
-
-  return done(null);
 };
