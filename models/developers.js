@@ -5,6 +5,20 @@ var Legicon = require('../utils/legicon-custom');
 
 var Developer = require('../mongodb/developers.js').Developer;
 
+exports.findById = function (id, done) {
+  Developer.findById(id, function (err, developer) {
+    if (err) {
+      console.log("no developer found : ", username);
+      return done("There were problems checking user name.", null);
+    } else if (developer) {
+      console.log("found developer: ", developer);
+      return done(null, developer);
+    }
+
+    return done(null, null);
+  });
+};
+
 
 exports.findOneByName = function (username, done) {
   Developer.findOne({name : username}, function (err, developer) {
@@ -79,9 +93,24 @@ exports.updateProfile = function (username, profile, done) {
   });
 };
 
+exports.updatePasswordById = function (id, password, done) {
+  var encryptPasswd = genEncryptPassword(password);
 
+  var update = {
+    $set: { password : encryptPasswd }
+  };
 
-exports.updatePassword = function (username, password, done) {
+  Developer.findByIdAndUpdate(id, update, function (err, developer) {
+    if (err) {
+      return done(err, null);
+    } else {
+      console.log("success to update password: ", developer);
+      return done(null, developer);
+    }
+  });
+};
+
+exports.updatePasswordByName = function (username, password, done) {
   var encryptPasswd = genEncryptPassword(password);
 
   var query = {name : username};

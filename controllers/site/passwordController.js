@@ -43,37 +43,8 @@ exports.resetPasswordEmailRequest = function (req, res) {
               login : loggedIn, error : true, errMsg : "Can't find that email, sorry!", email : email});
       }
     } else {
-      models.passwdresettokens.generate(developer.name, email, function (err, token) {
-        
-      });
-    }
-  });
-
-  var devInfo;
-  if (loggedIn) {
-    var username = req.session.username;
-    models.developers.getDeveloperInfo(username, function(err, developer){
-      if (err) {
-        res.redirect('/home');
-      } else {
-        devInfo = developer;
-      }
-    });
-  }
-
-  models.developers.getDeveloperByEmail(email, function (err, developer) {
-    if (err) {
-      if (loggedIn) {
-        res.render('dev/passwd-reset-request', {title : "Forget Your Password? · Shinify",
-              login : loggedIn, error : true, errMsg : err, developer : devInfo});
-      } else {
-        res.render('dev/passwd-reset-request', {title : "Forget Your Password? · Shinify",
-              login : loggedIn, error : true, errMsg : err, email : email});
-      }
-
-    } else {
-      models.passwdresettokens.generate(developer.name, email, function (err, tokenId) {
-        if (err) {
+      models.passwdresettokens.generate(developer, function (err, token) {
+        if (err || !token) {
           res.redirect('/');
         } else {
           var recevier;
@@ -83,20 +54,27 @@ exports.resetPasswordEmailRequest = function (req, res) {
             recevier = developer.name + " <" + developer.email + ">";
           }
 
-
           console.log("try to send reset mail to : ", recevier);
           sendMailUtils.sendResetPasswdRequestMail(recevier, tokenId, function (err) {
             if (err) {
               console.log("err : ", err);
               res.redirect('/');
             } else {
-              if (loggedIn) {
-                res.render('dev/passwd-reset-confirm', {title : "Password Sent! · Shinify", login : loggedIn, developer : devInfo});
-              } else {
-                res.render('dev/passwd-reset-confirm', {title : "Password Sent! · Shinify", login : loggedIn});
-              }
+              console.log("success to send reset passwd mail to " + recevier);
             }
           });
+
+          if (loggedIn) {
+            models.developers.findOneByName(req.session.username, function (err, developer) {
+              if (err | !developer) {
+                res.redirect('/');
+              } else {
+                res.render('dev/passwd-reset-confirm', {title : "Password Sent! · Shinify", login : loggedIn, developer : devInfo});
+              }
+            });
+          } else {
+            res.render('dev/passwd-reset-confirm', {title : "Password Sent! · Shinify", login : loggedIn});
+          }
         }
       });
     }
@@ -107,47 +85,35 @@ exports.resetPasswordForm = function (req, res) {
   var loggedIn = (req.session && req.session.login);
   var tokenId = req.params.token_id;
 
-  var devInfo;
-  if (loggedIn) {
-    var username = req.session.username;
-    models.developers.getDeveloperInfo(username, function(err, developer){
-      if (err) {
-        res.redirect('/home');
-      } else {
-        devInfo = developer;
-      }
-    });
-  }
-
-  db.passwdresettokens.find(tokenId, function (err, token) {
-    var errMsg;
-    var tokenId;
-    if (err) {
-      errMsg = "It looks like you clicked on an invalid password reset link. Please try again.";
-    } else {
-      var now = new Date().getTime();
-      if (token.expiredDate < now) {
-        errMsg = "It looks like you clicked on an expired password reset link. Please try again.";
-      }
-
-      tokenId = token.id;
-    }
-
-    if (errMsg) {
+  models.passwdresettokens.findOneById(tokenId, function (err, token) {
+    if (err || !token) {
+      var errMsg = "It looks like you clicked on an invalid/expired password reset link. Please try again.";
       if (loggedIn) {
-        res.render('dev/passwd-reset-request', {title : "Forget Your Password? · Shinify",
-              login : loggedIn, error : true, errMsg : errMsg, developer : devInfo});
+        models.developers.findOneByName(req.session.username, function (err, developer) {
+          if (err | !developer) {
+            res.redirect('/');
+          } else {
+            res.render('dev/passwd-reset-request', {title : "Forget Your Password? · Shinify",
+              login : loggedIn, error : true, errMsg : errMsg, developer : developer});
+          }
+        });
       } else {
         res.render('dev/passwd-reset-request', {title : "Forget Your Password? · Shinify",
               login : loggedIn, error : true, errMsg : errMsg, email : ""});
       }
     } else {
       if (loggedIn) {
-        res.render('dev/passwd-reset', {title : "Change your password · Shinify",
-              login : loggedIn, error : false, errMsg : errMsg, developer : devInfo, token_id : tokenId});
+        models.developers.findOneByName(req.session.username, function (err, developer) {
+          if (err | !developer) {
+            res.redirect('/');
+          } else {
+            res.render('dev/passwd-reset', {title : "Change your password · Shinify",
+              login : loggedIn, error : false, developer : developer, token_id : token.id});
+          }
+        });
       } else {
         res.render('dev/passwd-reset', {title : "Change your password · Shinify",
-              login : loggedIn, error : false, errMsg : errMsg, token_id : tokenId});
+              login : loggedIn, error : false, token_id : token.id});
       }
     }
   });
@@ -161,82 +127,82 @@ exports.resetPassword = function (req, res) {
   var loggedIn = (req.session && req.session.login);
   var tokenId = req.params.token_id;
 
-  var devInfo;
-  if (loggedIn) {
-    var username = req.session.username;
-    db.developers.getDeveloperInfo(username, function(err, developer){
-      if (err) {
-        res.redirect('/home');
-      } else {
-        devInfo = developer;
-      }
-    });
-  }
-
-  db.passwdresettokens.find(tokenId, function (err, token) {
-    var errMsg;
-    if (err) {
-      errMsg = "It looks like you clicked on an invalid password reset link. Please try again.";
-    } else {
-      var now = new Date().getTime();
-      if (token.expiredDate < now) {
-        errMsg = "It looks like you clicked on an expired password reset link. Please try again.";
-      }
-    }
-
-    if (errMsg) {
+  models.passwdresettokens.findOneById(tokenId, function (err, token) {
+    if (err || !token) {
+      var errMsg = "It looks like you clicked on an invalid/expired password reset link. Please try again.";
       if (loggedIn) {
-        res.render('dev/passwd-reset', {title : "Change your password · Shinify",
-              login : loggedIn, error : true, errMsg : errMsg, developer : devInfo, token_id : tokenId});
+        models.developers.findOneByName(req.session.username, function (err, developer) {
+          if (err | !developer) {
+            res.redirect('/');
+          } else {
+            res.render('dev/passwd-reset', {title : "Change your password · Shinify",
+              login : loggedIn, error : true, errMsg : errMsg, developer : developer, token_id : tokenId});
+          }
+        });
       } else {
         res.render('dev/passwd-reset', {title : "Change your password · Shinify",
               login : loggedIn, error : true, errMsg : errMsg, token_id : tokenId});
       }
     } else {
-
+      var error;
       var errMsg;
       // check the user password
-      checkPassword(password, password_confirmation, "Detail", function (err) {
+      accountVerification.checkPassword(password, password_confirmation, 
+          "Detail", function (err, result) {
         if (err) {
-          errMsg = err;
+          error = true;
+          errMsg = "There are problems reseting your password!";
+        } else if (result.error) {
+          error = true;
+          errMsg = result.msg;
         } else {
-          db.developers.updatePassword(token.username, password, function (err) {
-            if (err) {
-              errMsg = "Error when updating passwrod, please try again later!";
+          models.developers.findById(token._creator.id, function (err, developer) {
+            if (err || !developer) {
+              error = true;
+              errMsg = "There are problems reseting your password!";
             } else {
-              console.log("try to send reset mail to : ", token.email);
-              sendMailUtils.sendResetPasswdConfirmMail(token.username, token.email, function (err) {
-                if (err) {
-                  console.log("err : ", err);
+              models.developers.updatePasswordByName(developer.name, password, function (err, developer) {
+                if (err || !developer) {
+                  error = true;
+                  errMsg = "There are problems reseting your password!";
+                } else {
+                  console.log("try to send reset mail to : ", developer.email);
+                  sendMailUtils.sendResetPasswdConfirmMail(developer.name, developer.email, function (err) {
+                    if (err) {
+                      console.log("err : ", err);
+                    } else {
+                      console.log("success to send reset passwd confirmation mail to " + developer.email);
+                    }
+                  });
                 }
               });
             }
           });
         }
+        if (error) {
+          if (loggedIn) {
+            models.developers.findOneByName(req.session.username, function (err, developer) {
+              if (err | !developer) {
+                es.redirect('/');
+              } else {
+                res.render('dev/passwd-reset', {title : "Change your password · Shinify",
+              login : loggedIn, error : error, errMsg : errMsg, developer : developer, token_id : token.id});
+              }
+            });
+          } else {
+            res.render('dev/passwd-reset', {title : "Change your password · Shinify",
+              login : loggedIn, error : error, errMsg : errMsg, token_id : token.id});
+          }
+        } else {
+          if (loggedIn) {
+            res.redirect('/home');
+          } else {
+            res.redirect('/login');
+          }
+        }
       });
-
-      if (errMsg) {
-        if (loggedIn) {
-          res.render('dev/passwd-reset', {title : "Change your password · Shinify",
-              login : loggedIn, error : true, errMsg : errMsg, developer : devInfo, token_id : tokenId});
-        } else {
-          res.render('dev/passwd-reset', {title : "Change your password · Shinify",
-              login : loggedIn, error : true, errMsg : errMsg, token_id : tokenId});
-        }
-      } else {
-        if (loggedIn) {
-          res.redirect('/home');
-        } else {
-          res.redirect('/login');
-        }
-      }
     }
-
   });
-
-
-
-
 };
 
 
@@ -248,39 +214,49 @@ exports.changePassword = function (req, res) {
 
     var error = false;
     var errMsg;
-
-    models.developers.verifyPassword(username, user.old_password, function(err) {
-      if (err) {
+    models.developers.findOneByNameAndPassword(username, user.old_password, function (err, developer) {
+      if (err || !developer) {
         error = true;
-        errMsg = "Old password is invalid!";
-      }
-      else {
+        errMsg = "Old password is invalid!"
+      } else {
         // check the user password
-        checkPassword(user.password, user.password_confirmation, "Detail", function (err) {
+        accountVerification.checkPassword(user.password, user.password_confirmation, 
+          "Detail", function (err, result) {
           if (err) {
             error = true;
-            errMsg = err;
+            errMsg = "There are problems changing your password!";
+          } else if (result.error) {
+            error = true;
+            errMsg = result.msg;
           } else {
-            db.developers.updatePassword(username, user.password, function (err) {
-              if (err) {
+            models.developers.updatePasswordByName(developer.name, password, function (err, developer) {
+              if (err || !developer) {
                 error = true;
-                errMsg = "Error when updating passwrod, please try again later!";
+                errMsg = "There are problems changing your password!";
+              } else {
+                console.log("try to send password changed mail to : ", developer.email);
+                sendMailUtils.sendResetPasswdConfirmMail(developer.name, developer.email, function (err) {
+                  if (err) {
+                    console.log("err : ", err);
+                  } else {
+                    console.log("success to send password changed confirmation mail to " + developer.email);
+                  }
+                });
               }
             });
           }
         });
       }
-    });
 
-    models.developers.getDeveloperInfo(username, function(err, developer){
-      if (err) {
-        res.redirect('/home');
-      } else {
-        res.render('dev/admin', {title : "Account Settings · Shinify",
+      models.developers.findOneByName(username, function (err, developer) {
+        if (err || !developer) {
+          res.redirect('/home');
+        } else {
+          res.render('dev/admin', {title : "Account Settings · Shinify",
             successUpdate : !error, error : error, errMsg : errMsg, developer : developer});
-      }
+        }
+      });
     });
-
   } else {
     res.redirect('/');
   }

@@ -32,15 +32,12 @@ exports.updateProfile = function (req, res) {
 
     models.developers.updateProfile(username, profile, function(err, developer){
       if (err) {
-        //res.redirect('/settings/profile');
-      }
-
-      res.render('dev/profile', {title : "Your Profile · Shinify",
+        res.redirect('/settings/profile');
+      } else {
+        res.render('dev/profile', {title : "Your Profile · Shinify",
             successUpdate : true, error : false, developer : developer});
-
+      }
     });
-
-
   } else {
     res.redirect('/');
   }
