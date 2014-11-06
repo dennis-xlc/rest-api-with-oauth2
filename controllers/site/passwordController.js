@@ -1,14 +1,14 @@
-var config = require('../../config');
-var db = require('../../' + config.db.type);
+var models = require('../../models');
+var accountVerification = require('../../utils/accountVerification');
 var sendMailUtils = require('../../utils/send-mail');
 
 
 exports.resetPasswdEmailForm = function (req, res) {
   if (req.session && req.session.login) {
     var username = req.session.username;
-    db.developers.getDeveloperInfo(username, function(err, developer){
-      if (err) {
-        res.redirect('/home');
+    models.developers.findOneByName(username, function(err, developer){
+      if (err || !developer) {
+        res.redirect('/');
       } else {
         res.render('dev/passwd-reset-request', {title : "Forget Your Password? · Shinify",
               login : true, error : false, developer : developer});
@@ -25,10 +25,34 @@ exports.resetPasswordEmailRequest = function (req, res) {
   console.log("trying to reset password for email: ", email);
 
   var loggedIn = (req.session && req.session.login);
+
+  models.developers.findOneByEmail(email, function (err, developer) {
+    if (err || !developer) {
+      if (loggedIn) {
+        models.developers.findOneByName(req.session.username, function (err, developer) {
+          if (err | !developer) {
+            res.redirect('/');
+          } else {
+            res.render('dev/passwd-reset-request', {title : "Forget Your Password? · Shinify",
+                  login : loggedIn, error : true, errMsg : "Can't find that email, sorry!", developer : developer});
+          }
+        });
+
+      } else {
+        res.render('dev/passwd-reset-request', {title : "Forget Your Password? · Shinify",
+              login : loggedIn, error : true, errMsg : "Can't find that email, sorry!", email : email});
+      }
+    } else {
+      models.passwdresettokens.generate(developer.name, email, function (err, token) {
+        
+      });
+    }
+  });
+
   var devInfo;
   if (loggedIn) {
     var username = req.session.username;
-    db.developers.getDeveloperInfo(username, function(err, developer){
+    models.developers.getDeveloperInfo(username, function(err, developer){
       if (err) {
         res.redirect('/home');
       } else {
@@ -37,7 +61,7 @@ exports.resetPasswordEmailRequest = function (req, res) {
     });
   }
 
-  db.developers.getDeveloperByEmail(email, function (err, developer) {
+  models.developers.getDeveloperByEmail(email, function (err, developer) {
     if (err) {
       if (loggedIn) {
         res.render('dev/passwd-reset-request', {title : "Forget Your Password? · Shinify",
@@ -48,7 +72,7 @@ exports.resetPasswordEmailRequest = function (req, res) {
       }
 
     } else {
-      db.passwdresettokens.generate(developer.name, email, function (err, tokenId) {
+      models.passwdresettokens.generate(developer.name, email, function (err, tokenId) {
         if (err) {
           res.redirect('/');
         } else {
@@ -86,7 +110,7 @@ exports.resetPasswordForm = function (req, res) {
   var devInfo;
   if (loggedIn) {
     var username = req.session.username;
-    db.developers.getDeveloperInfo(username, function(err, developer){
+    models.developers.getDeveloperInfo(username, function(err, developer){
       if (err) {
         res.redirect('/home');
       } else {
@@ -225,7 +249,7 @@ exports.changePassword = function (req, res) {
     var error = false;
     var errMsg;
 
-    db.developers.verifyPassword(username, user.old_password, function(err) {
+    models.developers.verifyPassword(username, user.old_password, function(err) {
       if (err) {
         error = true;
         errMsg = "Old password is invalid!";
@@ -248,7 +272,7 @@ exports.changePassword = function (req, res) {
       }
     });
 
-    db.developers.getDeveloperInfo(username, function(err, developer){
+    models.developers.getDeveloperInfo(username, function(err, developer){
       if (err) {
         res.redirect('/home');
       } else {

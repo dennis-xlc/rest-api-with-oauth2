@@ -44,7 +44,7 @@ exports.createAccount = function (req, res) {
       }
 
       // check the user password
-      accountVerification.checkPassword(user.password, 
+      accountVerification.checkPassword(user.password,
         user.password_confirmation, source, function (err, result) {
         if (err) {
           verifyResult.error = true;
@@ -59,7 +59,7 @@ exports.createAccount = function (req, res) {
               developer : {name : user.name, email : user.email}});
         } else {
 
-          models.developers.save(user, function (err) {
+          models.developers.create(user, function (err) {
             if (err) {
                 res.render('dev/join', {title : "Join us · Shinify", verifyResult : verifyResult,
               developer : {name : user.name, email : user.email}});
@@ -78,35 +78,37 @@ exports.createAccount = function (req, res) {
 exports.removeAccount = function (req, res) {
   if (req.session && req.session.login) {
     var username = req.session.username;
-    var error = false;
-    var errMsg;
-    if (req.body.username != username) {
-      error = true;
-      errMsg = "Cannot delete account due to invalid user name!";
-    } else {
-      models.developers.remove(username, function(err) {
-        if (err) {
-          error = true;
-          errMsg = "Cannot delete account due to internal error!";
-        }
-      });
-    }
 
-    if (error) {
-      models.developers.getDeveloperInfo(username, function(err, developer){
-        if (err) {
-          res.redirect('/home');
+    if (req.body.username != username) {
+
+      models.developers.findOneByName(username, function(err, developer){
+        if (err || !developer) {
+          res.redirect('/');
         } else {
           res.render('dev/admin', {title : "Account Settings · Shinify",
-              successUpdate : false, error : true, errMsg : errMsg, developer : developer});
+                    successUpdate : false, error : true,
+                    errMsg : "Cannot delete account due to invalid user name!", developer : developer});
         }
       });
     } else {
-      req.session.destroy();
-      res.redirect('/');
+      models.developers.remove(username, function(err, developer) {
+        if (err) {
+          models.developers.findOneByName(username, function(err, developer){
+            if (err || !developer) {
+              res.redirect('/');
+            } else {
+              res.render('dev/admin', {title : "Account Settings · Shinify",
+                        successUpdate : false, error : true,
+                        errMsg : "Cannot delete account due to internal error!", developer : developer});
+            }
+          });
+        } else {
+          req.session.destroy();
+          res.redirect('/');
+        }
+      });
+
     }
-
-
   } else {
     res.redirect('/');
   }

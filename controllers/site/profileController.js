@@ -1,5 +1,4 @@
-var config = require('../../config');
-var db = require('../../' + config.db.type);
+var models = require('../../models');
 
 
 
@@ -8,9 +7,9 @@ exports.profile = function (req, res) {
 
     var username = req.session.username;
 
-    db.developers.getDeveloperInfo(username, function(err, developer){
-      if (err) {
-        res.redirect('/home');
+    models.developers.findOneByName(username, function(err, developer){
+      if (err || !developer) {
+        res.redirect('/');
       } else {
         res.render('dev/profile', {title : "Your Profile · Shinify",
               successUpdate : false, error : false, developer : developer});
@@ -31,7 +30,7 @@ exports.updateProfile = function (req, res) {
     console.log("trying update profile for user: ", username);
     console.log("profile: ", profile);
 
-    db.developers.updateProfile(username, profile, function(err, developer){
+    models.developers.updateProfile(username, profile, function(err, developer){
       if (err) {
         //res.redirect('/settings/profile');
       }

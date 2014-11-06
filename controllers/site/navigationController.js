@@ -19,8 +19,7 @@ exports.home = function (req, res) {
       if (err || !developer) {
         res.redirect('/');
       } else {
-        /*
-        models.applications.loadApplications(username, function(err, applications) {
+        models.applications.findByCreator(developer, function(err, applications) {
           if (err) {
             res.redirect('/home');
           } else {
@@ -28,8 +27,6 @@ exports.home = function (req, res) {
             res.render('dev/home', {title : "Home · Shinify", developer : developer, applications : applications});
           }
         });
-*/
-            res.render('dev/home', {title : "Home · Shinify", developer : developer, applications : []});
       }
     });
 
@@ -42,8 +39,8 @@ exports.admin = function (req, res) {
   if (req.session && req.session.login) {
     var username = req.session.username;
 
-    db.developers.getDeveloperInfo(username, function(err, developer){
-      if (err) {
+    models.developers.findOneByName(username, function(err, developer){
+      if (err || !developer) {
         res.redirect('/home');
       } else {
         res.render('dev/admin', {title : "Account Settings · Shinify",

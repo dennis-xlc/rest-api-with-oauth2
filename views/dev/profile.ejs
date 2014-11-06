@@ -19,7 +19,7 @@
                                 <ul class="menu accordion" data-pjax>
                                     <li class="section">
                                         <a href="/home" class="section-head">
-                                        <img height="20" src="/avatars/<%= developer.avatarImg%>" width="20" />
+                                        <img height="20" src="/avatars/<%= developer.profile.avatarImg%>" width="20" />
                                         <%= developer.name%>
                                         </a>
                                         <ul class="expanded section-nav">
@@ -48,7 +48,7 @@
                                                 <dl class="form edit-profile-avatar">
                                                     <dt><label for="upload-profile-picture">Profile picture</label></dt>
                                                     <dd class="avatar-upload-container clearfix">
-                                                        <img class="avatar left" height="70" src="/avatars/<%= developer.avatarImg%>" width="70" />
+                                                        <img class="avatar left" height="70" src="/avatars/<%= developer.profile.avatarImg%>" width="70" />
                                                         <div class="avatar-upload">
                                                             <a href="#" class="button button-change-profile-picture">
                                                             <label for="upload-profile-picture">
@@ -85,19 +85,19 @@
                                                 </dl>
                                                 <dl class="form">
                                                     <dt><label for="user_profile_name">Name</label></dt>
-                                                    <dd><input id="user_profile_name" name="profile[name]" size="30" type="text" value="<%= (developer.fullName || '') %>" /></dd>
+                                                    <dd><input id="user_profile_name" name="profile[name]" size="30" type="text" value="<%= (developer.profile.fullName || '') %>" /></dd>
                                                 </dl>
                                                 <dl class="form">
                                                     <dt><label for="user_profile_blog">URL</label></dt>
-                                                    <dd><input id="user_profile_blog" name="profile[url]" size="30" type="url" value="<%= (developer.url || '') %>" /></dd>
+                                                    <dd><input id="user_profile_blog" name="profile[url]" size="30" type="url" value="<%= (developer.profile.url || '') %>" /></dd>
                                                 </dl>
                                                 <dl class="form">
                                                     <dt><label for="user_profile_company">Company</label></dt>
-                                                    <dd><input id="user_profile_company" name="profile[company]" size="30" type="text" value="<%= (developer.company || '') %>" /></dd>
+                                                    <dd><input id="user_profile_company" name="profile[company]" size="30" type="text" value="<%= (developer.profile.company || '') %>" /></dd>
                                                 </dl>
                                                 <dl class="form">
                                                     <dt><label for="user_profile_location">Location</label></dt>
-                                                    <dd><input id="user_profile_location" name="profile[location]" size="30" type="text" value="<%= (developer.location || '') %>" /></dd>
+                                                    <dd><input id="user_profile_location" name="profile[location]" size="30" type="text" value="<%= (developer.profile.location || '') %>" /></dd>
                                                 </dl>
                                                 <p><button type="submit" class="button primary">Update profile</button></p>
                                             </div>

@@ -78,7 +78,7 @@ router.route('/settings/applications/:app_id/revoke_all_tokens')
     .post(applicationController.revokeTokens);
 
 router.route('/settings/applications/:app_id/reset_secret')
-    .post(applicationController.restSecret);
+    .post(applicationController.resetSecret);
 
 router.route('/*')
     .get(navigationController.redirectControl);;

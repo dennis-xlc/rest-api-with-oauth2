@@ -1,68 +1,65 @@
-var config = require('../../config');
-var db = require('../../' + config.db.type);
+var models = require('../../models');
+var applicationVerification = require('../../utils/applicationVerification');
 
 exports.updateApplication = function (req, res) {
   if (req.session && req.session.login) {
     console.log("request body: ", req.body);
 
     var username = req.session.username;
-    var appId = req.params.app_id;
-    var application = req.body.application;
-    application.id = appId;
+    var app = req.body.application;
+    app.id = req.params.app_id;
 
-    var result = new ApplicationVerifyResult();
+    var verifyResult = new ApplicationVerifyResult();
 
     // check the app name
-    checkAppName(application.name, function (err) {
+    applicationVerification.checkAppName(application.name, function (err, result) {
       if (err) {
-        result.error = true;
-        result.nameErr = err;
-      }
-    });
-
-    // check the app url
-    checkAppUrl(application.url, function (err) {
-      if (err) {
-        result.error = true;
-        result.urlErr = err;
-      }
-    });
-
-    // check the app callback
-    checkAppCallback(application.callback, function (err) {
-      if (err) {
-        result.error = true;
-        result.callbackErr = err;
-      }
-    });
-
-    var developerInfo;
-    var applicationId;
-    db.developers.getDeveloperInfo(username, function(err, developer){
-      if (err) {
-        res.redirect('/');
+        verifyResult.error = true;
+        verifyResult.errMsg = err;
       } else {
-        developerInfo = developer;
-        if (!result.error) {
+        verifyResult.error = result.error;
+        verifyResult.nameErr = result.msg;
+      }
 
-          db.applications.update(appId, application, function (err, appDetail) {
-            if (err) {
-              result.error = true;
-            } else {
-              application = appDetail;
-            }
-
-          });
+      // check the app url
+      applicationVerification.checkAppUrl(application.url, function (err, result) {
+        if (err) {
+          verifyResult.error = true;
+          verifyResult.errMsg = err;
+        } else {
+          verifyResult.error = result.error;
+          verifyResult.urlErr = result.msg;
         }
 
-      }
+        // check the app callback
+        applicationVerification.checkAppCallback(application.callback, function (err) {
+          if (err) {
+            verifyResult.error = true;
+            verifyResult.errMsg = err;
+          } else {
+            verifyResult.error = result.error;
+            verifyResult.callbackErr = result.msg;
+          }
+
+          models.developers.findOneByName(username, function (err, developer) {
+            if (err || !developer) {
+              res.redirect('/');
+            } else {
+              models.applications.findByIdAndUpdate(req.params.app_id, function (err, application) {
+                if (err) {
+                  res.render('dev/application-detail', {title : "OAuth2 Application · Shinify",
+                      developer : developer, appDetail : app, verifyResult : verifyResult});
+                } else {
+                  res.render('dev/application-detail', {title : "OAuth2 Application · Shinify",
+                      developer : developer, appDetail : application, verifyResult : verifyResult});
+                }
+              });
+            }
+          });
+
+        });
+      });
     });
-
-
-    res.render('dev/application-detail', {title : "OAuth2 Application · Shinify",
-        developer : developerInfo, appDetail : application, verifyResult : result});
-
-
   } else {
     res.redirect('/');
   }
@@ -73,11 +70,11 @@ exports.revokeTokens = function (req, res) {
     var username = req.session.username;
     var appId = req.params.app_id;
 
-    db.developers.getDeveloperInfo(username, function(err, developer){
-      if (err) {
-        res.redirect('/home');
+    models.developers.findOneByName(username, function(err, developer){
+      if (err || !developer) {
+        res.redirect('/');
       } else {
-        db.applications.revokeTokens(appId, function(err) {
+        models.applications.revokeTokens(appId, function(err) {
           if (err) {
             res.redirect('/home');
           } else {
@@ -91,16 +88,16 @@ exports.revokeTokens = function (req, res) {
   }
 };
 
-exports.restSecret = function (req, res) {
+exports.resetSecret = function (req, res) {
   if (req.session && req.session.login) {
     var username = req.session.username;
     var appId = req.params.app_id;
 
-    db.developers.getDeveloperInfo(username, function(err, developer){
-      if (err) {
-        res.redirect('/home');
+    models.developers.findOneByName(username, function(err, developer){
+      if (err || !developer) {
+        res.redirect('/');
       } else {
-        db.applications.restSecret(appId, function(err) {
+        models.applications.resetSecret(appId, function(err) {
           if (err) {
             res.redirect('/home');
           } else {
@@ -120,12 +117,11 @@ exports.applications = function (req, res) {
 
     console.log("load applications page :", username);
 
-    db.developers.getDeveloperInfo(username, function(err, developer){
-      if (err) {
-        res.redirect('/home');
+    models.developers.findOneByName(username, function(err, developer){
+      if (err || !developer) {
+        res.redirect('/');
       } else {
-
-        db.applications.loadApplications(username, function(err, applications) {
+        models.applications.findByCreator(developer, function(err, applications) {
           if (err) {
             res.redirect('/home');
           } else {
@@ -149,8 +145,8 @@ exports.applicationForm = function (req, res) {
     var application = {name : "", url : "", callback : "", description : ""};
 
     var result = new ApplicationVerifyResult();
-    db.developers.getDeveloperInfo(username, function(err, developer){
-      if (err) {
+    models.developers.findOneByName(username, function(err, developer){
+      if (err || !developer) {
         res.redirect('/');
       } else {
         res.render('dev/application-new', {title : "New OAuth2 Application · Shinify",
@@ -168,11 +164,11 @@ exports.removeApplication = function (req, res) {
     var appId = req.params.app_id;
     console.log("remove app: ", appId);
 
-    db.developers.getDeveloperInfo(username, function(err, developer){
-      if (err) {
-        res.redirect('/home');
+    models.developers.findOneByName(username, function(err, developer){
+      if (err || !developer) {
+        res.redirect('/');
       } else {
-        db.applications.removeApplication(appId, function(err) {
+        models.applications.findByIdAndRemove(appId, function(err) {
           if (err) {
             res.redirect('/home');
           } else {
@@ -194,11 +190,11 @@ exports.applicationDetail = function (req, res) {
 
     var result = new ApplicationVerifyResult();
 
-    db.developers.getDeveloperInfo(username, function(err, developer){
-      if (err) {
-        res.redirect('/home');
+    models.developers.findOneByName(username, function(err, developer){
+      if (err || !developer) {
+        res.redirect('/');
       } else {
-        db.applications.findApplication(appId, function(err, application) {
+        models.applications.findById(appId, function(err, application) {
           if (err) {
             res.redirect('/home');
           } else {
@@ -219,63 +215,63 @@ exports.createApplication = function (req, res) {
     console.log("request body: ", req.body);
 
     var username = req.session.username;
-    var application = req.body.application;
+    var app = req.body.application;
 
     var result = new ApplicationVerifyResult();
 
     // check the app name
-    checkAppName(application.name, function (err) {
+    applicationVerification.checkAppName(application.name, function (err, result) {
       if (err) {
-        result.error = true;
-        result.nameErr = err;
-      }
-    });
-
-    // check the app url
-    checkAppUrl(application.url, function (err) {
-      if (err) {
-        result.error = true;
-        result.urlErr = err;
-      }
-    });
-
-    // check the app callback
-    checkAppCallback(application.callback, function (err) {
-      if (err) {
-        result.error = true;
-        result.callbackErr = err;
-      }
-    });
-
-    var developerInfo;
-    var applicationId;
-    db.developers.getDeveloperInfo(username, function(err, developer){
-      if (err) {
-        res.redirect('/');
+        verifyResult.error = true;
+        verifyResult.errMsg = err;
       } else {
-        developerInfo = developer;
-        if (!result.error) {
+        verifyResult.error = result.error;
+        verifyResult.nameErr = result.msg;
+      }
 
-          db.applications.save(username, application, function (err, appId) {
-            if (err) {
-              result.error = true;
-              result.callbackErr = "Cannot save application, please try again later!";
-            } else {
-              applicationId = appId;
-            }
-
-          });
+      // check the app url
+      applicationVerification.checkAppUrl(application.url, function (err, result) {
+        if (err) {
+          verifyResult.error = true;
+          verifyResult.errMsg = err;
+        } else {
+          verifyResult.error = result.error;
+          verifyResult.urlErr = result.msg;
         }
 
-      }
-    });
+        // check the app callback
+        applicationVerification.checkAppCallback(application.callback, function (err) {
+          if (err) {
+            verifyResult.error = true;
+            verifyResult.errMsg = err;
+          } else {
+            verifyResult.error = result.error;
+            verifyResult.callbackErr = result.msg;
+          }
 
-    if (result.error) {
-      res.render('dev/application-new', {title : "New OAuth2 Application · Shinify",
-                developer : developerInfo, application : application, verifyResult : result});
-    } else {
-      res.redirect('/settings/applications/'+applicationId);
-    }
+          models.developers.findOneByName(username, function (err, developer) {
+            if (err || !developer) {
+              res.redirect('/');
+            } else {
+              models.applications.create(app, function (developer, err, application) {
+                if (err) {
+                  verifyResult.error = true;
+                  verifyResult.errMsg = "Cannot save application, please try again later!";
+                }
+
+                if (verifyResult.error) {
+                  res.render('dev/application-new', {title : "New OAuth2 Application · Shinify",
+                            developer : developerInfo, application : application, verifyResult : result});
+                } else {
+                  res.redirect('/settings/applications/'+application.id);
+                }
+              });
+            }
+          });
+
+        });
+      });
+    });
 
   } else {
     res.redirect('/');

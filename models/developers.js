@@ -52,31 +52,53 @@ exports.findOneByNameAndPassword = function (username, password, done) {
 };
 
 
-/*
+
 exports.updateProfile = function (username, profile, done) {
   console.log("update profile for developer: ", username);
   console.log("profile: ", profile);
 
-  profiles[username].fullName = profile.name;
-  profiles[username].company = profile.company;
-  profiles[username].url = profile.url;
-  profiles[username].location = profile.location;
+  var query = {name : username};
+  var update = {
+    $set: {
+      profile : {
+        fullName : profile.name,
+        location : profile.location,
+        company : profile.company,
+        url : profile.url
+      }
+    }
+  };
 
-  console.log("after profile: ", profiles[username]);
-
-  var info = loadDeveloperInfo(username);
-
-  return done(null, info);
-
+  Developer.findOneAndUpdate(query, update, function (err, developer) {
+    if (err) {
+      return done(err, null);
+    } else {
+      console.log("success to update profile: ", developer);
+      return done(null, developer);
+    }
+  });
 };
-*/
 
-/*
+
+
 exports.updatePassword = function (username, password, done) {
-  developers[username].password = password;
-  return done(null);
+  var encryptPasswd = genEncryptPassword(password);
+
+  var query = {name : username};
+  var update = {
+    $set: { password : encryptPasswd }
+  };
+
+  Developer.findOneAndUpdate(query, update, function (err, developer) {
+    if (err) {
+      return done(err, null);
+    } else {
+      console.log("success to update password: ", developer);
+      return done(null, developer);
+    }
+  });
 };
-*/
+
 
 
 exports.remove = function (username, done) {
@@ -85,16 +107,16 @@ exports.remove = function (username, done) {
   Developer.findOneAndRemove({name : username}, function (err, developer) {
   	if (err) {
   		console.log("no developer found : ", err);
-  		done(err);
+  		done(err, null);
   	} else {
   		console.log("success to remove developer : ", username);
-  		done(null);
+  		done(null, developer);
   	}
   });
 };
 
 
-exports.save = function (user, done) {
+exports.create = function (user, done) {
   console.log("try to add developer: ", user);
 
   var encryptPasswd = genEncryptPassword(user.password);
