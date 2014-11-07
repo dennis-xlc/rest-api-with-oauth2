@@ -10,8 +10,9 @@ var path = require('path');
 var https = require('https');
 var passport = require('passport');
 var config = require('./config');
+var models = require('./models');
 
-var devSiteController = require('./controllers/dev-site');
+
 var oauth2SiteController = require('./controllers/oauth2-site');
 var oauth2Controller = require('./controllers/oauth2');
 var authController = require('./controllers/auth');
@@ -34,36 +35,27 @@ if (config.session.type === 'MongoStore') {
     throw new Error("Within config/index.js the session.type is unknown: " + config.session.type )
 }
 
+console.log('Using MongoDB for the data store');
+var mongoosedb = require('./mongodb/mongooseinit.js');
+mongoosedb.connect(function(err) {
+  if (err) {
+    console.log('Fail to connect to mongodb!');
+  } else {
+    console.log('Succsee to connect to mongodb!');
+  }
+});
+
+//From time to time we need to clean up any expired tokens
+//in the database
+models.passwdresettokens.removeExpired();
 
 // Create our Express server
 var server = express();
 
+server.on('close', function(err) {
+  mongoosedb.disconnect(function(err) {});
+});
 
-//Pull in the mongo store if we're configured to use it
-//else pull in MemoryStore for the database configuration
-var db = require('./' + config.db.type);
-if(config.db.type === 'mongodb') {
-    console.log('Using MongoDB for the data store');
-
-    var mongoosedb = require('./mongodb/mongooseinit.js');
-    mongoosedb.connect(function(err) {
-      if (err) {
-        console.log('Fail to connect to mongodb!');
-      } else {
-        console.log('Succsee to connect to mongodb!');
-      }
-    });
-
-    server.on('close', function(err) {
-      mongoosedb.disconnect(function(err) {});
-    });
-
-} else if(config.db.type === 'db') {
-    console.log('Using MemoryStore for the data store');
-} else {
-    //We have no idea here
-    throw new Error("Within config/index.js the db.type is unknown: " + config.db.type );
-}
 
 
 
@@ -136,17 +128,6 @@ server.use('/', siteRouter);
 server.use('/api', apiRouter);
 server.use('/oauth2', oauth2Router);
 
-
-
-//From time to time we need to clean up any expired tokens
-//in the database
-setInterval(function () {
-    db.passwdresettokens.removeExpired(function(err) {
-        if(err) {
-            console.error("Error removing expired tokens");
-        }
-    });
-}, config.db.timeToCheckExpiredTokens * 1000);
 
 //console.log(process.env);
 

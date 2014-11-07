@@ -6,7 +6,7 @@ var Application = require('../mongodb/applications.js').Application;
 
 
 exports.findByIdAndUpdate = function (id, app, done) {
-
+  console.log("try to update app " + id + " for ", app);
   Application.findById(id, function (err, application) {
     if (err || !application) {
       return done(err, null);
@@ -26,7 +26,7 @@ exports.findByIdAndUpdate = function (id, app, done) {
   });
 };
 
-exports.findByIdAndRemove = function (id) {
+exports.findByIdAndRemove = function (id, done) {
   Application.findByIdAndRemove(id, function (err, application) {
     if (err) {
       return done(err);

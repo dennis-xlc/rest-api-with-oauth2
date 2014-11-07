@@ -55,10 +55,10 @@ exports.resetPasswordEmailRequest = function (req, res) {
           }
 
           console.log("try to send reset mail to : ", recevier);
-          sendMailUtils.sendResetPasswdRequestMail(recevier, tokenId, function (err) {
+          sendMailUtils.sendResetPasswdRequestMail(recevier, token.id, function (err) {
             if (err) {
               console.log("err : ", err);
-              res.redirect('/');
+              //res.redirect('/');
             } else {
               console.log("success to send reset passwd mail to " + recevier);
             }
@@ -66,10 +66,10 @@ exports.resetPasswordEmailRequest = function (req, res) {
 
           if (loggedIn) {
             models.developers.findOneByName(req.session.username, function (err, developer) {
-              if (err | !developer) {
+              if (err || !developer) {
                 res.redirect('/');
               } else {
-                res.render('dev/passwd-reset-confirm', {title : "Password Sent! · Shinify", login : loggedIn, developer : devInfo});
+                res.render('dev/passwd-reset-confirm', {title : "Password Sent! · Shinify", login : loggedIn, developer : developer});
               }
             });
           } else {

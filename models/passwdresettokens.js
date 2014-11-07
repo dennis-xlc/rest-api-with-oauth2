@@ -1,14 +1,14 @@
 var fs = require('fs');
+var utils = require('../utils');
 var config = require('../config');
 
 var PasswdResetToken = require('../mongodb/passwdresettokens.js').PasswdResetToken;
 
 exports.generate = function (creator, done) {
-  var tokenId = utils.uid(config.token.passwdResetTokenLength);
+  //var tokenId = utils.uid(config.token.passwdResetTokenLength);
   var expiredDate = config.token.passwdResetTokenExpirationDate();
 
   var token = new PasswdResetToken({
-    _id : tokenId,
     _creator : creator.id,
     expirationDate : expiredDate
   });
@@ -34,15 +34,17 @@ exports.findOneById = function (tokenId, done) {
   });
 };
 
-exports.removeExpired = function(done) {
-  var now = new Date();
-
-  PasswdResetToken.find({expirationDate : {$lte : now}}).remove(function (err, tokens) {
-    if (err) {
-      return done(err);
-    } else {
-      console.log("success to delete tokens:" + tokens);
-      return done(null);
-    }
-  });
+exports.removeExpired = function() {
+  setInterval(function () {
+    var now = new Date();
+    PasswdResetToken.find({expirationDate : {$lte : now}}).remove(function (err, tokens) {
+      if (err) {
+        return done(err);
+      } else {
+        console.log("success to delete tokens:" + tokens);
+        return done(null);
+      }
+    });
+  }, config.db.timeToCheckExpiredTokens * 1000);
 };
+

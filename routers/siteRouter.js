@@ -72,7 +72,7 @@ router.route('/settings/applications/:app_id')
     .post(applicationController.updateApplication);
 
 router.route('/settings/applications/:app_id/delete')
-    .get(applicationController.removeApplication);
+    .post(applicationController.removeApplication);
 
 router.route('/settings/applications/:app_id/revoke_all_tokens')
     .post(applicationController.revokeTokens);

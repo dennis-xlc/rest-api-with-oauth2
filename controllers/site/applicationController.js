@@ -7,7 +7,20 @@ exports.updateApplication = function (req, res) {
 
     var username = req.session.username;
     var app = req.body.application;
-    app.id = req.params.app_id;
+    app.client = {id : app.clientId, secret : app.clientSecret};
+
+    console.log("request app", app);
+
+    function makeResponse(username, application, verifyResult){
+      models.developers.findOneByName(username, function (err, developer) {
+        if (err || !developer) {
+          res.redirect('/');
+        } else {
+          res.render('dev/application-detail', {title : "OAuth2 Application · Shinify",
+            developer : developer, application : application, verifyResult : verifyResult});
+        }
+      });
+    };
 
     var verifyResult = new applicationVerification.ApplicationVerifyResult();
 
@@ -32,7 +45,7 @@ exports.updateApplication = function (req, res) {
         }
 
         // check the app callback
-        applicationVerification.checkAppCallback(app.callback, function (err) {
+        applicationVerification.checkAppCallback(app.callback, function (err, result) {
           if (err) {
             verifyResult.error = true;
             verifyResult.errMsg = err;
@@ -41,27 +54,19 @@ exports.updateApplication = function (req, res) {
             verifyResult.callbackErr = result.msg;
           }
 
-          models.developers.findOneByName(username, function (err, developer) {
-            if (err || !developer) {
-              res.redirect('/');
-            } else {
-              models.applications.findByIdAndUpdate(req.params.app_id, function (err, application) {
-                if (err) {
-                  verifyResult.error = true;
-                  verifyResult.errMsg = "Cannot update application, please try again later!";
-                }
-
-                if (verifyResult.error) {
-                  res.render('dev/application-detail', {title : "OAuth2 Application · Shinify",
-                      developer : developer, appDetail : app, verifyResult : verifyResult});
-                } else {
-                  res.render('dev/application-detail', {title : "OAuth2 Application · Shinify",
-                      developer : developer, appDetail : app, verifyResult : verifyResult});
-                }
-              });
-            }
-          });
-
+          if (verifyResult.error) {
+            makeResponse(username, app, verifyResult);
+          } else {
+            models.applications.findByIdAndUpdate(req.params.app_id, app, function (err, application) {
+              if (err || !application) {
+                verifyResult.error = true;
+                verifyResult.errMsg = "Cannot update application, please try again later!";
+                makeResponse(username, app, verifyResult);
+              } else {
+                makeResponse(username, application, verifyResult);
+              }
+            });
+          }
         });
       });
     });
@@ -204,7 +209,7 @@ exports.applicationDetail = function (req, res) {
             res.redirect('/home');
           } else {
             res.render('dev/application-detail', {title : "OAuth2 Application · Shinify",
-              developer : developer, appDetail : application, verifyResult : result});
+              developer : developer, application : application, verifyResult : result});
           }
         });
       }
@@ -221,6 +226,17 @@ exports.createApplication = function (req, res) {
 
     var username = req.session.username;
     var app = req.body.application;
+
+    function makeResponse(username, application, verifyResult){
+      models.developers.findOneByName(username, function (err, developer) {
+        if (err || !developer) {
+          res.redirect('/');
+        } else {
+          res.render('dev/application-new', {title : "New OAuth2 Application · Shinify", 
+            developer : developer, application : application, verifyResult : verifyResult});
+        }
+      });
+    };
 
     var verifyResult = new applicationVerification.ApplicationVerifyResult();
 
@@ -254,26 +270,33 @@ exports.createApplication = function (req, res) {
             verifyResult.callbackErr = result.msg;
           }
 
-          models.developers.findOneByName(username, function (err, developer) {
-            if (err || !developer) {
-              res.redirect('/');
-            } else {
-              models.applications.create(developer, app, function (err, application) {
-                if (err) {
-                  verifyResult.error = true;
-                  verifyResult.errMsg = "Cannot save application, please try again later!";
-                }
-
-                if (verifyResult.error) {
-                  res.render('dev/application-new', {title : "New OAuth2 Application · Shinify",
-                            developer : developer, application : application, verifyResult : verifyResult});
-                } else {
-                  res.redirect('/settings/applications/'+application.id);
-                }
-              });
-            }
-          });
-
+          if (verifyResult.error) {
+            models.developers.findOneByName(username, function (err, developer) {
+              if (err || !developer) {
+                res.redirect('/');
+              } else {
+                res.render('dev/application-new', {title : "New OAuth2 Application · Shinify", 
+                  developer : developer, application : app, verifyResult : verifyResult});
+              }
+            });
+          } else {
+            models.developers.findOneByName(username, function (err, developer) {
+              if (err || !developer) {
+                res.redirect('/');
+              } else {
+                models.applications.create(developer, app, function (err, application) {
+                  if (err || !application) {
+                    verifyResult.error = true;
+                    verifyResult.errMsg = "Cannot save application, please try again later!";
+                    res.render('dev/application-new', {title : "New OAuth2 Application · Shinify", 
+                      developer : developer, application : app, verifyResult : verifyResult});
+                  } else {
+                    res.redirect('/settings/applications/'+application.id);
+                  }
+                });
+              }
+            }); 
+          }
         });
       });
     });

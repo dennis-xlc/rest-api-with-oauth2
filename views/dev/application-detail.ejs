@@ -37,7 +37,7 @@
                                 <div class="boxed-group application-show-group">
                                     <h3>
                                         <a href="/settings/applications" class="boxed-group-breadcrumb" data-pjax="true">Applications /</a>
-                                        <%= appDetail.name %>
+                                        <%= application.name %>
                                     </h3>
                                     <div class="boxed-group-inner">
                                         <div class="profile-picture clearfix app-owner">
@@ -54,9 +54,9 @@
                                             </p>
                                             <dl class="keys">
                                                 <dt>Client ID</dt>
-                                                <dd><%= appDetail.client.id %></dd>
+                                                <dd><%= application.client.id %></dd>
                                                 <dt>Client Secret</dt>
-                                                <dd><%= appDetail.client.secret %></dd>
+                                                <dd><%= application.client.secret %></dd>
                                                 <dt><br>
                                                     <a href="#revoke_tokens" class="button danger" rel="facebox nofollow">Revoke all user tokens</a>
                                                     <a href="#reset_info" class="button danger" rel="facebox nofollow">Reset client secret</a>
@@ -64,13 +64,18 @@
                                             </dl>
                                         </div>
                                         <hr class="bleed-flush">
-                                        <form accept-charset="UTF-8" action="/settings/applications/<%= appDetail.id %>" class="edit_oauth_application" id="edit_oauth_application_<%= appDetail.id %>" method="post">
+                                        <form accept-charset="UTF-8" action="/settings/applications/<%= application.id %>" class="edit_oauth_application" id="edit_oauth_application_<%= application.id %>" method="post">
+                                            <div>
+                                                <input class="js-oauth-application-id" id="oauth_application_id" name="application[id]" type="hidden" value="<%= application.id %>"/>
+                                                <input class="js-oauth-application-client-id" id="oauth_application_client_id" name="application[clientId]" type="hidden" value="<%= application.client.id %>"/>
+                                                <input class="js-oauth-application-client-secret" id="oauth_application_client_secret" name="application[clientSecret]" type="hidden" value="<%= application.client.secret %>"/>
+                                            </div>
                                             <div class="logo-upload is-default js-uploadable-container js-upload-oauth-logo upload-enabled" data-upload-policy-url="/upload/policies/oauth_applications">
                                                 <a class="delete js-delete-oauth-application-image tooltipped tooltipped-s" aria-label="delete this image" href="#">
                                                 <span class="octicon octicon-x"></span>
                                                 </a>
                                                 <div class="logo-box">
-                                                    <input class="js-oauth-application-logo-id" id="oauth_application_logo_id" name="oauth_application[logo_id]" type="hidden" />
+                                                    <input class="js-oauth-application-logo-id" id="oauth_application_logo_id" name="application[logo_id]" type="hidden" />
                                                     <img alt="" class="js-image-field" height="140" src="https://avatars1.githubusercontent.com/u/2142730?v=2&amp;s=280" width="140" />
                                                     <div class="logo-placeholder">
                                                         <span class="mega-octicon octicon-cloud-upload"></span>
@@ -112,7 +117,7 @@
                                             <dl class="form <%= verifyResult.nameErr ? 'errored' : '' %>">
                                                 <dt class="input-label"><label autofocus="autofocus" class="wide" for="oauth_application_name" tabindex="2">Application name</label></dt>
                                                 <dd>
-                                                    <input autofocus="autofocus" class="wide" id="oauth_application_name" name="application[name]" size="30" tabindex="2" type="text" value="<%= appDetail.name %>" />
+                                                    <input autofocus="autofocus" class="wide" id="oauth_application_name" name="application[name]" size="30" tabindex="2" type="text" value="<%= application.name %>" />
                                                     <% if (!verifyResult.nameErr) {%>
                                                     <p class="note">Something users will recognize and trust</p>
                                                     <% }%>
@@ -124,7 +129,7 @@
                                             <dl class="form <%= verifyResult.urlErr ? 'errored' : '' %>">
                                                 <dt class="input-label"><label class="wide" for="oauth_application_url" tabindex="3">Homepage URL</label></dt>
                                                 <dd>
-                                                    <input class="wide" id="oauth_application_url" name="application[url]" size="30" tabindex="3" type="text" value="<%= appDetail.url %>" />
+                                                    <input class="wide" id="oauth_application_url" name="application[url]" size="30" tabindex="3" type="text" value="<%= application.url %>" />
                                                     <% if (!verifyResult.urlErr) {%>
                                                     <p class="note">The full URL to your application homepage</p>
                                                     <% }%>
@@ -136,7 +141,7 @@
                                             <dl class="form">
                                                 <dt class="input-label"><label class="short" for="oauth_application_description" placeholder="Application description is optional" tabindex="4">Application description</label></dt>
                                                 <dd>
-                                                    <textarea class="short" cols="40" id="oauth_application_description" name="application[description]" placeholder="Application description is optional" rows="20" tabindex="4"><%= appDetail.description %></textarea>
+                                                    <textarea class="short" cols="40" id="oauth_application_description" name="application[description]" placeholder="Application description is optional" rows="20" tabindex="4"><%= application.description %></textarea>
                                                     <p class="note">This is displayed to all potential users of your application</p>
                                                 </dd>
                                             </dl>
@@ -144,7 +149,7 @@
                                             <dl class="form <%= verifyResult.callbackErr ? 'errored' : '' %>">
                                                 <dt class="input-label"><label class="wide" for="oauth_application_callback_url" tabindex="5">Authorization callback URL</label></dt>
                                                 <dd>
-                                                    <input class="wide" id="oauth_application_callback_url" name="application[callback]" size="30" tabindex="5" type="text" value="<%= appDetail.callback %>" />
+                                                    <input class="wide" id="oauth_application_callback_url" name="application[callback]" size="30" tabindex="5" type="text" value="<%= application.callback %>" />
                                                     <% if (!verifyResult.callbackErr) {%>
                                                     <p class="note">Your application's callback URL.</p>
                                                     <% }%>
@@ -167,7 +172,7 @@
                                         Please note that deleting the OAuth2 Application will invalidate any access tokens authorized by users.
                                     </div>
                                     <p>0 users will not be able to use this application after deletion.</p>
-                                    <form accept-charset="UTF-8" action="/settings/applications/<%= appDetail.id %>/delete" method="post">
+                                    <form accept-charset="UTF-8" action="/settings/applications/<%= application.id %>/delete" method="post">
                                         <button type="submit" class="button button-block danger">
                                         Delete this OAuth Application
                                         </button>
@@ -182,7 +187,7 @@
                                         Please note that resetting your Client Secret will not invalidate any user tokens, however you
                                         will need to update any application configuration using the old secret because it will no longer work.
                                     </p>
-                                    <form accept-charset="UTF-8" action="/settings/applications/<%= appDetail.id%>/reset_secret" method="post">
+                                    <form accept-charset="UTF-8" action="/settings/applications/<%= application.id%>/reset_secret" method="post">
                                         <button type="submit" class="button button-block danger">
                                         Reset OAuth2 Application Client Secret
                                         </button>
@@ -199,7 +204,7 @@
                                         before they can use your application again.
                                     </p>
                                     <p>This action is not reversible.</p>
-                                    <form accept-charset="UTF-8" action="/settings/applications/<%= appDetail.id%>/revoke_all_tokens" method="post">
+                                    <form accept-charset="UTF-8" action="/settings/applications/<%= application.id%>/revoke_all_tokens" method="post">
                                         <button type="submit" class="button button-block danger">
                                         I understand, revoke all user tokens
                                         </button>
