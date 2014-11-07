@@ -18,6 +18,11 @@ exports.accountCreationForm = function (req, res) {
 exports.createAccount = function (req, res) {
   console.log("user: ", req.body.user);
 
+  function makeErrorResponse(verifyResult, user) {
+    res.render('dev/join', {title : "Join us · Shinify", verifyResult : verifyResult,
+      developer : {name : user.name, email : user.email}});
+  };
+
   var user = req.body.user;
   var source = req.body.source_label;
 
@@ -29,20 +34,21 @@ exports.createAccount = function (req, res) {
       verifyResult.error = true;
       verifyResult.errMsg = err;
     } else {
-      verifyResult.error = result.error;
+      verifyResult.error = verifyResult.error || result.error;
       verifyResult.nameErr = result.msg;
     }
 
+    console.log(verifyResult);
     // check the email
     accountVerification.checkEmail(user.email, function (err, result) {
       if (err) {
         verifyResult.error = true;
         verifyResult.errMsg = err;
       } else {
-        verifyResult.error = result.error;
+        verifyResult.error = verifyResult.error || result.error;
         verifyResult.emailErr = result.msg;
       }
-
+      console.log(verifyResult);
       // check the user password
       accountVerification.checkPassword(user.password,
         user.password_confirmation, source, function (err, result) {
@@ -50,9 +56,10 @@ exports.createAccount = function (req, res) {
           verifyResult.error = true;
           verifyResult.errMsg = err;
         } else {
-          verifyResult.error = result.error;
+          verifyResult.error = verifyResult.error || result.error;
           verifyResult.passwordErr = result.msg;
         }
+        console.log(verifyResult);
 
         if (verifyResult.error) {
             res.render('dev/join', {title : "Join us · Shinify", verifyResult : verifyResult,

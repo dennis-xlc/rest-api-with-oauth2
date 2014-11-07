@@ -19,7 +19,7 @@ exports.checkUserName = function (username, done) {
   var pattern = /^([a-zA-Z])([a-zA-Z0-9-])+/;
   if (!pattern.test(username)) {
     console.log("Username may only contain alphanumeric characters or dashes(-) and cannot begin with a dash!");
-    return done(null, {error : true, 
+    return done(null, {error : true,
         msg : "Username may only contain alphanumeric characters or dashes(-) and cannot begin with a dash!"});
   }
 

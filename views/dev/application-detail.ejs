@@ -16,7 +16,7 @@
                                 <ul class="menu accordion" data-pjax>
                                     <li class="section">
                                         <a href="/home" class="section-head">
-                                        <img height="20" src="/avatars/<%= developer.avatarImg%>" width="20" />
+                                        <img height="20" src="/avatars/<%= developer.profile.avatarImg%>" width="20" />
                                         <%= developer.name %>
                                         </a>
                                         <ul class="expanded section-nav">
@@ -41,7 +41,7 @@
                                     </h3>
                                     <div class="boxed-group-inner">
                                         <div class="profile-picture clearfix app-owner">
-                                            <img height="30" src="/avatars/<%= developer.avatarImg%>" width="30" />
+                                            <img height="30" src="/avatars/<%= developer.profile.avatarImg%>" width="30" />
                                             <p>
                                                 <strong><a href="/home"><%= developer.name %></a></strong> owns this application.
                                             </p>
@@ -54,9 +54,9 @@
                                             </p>
                                             <dl class="keys">
                                                 <dt>Client ID</dt>
-                                                <dd><%= appDetail.clientId %></dd>
+                                                <dd><%= appDetail.client.id %></dd>
                                                 <dt>Client Secret</dt>
-                                                <dd><%= appDetail.clientSecret %></dd>
+                                                <dd><%= appDetail.client.secret %></dd>
                                                 <dt><br>
                                                     <a href="#revoke_tokens" class="button danger" rel="facebox nofollow">Revoke all user tokens</a>
                                                     <a href="#reset_info" class="button danger" rel="facebox nofollow">Reset client secret</a>

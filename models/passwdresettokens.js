@@ -37,7 +37,7 @@ exports.findOneById = function (tokenId, done) {
 exports.removeExpired = function(done) {
   var now = new Date();
 
-  PasswdResetToken.find(expirationDate : {$lte : now}).remove(function (err, tokens) {
+  PasswdResetToken.find({expirationDate : {$lte : now}}).remove(function (err, tokens) {
     if (err) {
       return done(err);
     } else {

@@ -1,14 +1,15 @@
-var mongodb = require('mongooseinit').mongodb;
+var mongodb = require('./mongooseinit').mongodb;
 var Schema = mongodb.Schema;
 
 var applicationSchema = new Schema({
-  _creator : { type: ObjectId, ref: 'Developer' },
+  _creator : { type: Schema.Types.ObjectId, ref: 'Developer' },
   name : String,
   url : String,
   callback : String,
   description : String,
   client : { id : String, secret : String},
   applyDate : { type: Date, default: Date.now }
-}, { id : false });
+});
 
-var Application = mongodb.model('Application', applicationSchema);
+mongodb.model('Application', applicationSchema);
+exports.Application = mongodb.model('Application');

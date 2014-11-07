@@ -13,7 +13,7 @@ var developerSchema = new Schema({
     company : String,
     url : String
   }
-}, { id : false });
+});
 
 mongodb.model('Developer', developerSchema);
 

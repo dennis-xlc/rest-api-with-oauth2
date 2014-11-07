@@ -72,23 +72,24 @@ exports.updateProfile = function (username, profile, done) {
   console.log("profile: ", profile);
 
   var query = {name : username};
-  var update = {
-    $set: {
-      profile : {
-        fullName : profile.name,
-        location : profile.location,
-        company : profile.company,
-        url : profile.url
-      }
-    }
-  };
 
-  Developer.findOneAndUpdate(query, update, function (err, developer) {
-    if (err) {
+  Developer.findOne(query, function (err, developer) {
+    if (err || !developer) {
       return done(err, null);
     } else {
-      console.log("success to update profile: ", developer);
-      return done(null, developer);
+      developer.profile.fullName = profile.name;
+      developer.profile.location = profile.location;
+      developer.profile.company = profile.company;
+      developer.profile.url = profile.url;
+
+      developer.save(function (err) {
+        if (err) {
+          return done(err, null);
+        } else {
+          console.log("success to update profile: ", developer);
+          return done(null, developer);
+        }
+      });
     }
   });
 };

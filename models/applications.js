@@ -7,23 +7,23 @@ var Application = require('../mongodb/applications.js').Application;
 
 exports.findByIdAndUpdate = function (id, app, done) {
 
-  var update = {
-    $set: {
-      name : app.name,
-      url : app.url,
-      callback : app.callback,
-      description : app.description
-    }
-  };
-
-  Application.findByIdAndUpdate(id, update, function (err, application) {
-    if (err) {
+  Application.findById(id, function (err, application) {
+    if (err || !application) {
       return done(err, null);
     } else {
-      return done(null, application);
+      application.name = app.name;
+      application.url = app.url;
+      application.callback = app.callback;
+      application.description = app.description;
+      application.save(function (err) {
+        if (err) {
+          return done(err, null);
+        } else {
+          return done(null, application);
+        }
+      });
     }
   });
-
 };
 
 exports.findByIdAndRemove = function (id) {
@@ -85,7 +85,7 @@ exports.create = function (creator, app, done) {
 };
 
 
-
+// TODO : revoke all user token for the specified application
 exports.revokeTokens = function (appId, done) {
   console.log("revoke tokens for application: ", appId);
   return done(null);
@@ -96,19 +96,18 @@ exports.resetSecret = function (appId, done) {
 
   var clientSecret = utils.uid(config.client.clientSecretLength);
 
-  var update = {
-    $set: {
-      client : {
-        secret : clientSecret
-      }
-    }
-  };
-
-  Application.findByIdAndUpdate(id, update, function (err, application) {
-    if (err) {
+  Application.findById(appId, function (err, application) {
+    if (err || !application) {
       return done(err, null);
     } else {
-      return done(null, application);
+      application.client.secret = clientSecret;
+      application.save(function (err) {
+        if (err) {
+          return done(err, null);
+        } else {
+          return done(null, application);
+        }
+      });
     }
   });
 };

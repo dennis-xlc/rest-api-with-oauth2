@@ -1,10 +1,11 @@
-var mongodb = require('mongooseinit').mongodb;
+var mongodb = require('./mongooseinit').mongodb;
 var Schema = mongodb.Schema;
 
 var passwdResetTokenSchema = new Schema({
-  _creator : { type: ObjectId, ref: 'Developer' },
+  _creator : { type: Schema.Types.ObjectId, ref: 'Developer' },
   expirationDate : Date
-}, { id : false });
+});
 
 
-var PasswdResetToken = mongodb.model('PasswdResetToken', passwdResetTokenSchema);
+mongodb.model('PasswdResetToken', passwdResetTokenSchema);
+exports.PasswdResetToken = mongodb.model('PasswdResetToken');
