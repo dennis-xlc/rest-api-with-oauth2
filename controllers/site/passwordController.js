@@ -165,7 +165,7 @@ exports.resetPassword = function (req, res) {
         } else if (result.error) {
           makeErrorResponse(result.msg, token.id);
         } else {
-          models.developers.updatePasswordById(token._creator.id, password, function (err, developer) {
+          models.developers.updatePasswordById(token._creator, password, function (err, developer) {
             if (err || !developer) {
               makeErrorResponse("There are problems reseting your password!", token.id);
             } else {

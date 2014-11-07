@@ -95,6 +95,7 @@ exports.updateProfile = function (username, profile, done) {
 };
 
 exports.updatePasswordById = function (id, password, done) {
+  console.log("try to update password", id);
   var encryptPasswd = genEncryptPassword(password);
 
   var update = {
