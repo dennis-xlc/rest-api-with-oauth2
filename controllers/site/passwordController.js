@@ -163,27 +163,22 @@ exports.resetPassword = function (req, res) {
         if (err) {
           makeErrorResponse("There are problems reseting your password!", token.id);
         } else if (result.error) {
-          makeErrorResponse(result.msg, tokenId);
+          makeErrorResponse(result.msg, token.id);
         } else {
-          models.developers.findById(token._creator.id, function (err, developer) {
+          models.developers.updatePasswordById(token._creator.id, password, function (err, developer) {
             if (err || !developer) {
               makeErrorResponse("There are problems reseting your password!", token.id);
             } else {
-              models.developers.updatePasswordByName(developer.name, password, function (err, developer) {
-                if (err || !developer) {
-                  makeErrorResponse("There are problems reseting your password!", token.id);
+              console.log("try to send reset mail to : ", developer.email);
+              sendMailUtils.sendResetPasswdConfirmMail(developer.name, developer.email, function (err) {
+                if (err) {
+                  console.log("err : ", err);
                 } else {
-                  console.log("try to send reset mail to : ", developer.email);
-                  sendMailUtils.sendResetPasswdConfirmMail(developer.name, developer.email, function (err) {
-                    if (err) {
-                      console.log("err : ", err);
-                    } else {
-                      console.log("success to send reset passwd confirmation mail to " + developer.email);
-                    }
-                  });
-                  makeNormolResponse();
+                  console.log("success to send reset passwd confirmation mail to " + developer.email);
                 }
               });
+
+              makeNormolResponse();
             }
           });
         }

@@ -8,7 +8,7 @@ var Developer = require('../mongodb/developers.js').Developer;
 exports.findById = function (id, done) {
   Developer.findById(id, function (err, developer) {
     if (err) {
-      console.log("no developer found : ", username);
+      console.log("no developer found : ", id);
       return done("There were problems checking user name.", null);
     } else if (developer) {
       console.log("found developer: ", developer);
