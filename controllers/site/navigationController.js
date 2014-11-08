@@ -23,7 +23,6 @@ exports.home = function (req, res) {
           if (err) {
             res.redirect('/home');
           } else {
-            console.log("loadApplications :", applications);
             res.render('dev/home', {title : "Home · Shinify", developer : developer, applications : applications});
           }
         });

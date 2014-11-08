@@ -16,7 +16,6 @@ exports.accountCreationForm = function (req, res) {
   Handle 'POST' request for '/join'
 **/
 exports.createAccount = function (req, res) {
-  console.log("user: ", req.body.user);
 
   function makeErrorResponse(verifyResult, user) {
     res.render('dev/join', {title : "Join us · Shinify", verifyResult : verifyResult,
@@ -38,7 +37,6 @@ exports.createAccount = function (req, res) {
       verifyResult.nameErr = result.msg;
     }
 
-    console.log(verifyResult);
     // check the email
     accountVerification.checkEmail(user.email, function (err, result) {
       if (err) {
@@ -48,7 +46,7 @@ exports.createAccount = function (req, res) {
         verifyResult.error = verifyResult.error || result.error;
         verifyResult.emailErr = result.msg;
       }
-      console.log(verifyResult);
+
       // check the user password
       accountVerification.checkPassword(user.password,
         user.password_confirmation, source, function (err, result) {
@@ -59,7 +57,6 @@ exports.createAccount = function (req, res) {
           verifyResult.error = verifyResult.error || result.error;
           verifyResult.passwordErr = result.msg;
         }
-        console.log(verifyResult);
 
         if (verifyResult.error) {
             res.render('dev/join', {title : "Join us · Shinify", verifyResult : verifyResult,

@@ -15,10 +15,8 @@ exports.generate = function (creator, done) {
 
   token.save(function (err) {
     if (err) {
-      console.log("fail to add token : ", token);
       return done(err, null);
     } else {
-      console.log("success to add token : ", token);
       return done(null, token);
     }
   });
@@ -41,7 +39,6 @@ exports.removeExpired = function() {
       if (err) {
         return done(err);
       } else {
-        console.log("success to delete tokens:" + tokens);
         return done(null);
       }
     });

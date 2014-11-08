@@ -3,13 +3,10 @@ var applicationVerification = require('../../utils/applicationVerification');
 
 exports.updateApplication = function (req, res) {
   if (req.session && req.session.login) {
-    console.log("request body: ", req.body);
 
     var username = req.session.username;
     var app = req.body.application;
     app.client = {id : app.clientId, secret : app.clientSecret};
-
-    console.log("request app", app);
 
     function makeResponse(username, application, verifyResult){
       models.developers.findOneByName(username, function (err, developer) {
@@ -125,8 +122,6 @@ exports.applications = function (req, res) {
   if (req.session && req.session.login) {
     var username = req.session.username;
 
-    console.log("load applications page :", username);
-
     models.developers.findOneByName(username, function(err, developer){
       if (err || !developer) {
         res.redirect('/');
@@ -135,7 +130,6 @@ exports.applications = function (req, res) {
           if (err) {
             res.redirect('/home');
           } else {
-            console.log("loadApplications :", applications);
             res.render('dev/applications', {title : "Authorized Applications · Shinify",
                 developer : developer, applications : applications});
           }
@@ -172,7 +166,6 @@ exports.removeApplication = function (req, res) {
   if (req.session && req.session.login) {
     var username = req.session.username;
     var appId = req.params.app_id;
-    console.log("remove app: ", appId);
 
     models.developers.findOneByName(username, function(err, developer){
       if (err || !developer) {
@@ -196,7 +189,6 @@ exports.applicationDetail = function (req, res) {
   if (req.session && req.session.login) {
     var username = req.session.username;
     var appId = req.params.app_id;
-    console.log("get app: ", appId);
 
     var result = new applicationVerification.ApplicationVerifyResult();
 
@@ -222,7 +214,6 @@ exports.applicationDetail = function (req, res) {
 
 exports.createApplication = function (req, res) {
   if (req.session && req.session.login) {
-    console.log("request body: ", req.body);
 
     var username = req.session.username;
     var app = req.body.application;

@@ -8,10 +8,8 @@ var Developer = require('../mongodb/developers.js').Developer;
 exports.findById = function (id, done) {
   Developer.findById(id, function (err, developer) {
     if (err) {
-      console.log("no developer found : ", id);
       return done("There were problems checking user name.", null);
     } else if (developer) {
-      console.log("found developer: ", developer);
       return done(null, developer);
     }
 
@@ -23,10 +21,8 @@ exports.findById = function (id, done) {
 exports.findOneByName = function (username, done) {
   Developer.findOne({name : username}, function (err, developer) {
   	if (err) {
-  		console.log("no developer found : ", username);
   		return done("There were problems checking user name.", null);
   	} else if (developer) {
-  		console.log("found developer: ", developer);
   		return done(null, developer);
   	}
 
@@ -38,10 +34,8 @@ exports.findOneByName = function (username, done) {
 exports.findOneByEmail = function (email, done) {
   Developer.findOne({email : email}, function (err, developer) {
   	if (err) {
-  		console.log("no developer found by email: ", email);
   		return done("There were problems checking user email.", null);
   	} else if (developer) {
-  		console.log("found developer: ", developer);
   		return done(null, developer);
   	}
 
@@ -54,10 +48,8 @@ exports.findOneByNameAndPassword = function (username, password, done) {
   var encryptPasswd = genEncryptPassword(password);
   Developer.findOne({name : username, password : encryptPasswd}, function (err, developer) {
   	if (err) {
-  		console.log("no developer found by email: ", email);
   		return done("There were problems checking user email.", null);
   	} else if (developer) {
-  		console.log("found developer: ", developer);
   		return done(null, developer);
   	}
 
@@ -68,8 +60,6 @@ exports.findOneByNameAndPassword = function (username, password, done) {
 
 
 exports.updateProfile = function (username, profile, done) {
-  console.log("update profile for developer: ", username);
-  console.log("profile: ", profile);
 
   var query = {name : username};
 
@@ -86,7 +76,6 @@ exports.updateProfile = function (username, profile, done) {
         if (err) {
           return done(err, null);
         } else {
-          console.log("success to update profile: ", developer);
           return done(null, developer);
         }
       });
@@ -95,7 +84,6 @@ exports.updateProfile = function (username, profile, done) {
 };
 
 exports.updatePasswordById = function (id, password, done) {
-  console.log("try to update password", id);
   var encryptPasswd = genEncryptPassword(password);
 
   var update = {
@@ -106,7 +94,6 @@ exports.updatePasswordById = function (id, password, done) {
     if (err) {
       return done(err, null);
     } else {
-      console.log("success to update password: ", developer);
       return done(null, developer);
     }
   });
@@ -124,7 +111,6 @@ exports.updatePasswordByName = function (username, password, done) {
     if (err) {
       return done(err, null);
     } else {
-      console.log("success to update password: ", developer);
       return done(null, developer);
     }
   });
@@ -133,14 +119,11 @@ exports.updatePasswordByName = function (username, password, done) {
 
 
 exports.remove = function (username, done) {
-  console.log("delete user: ", username);
 
   Developer.findOneAndRemove({name : username}, function (err, developer) {
   	if (err) {
-  		console.log("no developer found : ", err);
   		done(err, null);
   	} else {
-  		console.log("success to remove developer : ", username);
   		done(null, developer);
   	}
   });
@@ -148,7 +131,6 @@ exports.remove = function (username, done) {
 
 
 exports.create = function (user, done) {
-  console.log("try to add developer: ", user);
 
   var encryptPasswd = genEncryptPassword(user.password);
   var avatarImg = genAvatar(user.name);
@@ -164,10 +146,8 @@ exports.create = function (user, done) {
 
   developer.save(function (err) {
   	if (err) {
-  		console.log("fail to add developer: ", err);
   		done(err);
   	} else {
-  		console.log("success adding developer: ", developer);
   		done(null);
   	}
   });

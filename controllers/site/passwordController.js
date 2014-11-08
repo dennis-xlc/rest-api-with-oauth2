@@ -22,7 +22,6 @@ exports.resetPasswdEmailForm = function (req, res) {
 
 exports.resetPasswordEmailRequest = function (req, res) {
   var email = req.body.email;
-  console.log("trying to reset password for email: ", email);
 
   var loggedIn = (req.session && req.session.login);
 
@@ -54,7 +53,6 @@ exports.resetPasswordEmailRequest = function (req, res) {
             recevier = developer.name + " <" + developer.email + ">";
           }
 
-          console.log("try to send reset mail to : ", recevier);
           sendMailUtils.sendResetPasswdRequestMail(recevier, token.id, function (err) {
             if (err) {
               console.log("err : ", err);
@@ -169,7 +167,6 @@ exports.resetPassword = function (req, res) {
             if (err || !developer) {
               makeErrorResponse("There are problems reseting your password!", token.id);
             } else {
-              console.log("try to send reset mail to : ", developer.email);
               sendMailUtils.sendResetPasswdConfirmMail(developer.name, developer.email, function (err) {
                 if (err) {
                   console.log("err : ", err);
@@ -223,7 +220,6 @@ exports.changePassword = function (req, res) {
               if (err || !developer) {
                 makeResponse(username, true, "There are problems changing your password!");
               } else {
-                console.log("try to send password changed mail to : ", developer.email);
                 sendMailUtils.sendResetPasswdConfirmMail(developer.name, developer.email, function (err) {
                   if (err) {
                     console.log("err : ", err);

@@ -27,9 +27,6 @@ exports.updateProfile = function (req, res) {
     var username = req.session.username;
     var profile = req.body.profile;
 
-    console.log("trying update profile for user: ", username);
-    console.log("profile: ", profile);
-
     models.developers.updateProfile(username, profile, function(err, developer){
       if (err) {
         res.redirect('/settings/profile');
@@ -45,8 +42,6 @@ exports.updateProfile = function (req, res) {
 
 exports.avatarPolicy = function (req, res) {
   if (req.session && req.session.login) {
-
-    console.log("request avatar policy: ", req.body);
 
     var username = req.session.username;
 

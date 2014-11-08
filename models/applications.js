@@ -6,7 +6,6 @@ var Application = require('../mongodb/applications.js').Application;
 
 
 exports.findByIdAndUpdate = function (id, app, done) {
-  console.log("try to update app " + id + " for ", app);
   Application.findById(id, function (err, application) {
     if (err || !application) {
       return done(err, null);
@@ -75,10 +74,8 @@ exports.create = function (creator, app, done) {
 
   application.save(function (err) {
     if (err) {
-      console.log("fail to add application: ", err);
       done(err, null);
     } else {
-      console.log("success adding application: ", application);
       done(null, application);
     }
   });
@@ -87,12 +84,10 @@ exports.create = function (creator, app, done) {
 
 // TODO : revoke all user token for the specified application
 exports.revokeTokens = function (appId, done) {
-  console.log("revoke tokens for application: ", appId);
   return done(null);
 };
 
 exports.resetSecret = function (appId, done) {
-  console.log("reset secret for application: ", appId);
 
   var clientSecret = utils.uid(config.client.clientSecretLength);
 

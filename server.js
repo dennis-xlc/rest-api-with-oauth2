@@ -13,15 +13,11 @@ var config = require('./config');
 var models = require('./models');
 
 
-var oauth2SiteController = require('./controllers/oauth2-site');
-var oauth2Controller = require('./controllers/oauth2');
-var authController = require('./controllers/auth');
-
 //Pull in the mongo store if we're configured to use it
 //else pull in MemoryStore for the session configuration
 var sessionStorage;
 if (config.session.type === 'MongoStore') {
-    var MongoStore = connectMongo(express);
+    var MongoStore = connectMongo(session);
     console.log('Using MongoDB for the Session');
     sessionStorage = new MongoStore({
         db: config.session.dbName
@@ -70,7 +66,7 @@ server.use(cookieParser());
 
 //Session Configuration
 server.use(session({
-    secret: config.session.secret,
+    secret: config.session.secret(),
     store: sessionStorage,
     key: "authorization.sid",
     saveUninitialized: true,
@@ -96,40 +92,15 @@ server.use(passport.session());
 
 // Create our Express router
 var siteRouter = require('./routers/siteRouter').router;
-var oauth2Router = express.Router();
-var apiRouter = express.Router();
+var oauth2Router = require('./routers/oauth2Router').router;
+var restApiRouter = require('./routers/restApiRouter').router;
 
-
-// Initial dummy route for testing
-// https://localhost:3000/api
-apiRouter.get('/', function(req, res) {
-  console.log("Cookies: ", req.cookies);
-  res.json({ message: 'You are reaching the REST API for fudan bbs!' });
-});
-
-apiRouter.get('/posts/top', authController.isAuthenticated,
-    function(req, res) {
-      console.log("Cookies: ", req.cookies);
-      res.json({ message: 'You are reaching the REST API for fudan bbs!' });
-    });
-
-
-// configure the site controller for oauth2 server
-oauth2Router.get('/', oauth2SiteController.index);
-oauth2Router.get('/login', oauth2SiteController.loginForm);
-oauth2Router.post('/login', oauth2SiteController.login);
-
-oauth2Router.get('/authorize', oauth2Controller.authorization);
-oauth2Router.post('/authorize/decision', oauth2Controller.decision);
-oauth2Router.post('/token', oauth2Controller.token);
 
 // Register all our routes
-server.use('/', siteRouter);
-server.use('/api', apiRouter);
 server.use('/oauth2', oauth2Router);
+server.use('/api', restApiRouter);
+server.use('/', siteRouter);
 
-
-//console.log(process.env);
 
 // check if run on heroku
 if (process.env.NODE_ENV === 'production') {

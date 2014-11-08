@@ -28,7 +28,6 @@ exports.loginForm = function (req, res) {
   Handle 'POST' request for '/login'
 **/
 exports.login = function (req, res) {
-  console.log("trying login user: ", req.body.user);
 
   var username = req.body.user.username;
   var password = req.body.user.password;
@@ -53,7 +52,6 @@ exports.login = function (req, res) {
   Handle 'POST' request for '/logout'
 **/
 exports.logout = function (req, res) {
-  console.log("trying logout user: ", req.session.username);
     req.session.destroy();
     res.redirect('/login');
 };
