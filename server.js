@@ -20,7 +20,9 @@ if (config.session.type === 'MongoStore') {
     var MongoStore = connectMongo(session);
     console.log('Using MongoDB for the Session');
     sessionStorage = new MongoStore({
-        db: config.session.dbName
+      url : config.db.url,
+      db: config.db.dbName,
+      collection: config.session.collection
     });
 } else if(config.session.type === 'MemoryStore') {
     var MemoryStore = session.MemoryStore;

@@ -45,6 +45,8 @@ exports.token = {
  * dbName - The database name to use.
  */
 exports.db = {
+    url: process.env.MONGOLAB_URI || process.env.MONGOHQ_URL ||
+                    'mongodb://127.0.0.1:27017/ShinifyMongoose',
     timeToCheckExpiredTokens: 3600,
     type: "mongodb",
     dbName: "Shinify"
@@ -64,12 +66,11 @@ exports.db = {
 exports.session = {
     type: "MongoStore",
     maxAge: 3600000 * 24 * 7 * 52,
-    //TODO You need to change this secret to something that you choose for your secret
     secret: function () {
         var pem = fs.readFileSync(__dirname + '/../certs/server.pem');
         return pem.toString('ascii');
     },
-    dbName: "Session"
+    collection: "Sessions"
 };
 
 exports.env = {
