@@ -147,7 +147,7 @@ passport.serializeUser(function (user, done) {
 });
 
 passport.deserializeUser(function (name, done) {
-    db.users.findByName(name, function (err, user) {
+    models.users.findByName(name, function (err, user) {
         done(err, user);
     });
 });

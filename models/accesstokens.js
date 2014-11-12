@@ -4,7 +4,7 @@ var utils = require('../utils');
 var AccessToken = require('../mongodb/accesstokens.js').AccessToken;
 
 
-exports.findByToken(token, done) {
+exports.findByToken = function (token, done) {
   AccessToken.findOne({'token' : token}, function (err, accessToken) {
     if (err) {
       return done(err, null);
@@ -14,7 +14,7 @@ exports.findByToken(token, done) {
   });
 };
 
-exports.findByTokenAndRemove(token, done) {
+exports.findByTokenAndRemove = function (token, done) {
   AccessToken.findOneAndRemove({'token' : token}, function (err, accessToken) {
     if (err) {
       return done(err, null);

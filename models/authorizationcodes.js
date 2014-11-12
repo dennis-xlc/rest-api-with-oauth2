@@ -25,7 +25,7 @@ exports.create = function (userName, clientId, redirectUri, scope, done) {
 };
 
 exports.findOneByCode = function (code, done) {
-  AuthorizationCode.findOne({'code' : code }. function (err, authorizationCode) {
+  AuthorizationCode.findOne({'code' : code }, function (err, authorizationCode) {
     if (err) {
       return done(err, null);
     } else {
@@ -35,7 +35,7 @@ exports.findOneByCode = function (code, done) {
 };
 
 exports.findByCodeAndRemove = function (code, done) {
-  AuthorizationCode.findOneAndRemove({'code' : code }. function (err, authorizationCode) {
+  AuthorizationCode.findOneAndRemove({'code' : code }, function (err, authorizationCode) {
     if (err) {
       return done(err, null);
     } else {

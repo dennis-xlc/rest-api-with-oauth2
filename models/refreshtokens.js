@@ -22,7 +22,7 @@ exports.create = function (userName, clientId, scope, done) {
   });
 };
 
-exports.findByToken(token, done) {
+exports.findByToken = function (token, done) {
   RefreshToken.findOne({'token' : token}, function (err, refreshToken) {
     if (err) {
       return done(err, null);

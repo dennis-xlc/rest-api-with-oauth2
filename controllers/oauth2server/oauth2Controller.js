@@ -2,9 +2,10 @@
 
 var passport = require('passport');
 var login = require('connect-ensure-login');
-var passport = require('passport');
 var oauth2server = require('./oauth2server').oauth2server;
 var models = require('../../models');
+
+require('./authStrategys');
 
 exports.index = function (req, res) {
     res.render('oauth2/index');

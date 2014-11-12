@@ -1,5 +1,4 @@
 var config = require('../config');
-var db = require('../' + config.db.type);
 
 exports.ApplicationVerifyResult = function  () {
   this.error = false;
