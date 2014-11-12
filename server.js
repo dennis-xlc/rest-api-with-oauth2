@@ -52,7 +52,9 @@ models.passwdresettokens.removeExpired();
 var server = express();
 
 server.on('close', function(err) {
-  mongoosedb.disconnect(function(err) {});
+  mongoosedb.disconnect(function(err) {
+
+  });
 });
 
 
@@ -100,7 +102,7 @@ var restApiRouter = require('./routers/restApiRouter').router;
 
 
 // Register all our routes
-server.use('/oauth2', oauth2Router);
+//server.use('/oauth2', oauth2Router);
 server.use('/api', restApiRouter);
 server.use('/', siteRouter);
 

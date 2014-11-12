@@ -43,10 +43,15 @@ exports.authorization = [
         models.applications.findByClientId(clientId, function (err, application) {
             if (err) {
                 return done(err);
+            } else if (!application) {
+                console.log("Invalid client_id : ", clientId);
+                return done("Invalid client_id : " + clientId);
             }
             if(application) {
                 application.scope = scope;
             }
+
+            console.log("found application", application);
             // WARNING: For security purposes, it is highly advisable to check that
             //          redirectURI provided by the client matches one registered with
             //          the server.  For simplicity, this example does not.  You have
