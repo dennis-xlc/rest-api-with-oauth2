@@ -1,4 +1,6 @@
 // load the packages as needed
+require('newrelic');
+
 var express = require('express');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
