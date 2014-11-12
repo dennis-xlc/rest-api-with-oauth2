@@ -22,7 +22,8 @@ if (config.session.type === 'MongoStore') {
     sessionStorage = new MongoStore({
       url : config.db.url,
       db: config.db.dbName,
-      collection: config.session.collection
+      collection: config.session.collection,
+      clear_interval: 3600
     });
 } else if(config.session.type === 'MemoryStore') {
     var MemoryStore = session.MemoryStore;

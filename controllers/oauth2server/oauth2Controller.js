@@ -4,6 +4,7 @@ var passport = require('passport');
 var login = require('connect-ensure-login');
 var passport = require('passport');
 var oauth2server = require('./oauth2server').oauth2server;
+var models = require('../../models');
 
 exports.index = function (req, res) {
     res.render('oauth2/index');
@@ -37,19 +38,19 @@ exports.login = [
  */
 exports.authorization = [
     login.ensureLoggedIn('/oauth2/login'),
-    oauth2server.authorization(function (clientID, redirectURI, scope, done) {
-        db.clients.findByClientId(clientID, function (err, client) {
+    oauth2server.authorization(function (clientId, redirectURI, scope, done) {
+        models.applications.findByClientId(clientId, function (err, application) {
             if (err) {
                 return done(err);
             }
-            if(client) {
-                client.scope = scope;
+            if(application) {
+                application.scope = scope;
             }
             // WARNING: For security purposes, it is highly advisable to check that
             //          redirectURI provided by the client matches one registered with
             //          the server.  For simplicity, this example does not.  You have
             //          been warned.
-            return done(null, client, redirectURI);
+            return done(null, application, redirectURI);
         });
     }),
     function (req, res, next) {
@@ -57,8 +58,8 @@ exports.authorization = [
         //TODO Make a mechanism so that if this isn't a trusted client, the user can recorded that they have consented
         //but also make a mechanism so that if the user revokes access to any of the clients then they will have to
         //re-consent.
-        db.clients.findByClientId(req.query.client_id, function(err, client) {
-            if(!err && client && client.trustedClient && client.trustedClient === true) {
+        models.applications.findByClientId(req.query.client_id, function(err, application) {
+            if(!err && application && application.trustedClient && application.trustedClient === true) {
                 //This is how we short call the decision like the dialog below does
                 oauth2server.decision({loadTransaction: false}, function(req, callback) {
                     callback(null, { allow: true });

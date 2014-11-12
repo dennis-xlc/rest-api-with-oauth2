@@ -4,6 +4,26 @@ var utils = require('../utils');
 
 var Application = require('../mongodb/applications.js').Application;
 
+exports.findByClientIdAndSecret = function (clientId, secret, done) {
+  Application.findOne({'client.id': clientId, 'client.secret' : secret}, function (err, application) {
+    if (err) {
+      return done(err, null);
+    } else {
+      return done(null, application);
+    }
+  });
+};
+
+
+exports.findByClientId = function (clientId, done) {
+  Application.findOne({'client.id': clientId}, function (err, application) {
+    if (err) {
+      return done(err, null);
+    } else {
+      return done(null, application);
+    }
+  });
+};
 
 exports.findByIdAndUpdate = function (id, app, done) {
   Application.findById(id, function (err, application) {

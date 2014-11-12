@@ -3,8 +3,7 @@ var LocalStrategy = require('passport-local').Strategy;
 var BasicStrategy = require('passport-http').BasicStrategy;
 var ClientPasswordStrategy = require('passport-oauth2-client-password').Strategy;
 var BearerStrategy = require('passport-http-bearer').Strategy;
-var config = require('../../config');
-var db = require('../../' + config.db.type);
+var models = require('../../models');
 
 /**
  * LocalStrategy
@@ -15,14 +14,11 @@ var db = require('../../' + config.db.type);
  */
 passport.use(new LocalStrategy(
     function (username, password, done) {
-        db.users.findByUsername(username, function (err, user) {
+        models.users.findByNameAndPassword(username, password, function (err, user) {
             if (err) {
-                return done(err);
+                return done(err, null);
             }
             if (!user) {
-                return done(null, false);
-            }
-            if (user.password != password) {
                 return done(null, false);
             }
             return done(null, user);
@@ -42,17 +38,15 @@ passport.use(new LocalStrategy(
  * the specification, in practice it is quite common.
  */
 passport.use(new BasicStrategy(
-    function (username, password, done) {
-        db.clients.findByClientId(username, function (err, client) {
+    function (id, secret, done) {
+        models.applications.findByClientIdAndSecret(id, secret, function (err, client) {
             if (err) {
-                return done(err);
+                return done(err, null);
             }
             if (!client) {
-                return done(null, false);
+                return done(null, null);
             }
-            if (client.clientSecret != password) {
-                return done(null, false);
-            }
+
             return done(null, client);
         });
     }
@@ -66,16 +60,13 @@ passport.use(new BasicStrategy(
  * which accepts those credentials and calls done providing a client.
  */
 passport.use(new ClientPasswordStrategy(
-    function (clientId, clientSecret, done) {
-        db.clients.findByClientId(clientId, function (err, client) {
+    function (id, secret, done) {
+        models.applications.findByClientIdAndSecret(id, secret, function (err, client) {
             if (err) {
-                return done(err);
+                return done(err, null);
             }
             if (!client) {
-                return done(null, false);
-            }
-            if (client.clientSecret != clientSecret) {
-                return done(null, false);
+                return done(null, null);
             }
             return done(null, client);
         });
@@ -91,21 +82,21 @@ passport.use(new ClientPasswordStrategy(
  * the authorizing user.
  */
 passport.use(new BearerStrategy(
-    function (accessToken, done) {
-        db.accessTokens.find(accessToken, function (err, token) {
+    function (token, done) {
+        models.accessTokens.findByToken(token, function (err, accessToken) {
             if (err) {
-                return done(err);
+                return done(err, null);
             }
             if (!token) {
-                return done(null, false);
+                return done(null, null);
             }
-            if(new Date() > token.expirationDate) {
-                db.accessTokens.delete(accessToken, function(err) {
+            if(new Date() > accessToken.expirationDate) {
+                models.accessTokens.findByTokenAndRemove(token, function(err) {
                     return done(err);
                 });
             } else {
-                if (token.userID != null) {
-                    db.users.find(token.userID, function (err, user) {
+                if (accessToken.userName != null) {
+                    models.users.findByName(accessToken.userName, function (err, user) {
                         if (err) {
                             return done(err);
                         }
@@ -120,17 +111,17 @@ passport.use(new BearerStrategy(
                 } else {
                     //The request came from a client only since userID is null
                     //therefore the client is passed back instead of a user
-                    db.clients.find(token.clientID, function (err, client) {
+                    models.applications.findByClientId(accessToken.clientId, function (err, application) {
                         if (err) {
                             return done(err);
                         }
-                        if (!client) {
-                            return done(null, false);
+                        if (!application) {
+                            return done(null, null);
                         }
                         // to keep this example simple, restricted scopes are not implemented,
                         // and this is just for illustrative purposes
                         var info = { scope: '*' };
-                        return done(null, client, info);
+                        return done(null, application, info);
                     });
                 }
             }
@@ -152,11 +143,11 @@ passport.use(new BearerStrategy(
 // the client by ID from the database.
 
 passport.serializeUser(function (user, done) {
-    done(null, user.id);
+    done(null, user.name);
 });
 
-passport.deserializeUser(function (id, done) {
-    db.users.find(id, function (err, user) {
+passport.deserializeUser(function (name, done) {
+    db.users.findByName(name, function (err, user) {
         done(err, user);
     });
 });

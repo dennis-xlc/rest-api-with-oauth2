@@ -2,10 +2,10 @@
  * Module dependencies.
  */
 var oauth2orize = require('oauth2orize')
-    , passport = require('passport')
-    , config = require('../../config')
-    , db = require('../../' + config.db.type)
-    , utils = require('../../utils');
+var passport = require('passport');
+var config = require('../../config');
+var utils = require('../../utils');
+var models = require('../../models');
 
 // create OAuth 2.0 server
 var server = oauth2orize.createServer();
@@ -27,12 +27,11 @@ var server = oauth2orize.createServer();
  * which is bound to these values, and will be exchanged for an access token.
  */
 server.grant(oauth2orize.grant.code(function (client, redirectURI, user, ares, done) {
-    var code = utils.uid(config.token.authorizationCodeLength);
-    db.authorizationCodes.save(code, client.id, redirectURI, user.id, client.scope, function (err) {
+    models.authorizationCodes.create(user.id, client.id, redirectURI, client.scope, function (err, authorizationCode) {
         if (err) {
-            return done(err);
+            return done(err, null);
         }
-        return done(null, code);
+        return done(null, authorizationCode.code);
     });
 }));
 
@@ -45,12 +44,12 @@ server.grant(oauth2orize.grant.code(function (client, redirectURI, user, ares, d
  * which is bound to these values.
  */
 server.grant(oauth2orize.grant.token(function (client, user, ares, done) {
-    var token = utils.uid(config.token.accessTokenLength);
-    db.accessTokens.save(token, config.token.accessTokenExpirationDate(), user.id, client.id, client.scope, function (err) {
+
+    models.accessTokens.create(user.id, client.id, client.scope, function (err, accessToken) {
         if (err) {
-            return done(err);
+            return done(err, null);
         }
-        return done(null, token, {expires_in: config.token.accessTokenExpiresIn});
+        return done(null, accessToken.token, {expires_in: config.token.accessTokenExpiresIn});
     });
 }));
 
@@ -62,49 +61,41 @@ server.grant(oauth2orize.grant.token(function (client, user, ares, done) {
  * are validated, the application issues an access token on behalf of the user who
  * authorized the code.
  */
-server.exchange(oauth2orize.exchange.code(function (client, code, redirectURI, done) {
-    db.authorizationCodes.find(code, function (err, authCode) {
+server.exchange(oauth2orize.exchange.code(function (client, code, redirectUri, done) {
+    models.authorizationCodes.findOneByCode(code, function (err, authCode) {
         if (err) {
             return done(err);
         }
         if (!authCode) {
             return done(null, false);
         }
-        if (client.id !== authCode.clientID) {
+        if (client.id !== authCode.clientId) {
             return done(null, false);
         }
-        if (redirectURI !== authCode.redirectURI) {
+        if (redirectUri !== authCode.redirectUri) {
             return done(null, false);
         }
-        db.authorizationCodes.delete(code, function (err, result) {
+        models.authorizationCodes.findByCodeAndRemove(code, function (err, result) {
             if (err) {
-                return done(err);
+                return done(err, null);
             }
-            if(result != undefined && result === 0) {
-                //This condition can result because of a "race condition" that can occur naturally when you're making
-                //two very fast calls to the authorization server to exchange authorization codes.  So, we check for
-                // the result and if it's not undefined and the result is zero, then we have already deleted the
-                // authorization code
-                return done(null, false);
-            }
-            var token = utils.uid(config.token.accessTokenLength);
-            db.accessTokens.save(token, config.token.accessTokenExpirationDate(), authCode.userID, authCode.clientID, authCode.scope, function (err) {
+
+            models.accessTokens.create(authCode.userName, authCode.clientId, authCode.scope, function (err, accessToken) {
                 if (err) {
                     return done(err);
                 }
-                var refreshToken = null;
+
                 //I mimic openid connect's offline scope to determine if we send
                 //a refresh token or not
                 if (authCode.scope && authCode.scope.indexOf("offline_access") === 0) {
-                    refreshToken = utils.uid(config.token.refreshTokenLength);
-                    db.refreshTokens.save(refreshToken, authCode.userID, authCode.clientID, authCode.scope, function (err) {
+                    models.refreshTokens.create(authCode.userName, authCode.clientId, authCode.scope, function (err, refreshToken) {
                         if (err) {
                             return done(err);
                         }
-                        return done(null, token, refreshToken, {expires_in: config.token.accessTokenExpiresIn});
+                        return done(null, accessToken.token, refreshToken.token, {expires_in: config.token.accessTokenExpiresIn});
                     });
                 } else {
-                    return done(null, token, refreshToken, {expires_in: config.token.accessTokenExpiresIn});
+                    return done(null, accessToken.token, null, {expires_in: config.token.accessTokenExpiresIn});
                 }
             });
         });
@@ -120,34 +111,30 @@ server.exchange(oauth2orize.exchange.code(function (client, code, redirectURI, d
  */
 server.exchange(oauth2orize.exchange.password(function(client, username, password, scope, done) {
     //Validate the user
-    db.users.findByUsername(username, function (err, user) {
+    models.users.findByNameAndPassword(username, password, function (err, user) {
         if (err) {
             return done(err);
         }
         if (!user) {
-            return done(null, false);
+            return done(null, null);
         }
-        if (password !== user.password) {
-            return done(null, false);
-        }
-        var token = utils.uid(config.token.accessTokenLength);
-        db.accessTokens.save(token, config.token.accessTokenExpirationDate(), user.id, client.id, scope, function (err) {
+
+        models.accessTokens.create(user.id, client.id, scope, function (err, accessToken) {
             if (err) {
                 return done(err);
             }
-            var refreshToken = null;
+
             //I mimic openid connect's offline scope to determine if we send
             //a refresh token or not
             if (scope && scope.indexOf("offline_access") === 0) {
-                refreshToken = utils.uid(config.token.refreshTokenLength);
-                db.refreshTokens.save(refreshToken, user.id, client.id, scope, function (err) {
+                models.refreshTokens.create(user.id, client.id, scope, function (err, refreshToken) {
                     if (err) {
                         return done(err);
                     }
-                    return done(null, token, refreshToken, {expires_in: config.token.accessTokenExpiresIn});
+                    return done(null, accessToken.token, refreshToken.token, {expires_in: config.token.accessTokenExpiresIn});
                 });
             } else {
-                return done(null, token, refreshToken, {expires_in: config.token.accessTokenExpiresIn});
+                return done(null, accessToken.token, null, {expires_in: config.token.accessTokenExpiresIn});
             }
         });
     });
@@ -163,11 +150,11 @@ server.exchange(oauth2orize.exchange.password(function(client, username, passwor
 server.exchange(oauth2orize.exchange.clientCredentials(function(client, scope, done) {
     var token = utils.uid(config.token.accessTokenLength);
     //Pass in a null for user id since there is no user when using this grant type
-    db.accessTokens.save(token, config.token.accessTokenExpirationDate(), null, client.id, scope, function (err) {
+    models.accessTokens.create(null, client.id, scope, function (err, accessToken) {
         if (err) {
             return done(err);
         }
-        return done(null, token, null, {expires_in: config.token.accessTokenExpiresIn});
+        return done(null, accessToken.token, null, {expires_in: config.token.accessTokenExpiresIn});
     });
 }));
 
@@ -178,23 +165,23 @@ server.exchange(oauth2orize.exchange.clientCredentials(function(client, scope, d
  * request for verification.  If this value is validated, the application issues an access
  * token on behalf of the client who authorized the code
  */
-server.exchange(oauth2orize.exchange.refreshToken(function(client, refreshToken, scope, done) {
-    db.refreshTokens.find(refreshToken, function (err, authCode) {
+server.exchange(oauth2orize.exchange.refreshToken(function(client, token, scope, done) {
+    models.refreshTokens.findByToken(token, function (err, refreshToken) {
         if (err) {
             return done(err);
         }
         if (!authCode) {
             return done(null, false);
         }
-        if (client.id !== authCode.clientID) {
+        if (client.id !== refreshToken.clientId) {
             return done(null, false);
         }
-        var token = utils.uid(config.token.accessTokenLength);
-        db.accessTokens.save(token, config.token.accessTokenExpirationDate(), authCode.userID, authCode.clientID, authCode.scope, function (err) {
+
+        models.accessTokens.create(refreshToken.userName, refreshToken.clientId, refreshToken.scope, function (err, accessToken) {
             if (err) {
                 return done(err);
             }
-            return done(null, token, null, {expires_in: config.token.accessTokenExpiresIn});
+            return done(null, accessToken.token, null, {expires_in: config.token.accessTokenExpiresIn});
         });
     });
 }));
@@ -218,11 +205,11 @@ server.serializeClient(function (client, done) {
 });
 
 server.deserializeClient(function (id, done) {
-    db.clients.find(id, function (err, client) {
+    db.applications.findByClientId(id, function (err, application) {
         if (err) {
-            return done(err);
+            return done(err, null);
         }
-        return done(null, client);
+        return done(null, application.client);
     });
 });
 
