@@ -205,7 +205,7 @@ server.serializeClient(function (client, done) {
 });
 
 server.deserializeClient(function (id, done) {
-    db.applications.findByClientId(id, function (err, application) {
+    models.applications.findByClientId(id, function (err, application) {
         if (err) {
             return done(err, null);
         }
