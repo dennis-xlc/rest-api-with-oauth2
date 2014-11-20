@@ -62,6 +62,7 @@ server.grant(oauth2orize.grant.token(function (client, user, ares, done) {
  * authorized the code.
  */
 server.exchange(oauth2orize.exchange.code(function (client, code, redirectUri, done) {
+  console.log("exchange.code");
     models.authorizationCodes.findOneByCode(code, function (err, authCode) {
         if (err) {
             return done(err);
@@ -201,14 +202,18 @@ server.exchange(oauth2orize.exchange.refreshToken(function(client, token, scope,
 // the client by ID from the database.
 
 server.serializeClient(function (client, done) {
+  console.log("serializeClient", client);
     return done(null, client.id);
 });
 
 server.deserializeClient(function (id, done) {
-    models.applications.findByClientId(id, function (err, application) {
+  console.log("try to find app : ", id);
+    models.applications.findById(id, function (err, application) {
         if (err) {
             return done(err, null);
         }
+
+        console.log("find app : ", application);
         return done(null, application.client);
     });
 });

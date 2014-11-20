@@ -8,7 +8,15 @@ var models = require('../../models');
 require('./authStrategys');
 
 exports.index = function (req, res) {
+  console.log(req);
+  var code = req.query.code;
+
+  if (code) {
+    res.send({"code" : code});
+  } else {
     res.render('oauth2/index');
+  }
+
 };
 
 exports.loginForm = function (req, res) {

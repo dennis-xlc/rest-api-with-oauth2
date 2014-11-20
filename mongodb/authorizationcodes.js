@@ -17,4 +17,4 @@ var authorizationCodeSchema = new Schema({
 
 mongodb.model('AuthorizationCode', authorizationCodeSchema);
 
-exports.AccessToken = mongodb.model('AuthorizationCode');
+exports.AuthorizationCode = mongodb.model('AuthorizationCode');

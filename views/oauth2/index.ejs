@@ -22,8 +22,8 @@
 
             //replace the host name from the URL and replace all the links we have with the host name as well.
             $(".hostname").text(host);
-            $("#authcode").attr("href", "/oauth2/authorize?redirect_uri=" + host + "&response_type=code&client_id=abc123&scope=offline_access");
-            $("#implicit").attr("href", "/oauth2/authorize?redirect_uri=" + host + "&response_type=token&client_id=abc123");
+            $("#authcode").attr("href", "/oauth2/authorize?redirect_uri=" + host + "/oauth2&response_type=code&client_id=abc123&scope=offline_access");
+            $("#implicit").attr("href", "/oauth2/authorize?redirect_uri=" + host + "/oauth2&response_type=token&client_id=abc123");
 
             if(!fragment) {
                 //They did not come from the implicit work flow, so show the main work flow of the page.
@@ -152,7 +152,7 @@
             <a id="authcode" href="">
                 <pre>
   <span class="hostname">https://localhost:3000</span>/oauth2/authorize?
-  redirect_uri=<span class="hostname">https://localhost:3000</span>&
+  redirect_uri=<span class="hostname">https://localhost:3000/oauth2</span>&
   response_type=code&
   client_id=abc123&
   scope=offline_access
@@ -168,7 +168,7 @@
             <a id="implicit" href="">
             <pre>
   <span class="hostname">https://localhost:3000/</span>/oauth2/authorize?
-  redirect_uri=<span class="hostname">https://localhost:3000</span>&
+  redirect_uri=<span class="hostname">https://localhost:3000/oauth2</span>&
   response_type=token&
   client_id=abc123
             </pre>
