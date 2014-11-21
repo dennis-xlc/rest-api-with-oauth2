@@ -8,7 +8,6 @@ var models = require('../../models');
 require('./authStrategys');
 
 exports.index = function (req, res) {
-  console.log(req);
   var code = req.query.code;
 
   if (code) {
@@ -52,19 +51,17 @@ exports.authorization = [
             if (err) {
                 return done(err);
             } else if (!application) {
-                console.log("Invalid client_id : ", clientId);
                 return done("Invalid client_id : " + clientId);
             }
             if(application) {
                 application.scope = scope;
             }
 
-            console.log("found application", application);
             // WARNING: For security purposes, it is highly advisable to check that
             //          redirectURI provided by the client matches one registered with
             //          the server.  For simplicity, this example does not.  You have
             //          been warned.
-            return done(null, application, redirectURI);
+            return done(null, application.client, redirectURI);
         });
     }),
     function (req, res, next) {
@@ -79,7 +76,7 @@ exports.authorization = [
                     callback(null, { allow: true });
                 })(req, res, next);
             } else {
-                res.render('oauth2/dialog', { transactionID: req.oauth2.transactionID, user: req.user, client: req.oauth2.client });
+                res.render('oauth2/dialog', { transactionID: req.oauth2.transactionID, user: req.user, application: application });
             }
         });
     }

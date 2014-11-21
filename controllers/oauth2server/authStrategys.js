@@ -39,7 +39,7 @@ passport.use(new LocalStrategy(
  */
 passport.use(new BasicStrategy(
     function (id, secret, done) {
-        models.applications.findByClientIdAndSecret(id, secret, function (err, client) {
+        models.applications.findByClientIdAndSecret(id, secret, function (err, application) {
             if (err) {
                 return done(err, null);
             }
@@ -47,7 +47,7 @@ passport.use(new BasicStrategy(
                 return done(null, null);
             }
 
-            return done(null, client);
+            return done(null, application.client);
         });
     }
 ));
@@ -61,14 +61,14 @@ passport.use(new BasicStrategy(
  */
 passport.use(new ClientPasswordStrategy(
     function (id, secret, done) {
-        models.applications.findByClientIdAndSecret(id, secret, function (err, client) {
+        models.applications.findByClientIdAndSecret(id, secret, function (err, application) {
             if (err) {
                 return done(err, null);
             }
-            if (!client) {
+            if (!application) {
                 return done(null, null);
             }
-            return done(null, client);
+            return done(null, application.client);
         });
     }
 ));
@@ -121,7 +121,7 @@ passport.use(new BearerStrategy(
                         // to keep this example simple, restricted scopes are not implemented,
                         // and this is just for illustrative purposes
                         var info = { scope: '*' };
-                        return done(null, application, info);
+                        return done(null, application.client, info);
                     });
                 }
             }

@@ -44,7 +44,7 @@ server.grant(oauth2orize.grant.code(function (client, redirectURI, user, ares, d
  * which is bound to these values.
  */
 server.grant(oauth2orize.grant.token(function (client, user, ares, done) {
-
+console.log("grant.token : ", client);
     models.accessTokens.create(user.id, client.id, client.scope, function (err, accessToken) {
         if (err) {
             return done(err, null);
@@ -62,7 +62,6 @@ server.grant(oauth2orize.grant.token(function (client, user, ares, done) {
  * authorized the code.
  */
 server.exchange(oauth2orize.exchange.code(function (client, code, redirectUri, done) {
-  console.log("exchange.code");
     models.authorizationCodes.findOneByCode(code, function (err, authCode) {
         if (err) {
             return done(err);
@@ -70,9 +69,11 @@ server.exchange(oauth2orize.exchange.code(function (client, code, redirectUri, d
         if (!authCode) {
             return done(null, false);
         }
+
         if (client.id !== authCode.clientId) {
             return done(null, false);
         }
+
         if (redirectUri !== authCode.redirectUri) {
             return done(null, false);
         }
@@ -93,6 +94,7 @@ server.exchange(oauth2orize.exchange.code(function (client, code, redirectUri, d
                         if (err) {
                             return done(err);
                         }
+
                         return done(null, accessToken.token, refreshToken.token, {expires_in: config.token.accessTokenExpiresIn});
                     });
                 } else {
@@ -202,18 +204,15 @@ server.exchange(oauth2orize.exchange.refreshToken(function(client, token, scope,
 // the client by ID from the database.
 
 server.serializeClient(function (client, done) {
-  console.log("serializeClient", client);
     return done(null, client.id);
 });
 
 server.deserializeClient(function (id, done) {
-  console.log("try to find app : ", id);
-    models.applications.findById(id, function (err, application) {
+    models.applications.findByClientId(id, function (err, application) {
         if (err) {
             return done(err, null);
         }
 
-        console.log("find app : ", application);
         return done(null, application.client);
     });
 });
