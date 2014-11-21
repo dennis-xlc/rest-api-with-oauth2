@@ -83,7 +83,6 @@ passport.use(new ClientPasswordStrategy(
  */
 passport.use(new BearerStrategy(
     function (token, done) {
-      console.log("using token : ", token);
         models.accessTokens.findByToken(token, function (err, accessToken) {
             if (err) {
                 return done(err, null);
@@ -92,7 +91,6 @@ passport.use(new BearerStrategy(
                 return done(null, null);
             }
 
-            console.log("found token : ", accessToken);
             if(new Date() > accessToken.expirationDate) {
                 models.accessTokens.findByTokenAndRemove(token, function(err) {
                     return done(err);
@@ -112,7 +110,6 @@ passport.use(new BearerStrategy(
                         return done(null, user, info);
                     });
                 } else {
-                  console.log("using  clientId : ", accessToken.clientId);
                     //The request came from a client only since userID is null
                     //therefore the client is passed back instead of a user
                     models.applications.findByClientId(accessToken.clientId, function (err, application) {
@@ -123,7 +120,6 @@ passport.use(new BearerStrategy(
                             return done(null, null);
                         }
 
-                        console.log("found  application : ", application);
                         // to keep this example simple, restricted scopes are not implemented,
                         // and this is just for illustrative purposes
                         var info = { scope: '*' };
