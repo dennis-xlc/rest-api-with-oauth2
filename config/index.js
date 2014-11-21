@@ -22,7 +22,7 @@ exports.client = {
 exports.token = {
     accessTokenExpiresIn: 3600,
     accessTokenExpirationDate: function() {
-        return new Date(new Date().getTime() + (this.expiresIn * 1000));
+        return new Date(new Date().getTime() + (this.accessTokenExpiresIn * 1000));
     },
     authorizationCodeLength: 32,
     accessTokenLength: 128,
