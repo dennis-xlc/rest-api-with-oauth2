@@ -99,13 +99,9 @@ server.use(passport.session());
 
 // Create our Express router
 var siteRouter = require('./routers/siteRouter').router;
-var oauth2Router = require('./routers/oauth2Router').router;
-var restApiRouter = require('./routers/restApiRouter').router;
 
 
 // Register all our routes
-server.use('/oauth2', oauth2Router);
-server.use('/api', restApiRouter);
 server.use('/', siteRouter);
 
 
